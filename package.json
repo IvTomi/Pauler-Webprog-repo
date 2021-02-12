@@ -1,0 +1,19 @@
+{
+  "name": "teszt_cucc",
+  "version": "1.0.0",
+  "description": "Zsáááá",
+  "main": "index.js",
+  "scripts": {
+    "test": "Start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvTomi/Pauler-Webprog-repo.git"
+  },
+  "author": "Just Tomi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IvTomi/Pauler-Webprog-repo/issues"
+  },
+  "homepage": "https://github.com/IvTomi/Pauler-Webprog-repo#readme"
+}
