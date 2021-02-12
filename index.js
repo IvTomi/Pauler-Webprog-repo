@@ -1,1 +1,1 @@
-print("Waccap")
+console.log("Waccap")
