@@ -1,4 +1,4 @@
-import viewControl from '../control/viewControl.js';
+import viewController from '../controllers/viewController.js';
 import HTMLTag from '../utilities/HTMLTag.js'
 
 function createLogin(){
@@ -9,7 +9,7 @@ function createLogin(){
     new HTMLTag('input').addAttr('id',formID+'_passwd').addAttr('name',formID+'_passwd').addAttr('placeholder','Jelszó').addAttr('type','password').append(loginForm);
     new HTMLTag('a').setText('Elfelejtette a jelszavát?').append(loginForm);
     //TO REWRITE FUNCTION
-    new HTMLTag('button').setText('Bejelentkezés').append(loginForm).onclick(new viewControl().loadAdminTop);
+    new HTMLTag('button').setText('Bejelentkezés').append(loginForm).onclick(new viewController().loadAdminTop);
     //Creating link to signup
     const p = new HTMLTag('p').setText('Új az oldalon? ').append(document.body);
     new HTMLTag('a').addAttr('href','').setText('Hozzon létre fiókot').append(p)//.onclick(this.loadSignUp());

@@ -1,7 +1,7 @@
 import createAdminTop from '../view/content/admin/admintop.js';
 import createLogin from '../view/login.js';
 
-class viewControl{
+class viewController{
     clearTag(tag){
         tag.innerHTML = "";
     }
@@ -12,16 +12,16 @@ class viewControl{
         if(evt){
             evt.preventDefault();
         }
-        new viewControl().clearBody();
+        new viewController().clearBody();
         createLogin();
     }
     loadAdminTop(evt){
         if(evt){
             evt.preventDefault();
         }
-        new viewControl().clearBody();
+        new viewController().clearBody();
         createAdminTop();
     }
 }
 
-export default viewControl;
+export default viewController;

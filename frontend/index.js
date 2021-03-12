@@ -1,3 +1,3 @@
-import viewControl from "./control/viewControl.js";
+import viewController from "./controllers/viewController.js";
 
-new viewControl().loadLogin();
+new viewController().loadLogin();

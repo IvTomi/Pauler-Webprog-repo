@@ -1,10 +1,10 @@
-import viewControl from "../../../control/viewControl.js";
+import viewController from "../../../controllers/viewController.js";
 import HTMLTag from '../../../utilities/HTMLTag.js';
 
         
 function createAdminTop(){
         const div = new HTMLTag('div').append(document.body);
-        new HTMLTag('button').setText('Lorem ipsum').append(div).onclick( new viewControl().loadLogin);
+        new HTMLTag('button').setText('Lorem ipsum').append(div).onclick( new viewController().loadLogin);
         new HTMLTag('h1').setText('Cég neve').append(document.body);
         const nav = new HTMLTag('nav').addClass('adminNav').append(document.body);
         const ul = new HTMLTag('ul').append(nav);
