@@ -1,4 +1,4 @@
-import HTMLTag from '../../../utilities/HTMLTag.js';
+import HTMLTag from '../../utilities/HTMLTag.js';
 
 function createAside(title){
     title = title.toString();
