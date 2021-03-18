@@ -1,10 +1,7 @@
-import viewController from "../../../controllers/viewController.js";
 import HTMLTag from '../../../utilities/HTMLTag.js';
 
         
-function createAdminTop(){
-        const div = new HTMLTag('div').append(document.body);
-        new HTMLTag('button').setText('Lorem ipsum').append(div).onclick( new viewController().loadLogin);
+function createAdminNav(){
         new HTMLTag('h1').setText('Cég neve').append(document.body);
         const nav = new HTMLTag('nav').addClass('adminNav').append(document.body);
         const ul = new HTMLTag('ul').append(nav);
@@ -13,6 +10,7 @@ function createAdminTop(){
         new HTMLTag('li').setText('Csapatok').append(ul)//.onclick(this.load);
         new HTMLTag('li').setText('Jogosultságok').append(ul)//.onclick(this.load);
         new HTMLTag('li').setText('Beállítások').append(ul)//.onclick(this.load);
+        createAside('Alkalmazottak');
     }
 
-export default createAdminTop;
+export default createAdminNav;

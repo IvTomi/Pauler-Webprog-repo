@@ -1,13 +1,17 @@
-import createAdminTop from '../view/content/admin/admintop.js';
+import createAdminNav from '../view/content/admin/admintop.js';
 import createLogin from '../view/login.js';
+import createSignup from '../view/signup.js';
+import createUserNav from '../view/content/user/usertop.js';
 
 class viewController{
     clearTag(tag){
         tag.innerHTML = "";
     }
+
     clearBody(){
         this.clearTag(document.body);
     }
+
     loadLogin(evt){
         if(evt){
             evt.preventDefault();
@@ -15,12 +19,29 @@ class viewController{
         new viewController().clearBody();
         createLogin();
     }
-    loadAdminTop(evt){
+
+    loadSignup(evt){
         if(evt){
             evt.preventDefault();
         }
         new viewController().clearBody();
-        createAdminTop();
+        createSignup();
+    }
+
+    loadAdmin(evt){
+        if(evt){
+            evt.preventDefault();
+        }
+        new viewController().clearBody();
+        createAdminNav();
+    }
+
+    loadUser(evt){
+        if(evt){
+            evt.preventDefault();
+        }
+        new viewController().clearBody();
+        createUserNav();
     }
 }
 
