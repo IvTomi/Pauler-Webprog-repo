@@ -17,8 +17,9 @@ ul{
     background: blueviolet;
 }
 
-li{
+li{ /*itt mar volt egy li remelem nem baj ha beleraktam azt amit kuldtel*/
     background: forestgreen;
+    display: block;
 }
 h2{
     background: greenyellow; 
@@ -32,4 +33,12 @@ h3{
 .scroll{
     height: 100px;
     overflow: auto;
+}
+.normal{
+    background:white;
+    color:black;
+}
+.selected{
+    background:black;
+    color:white;
 }
