@@ -2,6 +2,7 @@ import createAdminNav from '../view/content/admin/admintop.js';
 import createLogin from '../view/login.js';
 import createSignup from '../view/signup.js';
 import createUserNav from '../view/content/user/usertop.js';
+import UserRecordView from '../view/content/user/records/records.js';
 
 class viewController{
     clearTag(tag){
@@ -42,7 +43,21 @@ class viewController{
         }
         new viewController().clearBody();
         createUserNav();
+        new viewController().setUpMain();
+        new UserRecordView().setUp();
     }
+
+    setUpMain(){
+        let main = document.getElementsByTagName('main')[0];
+        if(main){
+            return main;
+        }
+        else{
+            main = document.createElement('main');
+            document.body.appendChild(main);
+            return main;
+        }
+    } 
 }
 
 export default viewController;
