@@ -1,7 +1,8 @@
+import RecordData from "../../datasets/recordData.js";
 import HTMLTag from "../../utilities/HTMLTag.js";
 
 
-function createRecordList(data,appendPoint,my){
+export function createRecordList(data,appendPoint,my){
     if(my){
         for(let team of data){
             for(let task of team.projects){
@@ -33,6 +34,22 @@ function createRecordList(data,appendPoint,my){
             }
         }
     }
+    
+}
+export function getProjects(){
+    const result = [];
+    for(let team of new RecordData().recordTestData){
+        for(let project of team.projects){
+            result.push(project.name);
+        }
+    }
+    return result;
 }
 
-export default createRecordList;
+export function getTeams(){
+    const result = [];
+    for(let team of new RecordData().recordTestData){
+        result.push(team.name);
+    }
+    return result;
+}

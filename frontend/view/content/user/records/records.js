@@ -2,7 +2,7 @@ import HTMLTag from "../../../../utilities/HTMLTag.js";
 import changeHighlithed from '../../../../utilities/changeHighlighted.js';
 import RecordData from "../../../../datasets/recordData.js";
 import viewController from "../../../../controllers/viewController.js";
-import createRecordList from "../../../listBuilders/recordListBuilder.js";
+import {createRecordList,getProjects,getTeams} from "../../../listBuilders/recordListBuilder.js";
 
 
 class UserRecordView{
@@ -21,10 +21,7 @@ class UserRecordView{
     }
 
     createNewRecord(){
-        const selecters = document.getElementById('selecter');
-        changeHighlithed(0,selecters);
-        const content = document.getElementById('content');
-        new viewController().clearTag(content);
+        const content = refreshContent(0);
 
         new HTMLTag('h2').setText('Rekord hozzáadása').append(content);
         const formID = 'newRecordForm';
@@ -32,7 +29,7 @@ class UserRecordView{
         const taskSelect = new HTMLTag('select').addAttr('id',formID+'_taskSelect').addAttr('name',formID+'_taskSelect').addAttr('value',-1).append(form);
         new HTMLTag('option').addAttr('value',-1).setText('Feladat kiválasztása').append(taskSelect);
         let i=0;
-        for(let task of new RecordData().getProjects()){
+        for(let task of getProjects()){
             new HTMLTag('option').addAttr('value',i).setText(task).append(taskSelect);
             i++;
         }
@@ -50,10 +47,7 @@ class UserRecordView{
 
 
     createMyRecords(){
-        const selecters = document.getElementById('selecter');
-        changeHighlithed(1,selecters);
-        const content = document.getElementById('content');
-        new viewController().clearTag(content);
+        const content = refreshContent(1);
 
         const timeFrame = new HTMLTag('select').addAttr('id','timeFrame').addAttr('name','timeFrame').addAttr('value',0).append(content);
         new HTMLTag('option').addAttr('value',0).setText('Elmúlt nap').append(timeFrame);
@@ -77,10 +71,7 @@ class UserRecordView{
 
 
     createTeamRecords(){
-        const selecters = document.getElementById('selecter');
-        changeHighlithed(2,selecters);
-        const content = document.getElementById('content');
-        new viewController().clearTag(content);
+        const content = refreshContent(2);
 
         const timeFrame = new HTMLTag('select').addAttr('id','timeFrame').addAttr('name','timeFrame').addAttr('value',0).append(content);
         new HTMLTag('option').addAttr('value',0).setText('Elmúlt nap').append(timeFrame);
@@ -91,7 +82,7 @@ class UserRecordView{
         const teamSelect = new HTMLTag('select').addAttr('id','teamSelect').addAttr('name','teamSelect').addAttr('value',-1).append(content);
         new HTMLTag('option').addAttr('value',-1).setText('Csapat kiválasztása').append(teamSelect);
         let i = 0;
-        for(let team of new RecordData().getTeams()){
+        for(let team of getTeams()){
             new HTMLTag('option').addAttr('value',i).setText(team).append(teamSelect);
             i++;
         }
@@ -99,7 +90,7 @@ class UserRecordView{
         const taskSelect = new HTMLTag('select').addAttr('id','taskSelect').addAttr('name','taskSelect').addAttr('value',-1).append(content);
         new HTMLTag('option').addAttr('value',-1).setText('Feladat kiválasztása').append(taskSelect);
         i=0;
-        for(let task of new RecordData().getProjects()){
+        for(let task of getProjects()){
             new HTMLTag('option').addAttr('value',i).setText(task).append(taskSelect);
             i++;
         }
@@ -118,7 +109,13 @@ class UserRecordView{
     }
 }
 
-
+function refreshContent(n){
+    const selecters = document.getElementById('selecter');
+    changeHighlithed(n,selecters);
+    const content = document.getElementById('content');
+    new viewController().clearTag(content);
+    return content;
+}
 
 
 export default UserRecordView;

@@ -107,23 +107,7 @@ class RecordData{
         ]
     }
 
-    getProjects(){
-        const result = [];
-        for(let team of this.recordTestData){
-            for(let project of team.projects){
-                result.push(project.name);
-            }
-        }
-        return result;
-    }
-
-    getTeams(){
-        const result = [];
-        for(let team of this.recordTestData){
-            result.push(team.name);
-        }
-        return result;
-    }
+    
 }
 
 export default RecordData;

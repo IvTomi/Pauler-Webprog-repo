@@ -1,11 +1,12 @@
 import HTMLTag from '../../utilities/HTMLTag.js';
+import UserData from '../../datasets/userdata.js';
 
 function createAside(title){
     title = title.toString();
     const aside = new HTMLTag('aside').append(document.body);
     new HTMLTag('h3').setText(title).append(aside);
     const ul = new HTMLTag('ul').addClass('scroll').append(aside);
-    makeUserList(testData,ul);
+    makeUserList(new UserData().testData,ul);
 }
 
 function makeUserList(data,appendPoint){
@@ -31,11 +32,6 @@ function makeOneUser(object,appendPoint){
     }
 }
 
-let testData = [
-    {name:'Minta Máté',img:'/res/defaultUser.png',tasks:['design', 'structure']},
-    {name:'Példa Petra',img:'/res/defaultUser.png',tasks:['database','morale']},
-    {name:'Alap Aladár',img:'/res/defaultUser.png',tasks:['marketing']},
-    {name:'Lusta Lujza',img:'/res/defaultUser.png'}
-]
+
 
 export default createAside;
