@@ -2,39 +2,42 @@ import RecordData from "../../datasets/recordData.js";
 import HTMLTag from "../../utilities/HTMLTag.js";
 
 
-export function createRecordList(data,appendPoint,my){
-    if(my){
-        for(let team of data){
-            for(let task of team.projects){
-                for(let record of task.records){
-                    if(record.creator==='Grosics'){
-                        const cont = new HTMLTag('li').append(appendPoint);
-                        new HTMLTag('p').setText(task.name).append(cont);
-                        new HTMLTag('p').setText(record.desc).append(cont);
-                        new HTMLTag('p').setText(record.date).append(cont);
-                        new HTMLTag('p').setText(record.length).append(cont);
-                        new HTMLTag('p').setText('X').append(cont);
-                    }
-                }
-            }
-        }
-    }
-    else{
-        for(let team of data){
-            for(let task of team.projects){
-                for(let record of task.records){
-                    if(record.creator!=='Grosics'){
-                        const cont = new HTMLTag('li').append(appendPoint);
-                        new HTMLTag('p').setText(record.creator).append(cont);
-                        new HTMLTag('p').setText(record.desc).append(cont);
-                        new HTMLTag('p').setText(record.date).append(cont);
-                        new HTMLTag('p').setText(record.length).append(cont);
-                    }
+export function createMyRecordList(data,appendPoint,options){
+    //const from = options.timeframe; //TODO
+    //const name = '*'+options.name+'*';//regex-é alakítás
+    for(let team of data){
+        for(let task of team.projects){
+            for(let record of task.records){
+                if(record.creator==='Grosics'){
+                    const cont = new HTMLTag('li').append(appendPoint);
+                    new HTMLTag('p').setText(task.name).append(cont);
+                    new HTMLTag('p').setText(record.desc).append(cont);
+                    new HTMLTag('p').setText(record.date).append(cont);
+                    new HTMLTag('p').setText(record.length).append(cont);
+                    new HTMLTag('p').setText('X').append(cont);
                 }
             }
         }
     }
     
+}
+export function createTeamRecordList(data,appendPoint,options){
+    //const Team = options.team;
+    //const Task = option.task;
+    //const From = option.timeframe;
+    for(let team of data){
+        for(let task of team.projects){
+            for(let record of task.records){
+                if(record.creator!=='Grosics'){
+                    const cont = new HTMLTag('li').append(appendPoint);
+                    new HTMLTag('p').setText(record.creator).append(cont);
+                    new HTMLTag('p').setText(record.desc).append(cont);
+                    new HTMLTag('p').setText(record.date).append(cont);
+                    new HTMLTag('p').setText(record.length).append(cont);
+                }
+            }
+        }
+    }
 }
 export function getProjects(){
     const result = [];

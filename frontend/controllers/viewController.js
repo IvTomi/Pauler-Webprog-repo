@@ -2,7 +2,7 @@ import createAdminNav from '../view/content/admin/admintop.js';
 import createLogin from '../view/login.js';
 import createSignup from '../view/signup.js';
 import createUserNav from '../view/content/user/usertop.js';
-import UserRecordView from '../view/content/user/records/records.js';
+import setUpUserRecordViews from '../view/content/user/records/mainRecord.js';
 
 class viewController{
     clearTag(tag){
@@ -43,8 +43,8 @@ class viewController{
         }
         new viewController().clearBody();
         createUserNav();
-        new viewController().setUpMain();
-        new UserRecordView().setUp();
+        const main = new viewController().setUpMain();
+        setUpUserRecordViews(main);
     }
 
     setUpMain(){
