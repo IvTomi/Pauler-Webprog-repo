@@ -1,7 +1,19 @@
 import HTMLTag from './HTMLTag.js';
 
-export function makeTimeframeSelect(id,appendPoint){
-    let time = Date.now();
+export function makeTimeframeSelect(id,appendPoint,options){
+    let time;
+    if(options){
+        if(options.endDate){
+             time = Date.parse(options.endDate);
+        }
+        else{
+             time = Date.now();
+        }
+    }
+    else{
+         time = Date.now();
+    }
+    
     let date = new Date(time);
     let dateInFormat = Dateformat(date);
     const timeFrame = new HTMLTag('select').addAttr('id',id).addAttr('name',id).addAttr('value',0).append(appendPoint);
@@ -15,7 +27,7 @@ export function makeTimeframeSelect(id,appendPoint){
 
 export default makeTimeframeSelect;
 
-const MSpD = 86400000;
+
 
 function Dateformat(date){
     return date.getFullYear()+'/'+(date.getMonth()+1)+'/'+date.getDate();

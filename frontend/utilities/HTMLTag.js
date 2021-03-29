@@ -42,6 +42,10 @@ class HTMLTag{
         this.node.onclick = func;
         return this;
     }
+    addEventListener(event,method){
+        this.node.addEventListener(event,method);
+        return this;
+    }
 
     
 }

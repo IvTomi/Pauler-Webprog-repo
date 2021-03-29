@@ -7,9 +7,9 @@ class RecordData{
                             {
                                 name:'Támadás',
                                 records:[
+                                            {creator:'Puskás',length:'3:15',date:'2021/03/28',desc:"Lorem ipsum dolor sit amet. skadjléaslkdamndkjn jdash fls fdsak ea ldc jdskne lads"},
                                             {creator:'Puskás',length:'3:15',date:'2021/03/18',desc:"Lorem ipsum dolor sit amet. skadjléaslkdamndkjn jdash fls fdsak ea ldc jdskne lads"},
-                                            {creator:'Puskás',length:'3:15',date:'2021/03/18',desc:"Lorem ipsum dolor sit amet. skadjléaslkdamndkjn jdash fls fdsak ea ldc jdskne lads"},
-                                            {creator:'Grosics',length:'3:15',date:'2021/03/18',desc:"Lorem ipsum dolor sit amet. skadjléaslkdamndkjn jdash fls fdsak ea ldc jdskne lads"},
+                                            {creator:'Grosics',length:'3:15',date:'2021/03/28',desc:"Lorem ipsum dolor sit amet. skadjléaslkdamndkjn jdash fls fdsak ea ldc jdskne lads"},
                                             {creator:'Grosics',length:'3:15',date:'2021/03/18',desc:"Lorem ipsum dolor sit amet. skadjléaslkdamndkjn jdash fls fdsak ea ldc jdskne lads"},
                                             {creator:'Tavasz',length:'3:15',date:'2021/03/18',desc:"Lorem ipsum dolor sit amet. skadjléaslkdamndkjn jdash fls fdsak ea ldc jdskne lads"},
                                             {creator:'Tavasz',length:'3:15',date:'2021/03/18',desc:"Lorem ipsum dolor sit amet. skadjléaslkdamndkjn jdash fls fdsak ea ldc jdskne lads"},

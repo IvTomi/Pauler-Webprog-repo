@@ -35,7 +35,6 @@ export function setUpListField(appendPoint){
         else{
             list = document.createElement('ul');
             list.setAttribute('id','list');
-            list.classList.add('scroll');
             appendPoint.appendChild(list);
             return list;
         }
