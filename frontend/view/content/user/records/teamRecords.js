@@ -45,7 +45,6 @@ function updateList(){
     if(taskSelect.value !== '0'){
         options['task'] = taskSelect.value;
     }
-    console.log(options);
     let listDiv = setUpListField(content);
     createTeamRecordList(new RecordData().recordTestData,listDiv,options);
 }

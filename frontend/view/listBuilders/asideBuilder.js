@@ -9,7 +9,7 @@ function createAside(title){
     makeUserList(new UserData().testData,ul);
 }
 
-function makeUserList(data,appendPoint){
+export function makeUserList(data,appendPoint){
     for(let datum of data){
         makeOneUser(datum,appendPoint)
     }
@@ -23,10 +23,10 @@ function makeOneUser(object,appendPoint){
             new HTMLTag('img').addAttr('src',user.img).addAttr('alt','user képe').append(li);
         }
         new HTMLTag('p').setText(user.name).append(li);
-        if(user.tasks){
+        if(user.roles){
             const cont = new HTMLTag('p').append(li);
-            for(let task of user.tasks){
-                new HTMLTag('span').setText('#'+task).append(cont);
+            for(let role of user.roles){
+                new HTMLTag('span').setText('#'+role).append(cont);
             }
         }
     }
