@@ -6,7 +6,8 @@ CREATE VIEW `configgroupconfigsview` AS
         `configgroupview`.`ConfigGroup_idConfigGroup` AS `ConfigGroup_idConfigGroup`,
         `configgroupview`.`SuperUser_Hash` AS `SuperUser_Hash`,
         `configview`.`Config_idConfig` AS `Config_idConfig`,
-        `configview`.`ConfigKey` AS `ConfigKey`
+        `configview`.`ConfigKey` AS `ConfigKey`,
+        `configview`.`DefaultValue` AS `DefaultValue`
     FROM
         ((`configgroup_has_config`
         JOIN `configview` ON ((`configgroup_has_config`.`Config_idConfig` = `configview`.`Config_idConfig`)))
