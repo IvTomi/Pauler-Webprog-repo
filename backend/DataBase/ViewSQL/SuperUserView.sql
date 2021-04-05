@@ -10,9 +10,10 @@ CREATE VIEW `superuserview` AS
         `companyview`.`idCompany` AS `Company_idCompany`,
         `companyview`.`CompanyName` AS `CompanyName`,
         `contactview`.`idContact` AS `Contact_idContact`,
-        `contactview`.`TypeName` AS `TypeName`,
         `contactview`.`Value` AS `Value`,
-        `contactview`.`Comment` AS `Comment`
+        `contactview`.`Comment` AS `Comment`,
+        `contactview`.`TypeName` AS `TypeName`,
+		`contactview`.`ContactType_idContactType` AS `ContactType_idContactType`
     FROM
         (((`superuser`
         LEFT JOIN `userview` ON ((`userview`.`idUser` = `superuser`.`User_idUser`)))
