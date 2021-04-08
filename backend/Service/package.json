@@ -1,0 +1,16 @@
+{
+  "name": "com.taskrecorderservice",
+  "version": "1.0.0",
+  "description": "Rest API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Iványi Tamás, Rumpler Bálint, Cseh Marcell, Hollósi Valentin",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "moment": "^2.29.1",
+    "nodemon": "^2.0.7"
+  }
+}
