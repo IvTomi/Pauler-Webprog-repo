@@ -7,6 +7,6 @@ CREATE VIEW `contacttypeview` AS
         `superuser`.`Hash` AS `SuperUser_Hash`
     FROM
         (`contacttype`
-        JOIN `superuser` ON ((`contacttype`.`SuperUser_Hash` = `superuser`.`Hash`)))
+        LEFT JOIN `superuser` ON ((`contacttype`.`SuperUser_Hash` = `superuser`.`Hash`)))
     WHERE
         (1 = `contacttype`.`Status`)
