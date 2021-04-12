@@ -4,6 +4,7 @@ import createSignup from '../view/signup.js';
 import createUserNav from '../view/content/user/usertop.js';
 import setUpUserRecordViews from '../view/content/user/records/mainRecord.js';
 import setUpUserTeamsView from '../view/content/user/teams/mainTeamU.js';
+import setUpUserProfile from '../view/content/user/profile/profile.js';
 
 class viewController{
     clearTag(tag){
@@ -53,6 +54,14 @@ class viewController{
         }
         const main = new viewController().setUpMain();
         setUpUserRecordViews(main);
+    }
+
+    loadUserProfile(evt){
+        if(evt){
+            evt.preventDefault();
+        }
+        const main = new viewController().setUpMain();
+        setUpUserProfile(main);
     }
 
     loadUserTeam(evt){
