@@ -1,9 +1,10 @@
+import viewController from '../../../controllers/viewController.js';
 import HTMLTag from '../../../utilities/HTMLTag.js';
 import createAside from '../../listBuilders/asideBuilder.js';
 
         
 function createAdminNav(){
-        new HTMLTag('h1').setText('Cég neve').append(document.body);
+        new HTMLTag('h1').setText('Cég neve').append(document.body).onclick(new viewController().loadAdminProfile);
         const nav = new HTMLTag('nav').addClass('adminNav').append(document.body);
         const ul = new HTMLTag('ul').append(nav);
         new HTMLTag('li').setText('Riportok').append(ul)//.onclick(this.load);
