@@ -5,6 +5,7 @@ import createUserNav from '../view/content/user/usertop.js';
 import setUpUserRecordViews from '../view/content/user/records/mainRecord.js';
 import setUpUserTeamsView from '../view/content/user/teams/mainTeamU.js';
 import setUpUserProfile from '../view/content/user/profile/profile.js';
+import setUpAdminProfile from '../view/content/admin/profile/profile.js';
 
 class viewController{
     clearTag(tag){
@@ -38,6 +39,14 @@ class viewController{
         new viewController().clearBody();
         createAdminNav();
     }
+    loadAdminProfile(evt){
+        if(evt){
+            evt.preventDefault();
+        }
+        const main = new viewController().setUpMain();
+        setUpAdminProfile(main);
+    }
+
 
     loadUser(evt){
         if(evt){
