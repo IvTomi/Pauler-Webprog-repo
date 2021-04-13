@@ -4,8 +4,8 @@ CREATE VIEW `usernotificationsview` AS
     SELECT 
         `notificationview`.`idNotification` AS `Notification_idNotification`,
         `notificationview`.`NotificationName` AS `NotificationName`,
-        `notificationview`.`SuperUser_Hash` AS `SuperUser_Hash`,
-        `notification_has_user`.`User_idUser` AS `User_idUser`
+        `notification_has_user`.`User_idUser` AS `User_idUser`,
+		`notification_has_user`.`IsRead` AS `IsRead`
     FROM
         (`notification_has_user`
         JOIN `notificationview` ON ((`notification_has_user`.`Notification_idNotification` = `notificationview`.`idNotification`)))

@@ -3,10 +3,8 @@ DROP VIEW IF EXISTS notificationview;
 CREATE VIEW `notificationview` AS
     SELECT 
         `notification`.`idNotification` AS `idNotification`,
-        `notification`.`NotificationName` AS `NotificationName`,
-        `superuser`.`Hash` AS `SuperUser_Hash`
+        `notification`.`NotificationName` AS `NotificationName`
     FROM
-        (`notification`
-        JOIN `superuser` ON ((`notification`.`SuperUser_Hash` = `superuser`.`Hash`)))
+        `notification`
     WHERE
         (1 = `notification`.`Status`)

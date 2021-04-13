@@ -3,10 +3,8 @@ DROP VIEW IF EXISTS companyview;
 CREATE VIEW `companyview` AS
     SELECT 
         `company`.`idCompany` AS `idCompany`,
-        `company`.`CompanyName` AS `CompanyName`,
-        `superuser`.`Hash` AS `SuperUser_Hash`
+        `company`.`CompanyName` AS `CompanyName`
     FROM
-        (`company`
-        JOIN `superuser` ON ((`company`.`SuperUser_Hash` = `superuser`.`Hash`)))
+        `company`
     WHERE
         (1 = `company`.`Status`)

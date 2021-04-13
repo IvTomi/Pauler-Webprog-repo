@@ -3,10 +3,8 @@ DROP VIEW IF EXISTS statusview;
 CREATE VIEW `statusview` AS
     SELECT 
         `status`.`idStatus` AS `idStatus`,
-        `status`.`StatusName` AS `StatusName`,
-        `superuser`.`Hash` AS `SuperUser_Hash`
+        `status`.`StatusName` AS `StatusName`
     FROM
-        (`status`
-        JOIN `superuser` ON ((`status`.`SuperUser_Hash` = `superuser`.`Hash`)))
+        `status`
     WHERE
         (1 = `status`.`Status`)
