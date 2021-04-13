@@ -18,7 +18,19 @@ function setUpUserProfile(appendPoint){
 
 
 
-
+function setUpListField(appendPoint){
+    let list = document.getElementById('list');
+        if(list){
+            new viewController().clearTag(list);
+            return list;
+        }
+        else{
+            list = document.createElement('ul');
+            list.setAttribute('id','list');
+            appendPoint.appendChild(list);
+            return list;
+        }
+}
 
 
 
