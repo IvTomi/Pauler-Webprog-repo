@@ -6,6 +6,7 @@ import setUpUserRecordViews from '../view/content/user/records/mainRecord.js';
 import setUpUserTeamsView from '../view/content/user/teams/mainTeamU.js';
 import setUpUserProfile from '../view/content/user/profile/profile.js';
 import setUpAdminProfile from '../view/content/admin/profile/profile.js';
+import setUpUserProjectsViews from '../view/content/user/projects/mainProject.js';
 
 class viewController{
     clearTag(tag){
@@ -71,6 +72,14 @@ class viewController{
         }
         const main = new viewController().setUpMain();
         setUpUserProfile(main);
+    }
+
+    loadUserProject(evt){
+        if(evt){
+            evt.preventDefault();
+        }
+        const main = new viewController().setUpMain();
+        setUpUserProjectsViews(main);
     }
 
     loadUserTeam(evt){
