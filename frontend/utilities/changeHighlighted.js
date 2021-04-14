@@ -5,12 +5,17 @@
  */
  function changeHighlithed(n,list){
     const selecters = list.children;
-    if(n<selecters.length){
+    if(-1<n && n<selecters.length){
         const selected = selecters[n];
         for(let selecter of selecters){
             selecter.setAttribute('class','normal');
         }
         selected.setAttribute('class','selected');
+    }
+    else if(n===-1){
+        for(let selecter of selecters){
+            selecter.setAttribute('class','normal');
+        }
     }
 }
 

@@ -17,7 +17,7 @@ export function createMyRecordList(data,appendPoint,options){
                             new HTMLTag('p').setText(record.desc).append(cont);
                             new HTMLTag('p').setText(record.date).append(cont);
                             new HTMLTag('p').setText(record.length).append(cont);
-                            new HTMLTag('p').setText('X').append(cont);
+                            new HTMLTag('button').setText('X').append(cont);
                         }
                     }
                 }
