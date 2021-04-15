@@ -7,6 +7,7 @@ import setUpUserTeamsView from '../view/content/user/teams/mainTeamU.js';
 import setUpUserProfile from '../view/content/user/profile/profile.js';
 import setUpAdminProfile from '../view/content/admin/profile/profile.js';
 import setUpUserProjectsViews from '../view/content/user/projects/mainProject.js';
+import setUpAdminTeamsView from '../view/content/admin/team/mainTeamA.js';
 
 class viewController{
     clearTag(tag){
@@ -88,6 +89,14 @@ class viewController{
         }
         const main = new viewController().setUpMain();
         setUpUserTeamsView(main);
+    }
+
+    loadAdminTeam(evt){
+        if(evt){
+            evt.preventDefault();
+        }
+        const main = new viewController().setUpMain();
+        setUpAdminTeamsView(main);
     }
 
     setUpMain(){

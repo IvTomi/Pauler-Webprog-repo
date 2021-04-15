@@ -10,7 +10,7 @@ function setUpUserRecordViews(appendPoint){
     changeHighlithed(0,navList);//Selects the first element [which is the records] on user nav bar
 
     const selecter=new HTMLTag('ul').addAttr('id','selecter').append(appendPoint);
-    new HTMLTag('content').addAttr('id','content').append(appendPoint);
+    new HTMLTag('div').addAttr('id','content').append(appendPoint);
     
     new HTMLTag('li').setText('Rekord hozzáadása').append(selecter).onclick(createNewRecordView);
     new HTMLTag('li').setText('Rekordjaim').append(selecter).onclick(createMyRecordsView);

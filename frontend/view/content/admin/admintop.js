@@ -9,7 +9,7 @@ function createAdminNav(){
         const ul = new HTMLTag('ul').append(nav);
         new HTMLTag('li').setText('Riportok').append(ul)//.onclick(this.load);
         new HTMLTag('li').setText('Projectek').append(ul)//.onclick(this.load);
-        new HTMLTag('li').setText('Csapatok').append(ul)//.onclick(this.load);
+        new HTMLTag('li').setText('Csapatok').append(ul).onclick(new viewController().loadAdminTeam);
         new HTMLTag('li').setText('Jogosultságok').append(ul)//.onclick(this.load);
         new HTMLTag('li').setText('Beállítások').append(ul)//.onclick(this.load);
         createAside('Alkalmazottak');

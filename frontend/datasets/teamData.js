@@ -171,6 +171,28 @@ class teamData{
                 ]
             },
         ]
+        this.nonTeamMembers = [
+            {
+                id: 1117,
+                name: 'Magányos Margó',
+                
+            },
+            {
+                id: 11118,
+                name: 'Egyszerű Elemér',
+                
+            },
+            {
+                id: 30239,
+                name: 'Kellemetlen Károly',
+                
+            },
+            {
+                id: 100100,
+                name: 'Idegesítő Imre',
+                
+            },
+        ]
     }
 }
 

@@ -10,7 +10,7 @@ function setUpUserProjectsViews(appendPoint){
     changeHighlithed(1,navList);//Selects the first element [which is the records] on user nav bar
 
     const selecter = new HTMLTag('ul').addAttr('id','selecter').append(appendPoint);
-    new HTMLTag('content').addAttr('id','content').append(appendPoint);
+    new HTMLTag('div').addAttr('id','content').append(appendPoint);
     
     new HTMLTag('li').setText('Feladataim').append(selecter).onclick(createMyProjectsView);
     new HTMLTag('li').setText('Csapattagok feladatai').append(selecter).onclick(createTeamProjectsView);
