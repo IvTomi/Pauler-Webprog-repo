@@ -1,0 +1,18 @@
+{
+    "Status":{
+        "Success":{
+            "Status":"Success"
+        },
+        "Fail":{
+            "Status":"Failed"
+        }
+
+    },
+    
+    "Error":{
+        "1":{
+            "ErrorCode":1,
+            "Message":"Invalid Credentials"
+        }
+    }
+}

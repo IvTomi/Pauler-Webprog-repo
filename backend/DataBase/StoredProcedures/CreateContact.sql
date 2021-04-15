@@ -1,7 +1,7 @@
 DELIMITER $$
 SELECT "Creating procedure CreateContact" $$
-DROP PROCEDURE IF EXISTS AddContact $$
-CREATE PROCEDURE AddContact (IN type VARCHAR(45), IN value VARCHAR(100), IN comment TEXT,IN userid INT, IN ispublic TINYINT, IN hash VARCHAR(60))
+DROP PROCEDURE IF EXISTS CreateContact $$
+CREATE PROCEDURE CreateContact (IN type VARCHAR(45), IN value VARCHAR(100), IN comment TEXT,IN userid INT, IN ispublic TINYINT, IN hash VARCHAR(60))
 BEGIN
 	DECLARE contactId INT;
     DECLARE typeId INT;
@@ -19,7 +19,6 @@ BEGIN
 		SET contactId = LAST_INSERT_ID();
 	COMMIT;
 	SELECT contactId as Id;
-END;
+END
 $$
-
 DELIMITER ;

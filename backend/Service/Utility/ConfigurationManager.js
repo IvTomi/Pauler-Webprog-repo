@@ -4,6 +4,36 @@ function getConfigByKey(key){
     return config[key];
 }
 
+function getPort(){
+    return config['port'];
+}
+
+function getLogPath(){
+    return config['logPath'];
+}
+
+function getLogFileName(){
+    return config['logFileName'];
+}
+
+function getNonIdentifiedRoutes(){
+    return config['non-identify-routes'];
+}
+
+function getDatabaseConnection(){
+    return config['databaseConnection'];
+}
+
+function getSecret(){
+    return config['secret'];
+}
+
 module.exports = {
-    getConfigByKey:getConfigByKey
+    getConfigByKey:getConfigByKey,
+    port:getPort,
+    logPath:getLogPath,
+    logFileName:getLogFileName,
+    nonidentifiedRoutes:getNonIdentifiedRoutes,
+    databaseConnection:getDatabaseConnection,
+    secret:getSecret
 }
