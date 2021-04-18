@@ -12,7 +12,7 @@ function setUpAdminProfile(appendPoint){
     const img = new HTMLTag('img').addAttr('src','./res/defaultUser.png').addAttr('alt','user képe').append(content);
     const name = new HTMLTag('h1').setText('Cég neve').append(content);
     
-    const listDiv = setUpListField(content);
+    const listDiv = setUpListField(content.node);
     createProfileDataList(new adminProfileData().testAdminProfileData,listDiv);
 
     //if this.admin views the profile 

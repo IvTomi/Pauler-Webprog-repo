@@ -11,7 +11,7 @@ function setUpUserProfile(appendPoint){
     const img = new HTMLTag('img').addAttr('src','./res/defaultUser.png').addAttr('alt','user képe').append(content);
     const name = new HTMLTag('h1').setText('Példa Mónika').append(content);
     
-    const listDiv = setUpListField(content);
+    const listDiv = setUpListField(content.node);
     createProfileDataList(new userProfileData().testProfileData,listDiv);
 
     const add = new HTMLTag('div').addAttr('id','add').append(content);

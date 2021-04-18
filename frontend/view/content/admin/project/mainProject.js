@@ -1,24 +1,22 @@
-import viewController from '../../../../controllers/viewController.js';
 import changeHighlithed from '../../../../utilities/changeHighlighted.js';
 import HTMLTag from '../../../../utilities/HTMLTag.js';
-import createMyProjectsView from './myProjects.js';
-import createTeamProjectsView from './teamProjects.js';
-import createOneProjectView from './oneProject.js'
+import viewController from '../../../../controllers/viewController.js';
+import makeNewProjectView from '../project/newProject.js';
+import createAllProjectsView from './allProjects.js';
 
 
-function setUpUserProjectsViews(appendPoint){
+function setUpAdminProjectsView(appendPoint){
+
     const navList = document.querySelector('nav ul');
-    changeHighlithed(1,navList);//Selects the first element [which is the records] on user nav bar
+    changeHighlithed(1,navList);
 
     const selecter = new HTMLTag('ul').addAttr('id','selecter').append(appendPoint);
     new HTMLTag('div').addAttr('id','content').append(appendPoint);
+
+    new HTMLTag('li').setText('Meglévő projektek').append(selecter).onclick(makeNewProjectView);
+    new HTMLTag('li').setText('projekt létrehozása').append(selecter).onclick(createAllProjectsView);
     
-    new HTMLTag('li').setText('Feladataim').append(selecter).onclick(createMyProjectsView);
-    new HTMLTag('li').setText('Csapattagok feladatai').append(selecter).onclick(createTeamProjectsView);
-    new HTMLTag('li').setText('egy feladat').append(selecter).onclick(createOneProjectView);
-
 }
-
 export function refreshContent(n){
     const selecters = document.getElementById('selecter');
     changeHighlithed(n,selecters);
@@ -41,5 +39,4 @@ export function setUpListField(appendPoint){
         }
 }
 
-
-export default setUpUserProjectsViews;
+export default setUpAdminProjectsView;
