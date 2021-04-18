@@ -14,5 +14,50 @@
             "ErrorCode":1,
             "Message":"Invalid Credentials"
         }
+    },
+
+    "User":{
+        "Id":0,
+        "Username":"",
+        "FirstName":"",
+        "LastName":"",
+        "Contacts":[],
+        "Tasks":[],
+        "Permissions":[]
+    },
+
+    "Contact":{
+        "Id":0,
+        "TypeName":"",
+        "Value":"",
+        "Description":"",
+        "IsPublic":false
+    },
+
+    "Task":{
+        "Id":0,
+        "TaskName":"",
+        "TaskDescription":"",
+        "TaskDeadLine":"",
+        "StatusName":""
+    },
+
+    "Permission":{
+        "Id":0,
+        "PermissionName":"",
+        "IsEnabled":false
+    },
+
+    "Team":{
+        "Id":0,
+        "TeamName":"",
+        "Description":"",
+        "TeamMembers":[],
+        "TeamTasks":[]
+    },
+
+    "TeamMember":{
+        "User":{},
+        "Tag":""
     }
 }
