@@ -3,6 +3,7 @@ import changeHighlithed from '../../../../utilities/changeHighlighted.js';
 import HTMLTag from '../../../../utilities/HTMLTag.js';
 import createMyProjectsView from './myProjects.js';
 import createTeamProjectsView from './teamProjects.js';
+import createOneProjectView from './oneProject.js'
 
 
 function setUpUserProjectsViews(appendPoint){
@@ -14,6 +15,7 @@ function setUpUserProjectsViews(appendPoint){
     
     new HTMLTag('li').setText('Feladataim').append(selecter).onclick(createMyProjectsView);
     new HTMLTag('li').setText('Csapattagok feladatai').append(selecter).onclick(createTeamProjectsView);
+    new HTMLTag('li').setText('egy feladat').append(selecter).onclick(createOneProjectView);
 
 }
 
