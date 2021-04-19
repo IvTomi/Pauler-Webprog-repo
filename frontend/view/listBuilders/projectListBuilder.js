@@ -1,4 +1,3 @@
-import projectTestData from "../../datasets/projectData.js";
 import HTMLTag from "../../utilities/HTMLTag.js";
 
 export function createMyProjectList(data,appendPoint,option){
@@ -6,13 +5,10 @@ export function createMyProjectList(data,appendPoint,option){
 
     const ulList = new HTMLTag('div');
     for(let project of data){
-        if(project.status == option){
-            const one = new HTMLTag('ul');
-            new HTMLTag('li').setText(project.name).append(one);
-            new HTMLTag('li').setText(project.description).append(one);
-            one.append(ulList); 
-        }
-        
+        const one = new HTMLTag('ul');
+        new HTMLTag('li').setText(project.name).append(one);
+        new HTMLTag('li').setText(project.description).append(one);
+        one.append(ulList); 
     }
     ulList.append(appendPoint);
 }
