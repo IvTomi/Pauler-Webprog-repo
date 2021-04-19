@@ -9,7 +9,6 @@ function createLogin(){
     new HTMLTag('input').addAttr('id',formID+'_passwd').addAttr('name',formID+'_passwd').addAttr('placeholder','Jelszó').addAttr('type','password').append(loginForm);
     new HTMLTag('label').addAttr('for',formID+'_admin').setText('Bejelentkezés adminként: ').append(loginForm);
     new HTMLTag('input').addAttr('id',formID+'_admin').addAttr('name',formID+'_admin').addAttr('type','checkbox').append(loginForm);
-    new HTMLTag('a').setText('Elfelejtette a jelszavát?').addAttr('href','').append(loginForm);
     new HTMLTag('a').setText('Regisztráció').addAttr('href','').append(loginForm).onclick(new viewController().loadSignup);
     //TO REWRITE FUNCTION
     new HTMLTag('button').setText('Bejelentkezés').append(loginForm).onclick(new viewController().loadUser);
