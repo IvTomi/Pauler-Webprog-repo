@@ -3,6 +3,7 @@ import HTMLTag from '../../../../utilities/HTMLTag.js';
 import viewController from '../../../../controllers/viewController.js';
 import makeNewProjectView from '../project/newProject.js';
 import createAllProjectsView from './allProjects.js';
+import createOneProjectView from './oneProject.js';
 
 
 function setUpAdminProjectsView(appendPoint){
@@ -13,8 +14,9 @@ function setUpAdminProjectsView(appendPoint){
     const selecter = new HTMLTag('ul').addAttr('id','selecter').append(appendPoint);
     new HTMLTag('div').addAttr('id','content').append(appendPoint);
 
-    new HTMLTag('li').setText('Meglévő projektek').append(selecter).onclick(makeNewProjectView);
-    new HTMLTag('li').setText('projekt létrehozása').append(selecter).onclick(createAllProjectsView);
+    new HTMLTag('li').setText('Meglévő projektek').append(selecter).onclick(createAllProjectsView);
+    new HTMLTag('li').setText('projekt létrehozása').append(selecter).onclick(makeNewProjectView);
+    new HTMLTag('li').setText('egy projekt').append(selecter).onclick(createOneProjectView);
     
 }
 export function refreshContent(n){
