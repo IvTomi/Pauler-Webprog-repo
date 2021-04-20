@@ -13,8 +13,8 @@ function createOneProjectView(){
     new HTMLTag('h3').setText('Rekordok').append(content);
 
     const listDiv = setUpListField(content);
-    createProjectMembersList(new ProjectData().projectTestData,listDiv);
-    createProjectRecordList(new ProjectData().projectTestData,listDiv);
+    createProjectMembersList(new ProjectData().projectTestData[0],listDiv);
+    createProjectRecordList(new ProjectData().projectTestData[0],listDiv);
 
 }
 
