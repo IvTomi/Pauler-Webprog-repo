@@ -266,6 +266,32 @@ class ProjectData{
                 ]
             }
 
+        ],
+        this.nonProjectMembers = [
+            {
+                picture:'./res/defaultUser.png',
+                id: 1117,
+                name: 'Magányos Margó',
+                
+            },
+            {
+                picture:'./res/defaultUser.png',
+                id: 11118,
+                name: 'Egyszerű Elemér',
+                
+            },
+            {
+                picture:'./res/defaultUser.png',
+                id: 30239,
+                name: 'Kellemetlen Károly',
+                
+            },
+            {
+                picture:'./res/defaultUser.png',
+                id: 100100,
+                name: 'Idegesítő Imre',
+                
+            },
         ]
     }
 }
