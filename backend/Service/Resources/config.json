@@ -8,7 +8,8 @@
     ],
     "databaseConnection":{
         "connectionLimit" : 10,
-        "host"            : "localhost",
+        "host"            : "127.0.0.1",
+        "port"            : 3306,
         "user"            : "local",
         "password"        : "BdetaLisH19.19",
         "database"        : "mydb"
