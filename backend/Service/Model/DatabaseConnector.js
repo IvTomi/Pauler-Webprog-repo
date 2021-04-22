@@ -4,7 +4,6 @@ const dbconfig = configurationManager.databaseConnection();
 const logger = require('../Utility/Logger');
 const mysql = require('mysql-await');
 
-
 const pool = mysql.createPool(dbconfig);
 logger.info("Database connection pool created");
 
