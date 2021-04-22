@@ -1,5 +1,6 @@
 import createAdminNav from '../view/content/admin/admintop.js';
-import createLogin from '../view/login.js';
+import {createLogin} from '../view/login.js';
+import {createHashInputView} from '../view/login.js';
 import createSignup from '../view/signup.js';
 import createUserNav from '../view/content/user/usertop.js';
 import setUpUserRecordViews from '../view/content/user/records/mainRecord.js';
@@ -11,7 +12,8 @@ import setUpAdminTeamsView from '../view/content/admin/team/mainTeamA.js';
 import setUpAdminProjectsView from '../view/content/admin/project/mainProject.js';
 import setUpAdminSettingsView from '../view/content/admin/settings/mainSettings.js';
 
-class viewController{
+
+export default class ViewController{
     clearTag(tag){
         tag.innerHTML = "";
     }
@@ -20,27 +22,22 @@ class viewController{
         this.clearTag(document.body);
     }
 
-    loadLogin(evt){
-        if(evt){
-            evt.preventDefault();
-        }
-        new viewController().clearBody();
-        createLogin();
+    loadLogin(){
+        this.clearBody();
+        if(!sessionStorage.getItem('hash')){
+            createHashInputView();
+        }else{
+            createLogin();
+        }      
     }
 
-    loadSignup(evt){
-        if(evt){
-            evt.preventDefault();
-        }
-        new viewController().clearBody();
+    loadSignup(){
+        this.clearBody();
         createSignup();
     }
 
-    loadAdmin(evt){
-        if(evt){
-            evt.preventDefault();
-        }
-        new viewController().clearBody();
+    loadAdmin(){
+        viewController.clearBody();
         createAdminNav();
     }
 
@@ -76,7 +73,7 @@ class viewController{
         setUpAdminSettingsView(main);
     }
 
-
+    
     loadUser(evt){
         if(evt){
             evt.preventDefault();
@@ -139,5 +136,3 @@ class viewController{
         }
     } 
 }
-
-export default viewController;
