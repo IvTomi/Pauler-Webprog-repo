@@ -9,8 +9,8 @@
     "databaseConnection":{
         "connectionLimit" : 10,
         "host"            : "localhost",
-        "user"            : "local",
-        "password"        : "BdetaLisH19.19",
+        "user"            : "balint",
+        "password"        : "Admin123",
         "database"        : "mydb"
     },
     "secret":"JCFqOisOxhg6twSA4Tyi0HSs9o4kfgkH"

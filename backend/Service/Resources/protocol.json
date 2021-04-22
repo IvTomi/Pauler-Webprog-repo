@@ -13,6 +13,14 @@
         "1":{
             "ErrorCode":1,
             "Message":"Invalid Credentials"
+        },
+        "2":{
+            "ErrorCode":2,
+            "Message":"Email taken"
+        },
+        "3":{
+            "ErrorCode":3,
+            "Message":"Missing parameters"
         }
     }
 }
