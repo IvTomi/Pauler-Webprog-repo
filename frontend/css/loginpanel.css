@@ -1,0 +1,79 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+body {
+  height: 100vh;
+  background: linear-gradient(180deg, #0E131F 40%, #131B30 90%);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center; }
+
+.loginForm {
+  background-color: rgba(154, 154, 154, 0.17);
+  width: 80%;
+  border-radius: 15px;
+  border-width: 0px;
+  display: flex;
+  flex-wrap: wrap;
+  flex: content;
+  flex-direction: column;
+  align-content: center;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 10%;
+  margin-bottom: 10%; }
+
+input[type=checkbox] {
+  -ms-transform: scale(0.5);
+  -moz-transform: scale(0.5);
+  -webkit-transform: scale(0.5);
+  transform: scale(0.5);
+  border: white; }
+
+h2 {
+  color: #CAFCFF;
+  font-size: 72;
+  text-align: center;
+  font-family: 'Roboto', sans-serif; }
+
+input {
+  background-color: rgba(196, 196, 196, 0.16);
+  border-radius: 10px;
+  border-width: 0px;
+  width: 80%;
+  height: 79px;
+  text-align: left;
+  font-size: 48;
+  color: #CAFCFF;
+  font-family: 'Roboto', sans-serif;
+  align-self: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-left: 10px; }
+
+button {
+  color: #FFFFFF;
+  background-color: #696A6D;
+  border-radius: 10px;
+  border-width: 0px;
+  width: 223px;
+  height: 90px;
+  align-content: center;
+  align-self: center;
+  margin-bottom: 30px;
+  font-size: 20;
+  font-weight: bold;
+  margin-top: 30px; }
+
+label {
+  color: #FFFFFF;
+  font-size: 40;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  flex: 1; }
+
+a {
+  color: #696A6D;
+  font-family: 'Roboto', sans-serif;
+  font-size: 40; }
+
+/*# sourceMappingURL=loginpanel.css.map */

@@ -45,8 +45,14 @@ class HTMLTag{
     addEventListener(event,method){
         this.node.addEventListener(event,method);
         return this;
-    }
-
+    }  
+    /**Prevents default action on given event of this element */
+    preventDefaultEvent(eventname){
+        this.addEventListener(eventname,(event)=>{
+            event.preventDefault();
+        });
+        return this;
+    } 
     
 }
 
