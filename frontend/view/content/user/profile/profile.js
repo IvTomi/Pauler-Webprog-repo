@@ -11,9 +11,10 @@ function setUpUserProfile(appendPoint){
     const img = new HTMLTag('img').addAttr('src','./res/defaultUser.png').addAttr('alt','user képe').append(content);
     const name = new HTMLTag('h1').setText('Példa Mónika').append(content);
     
-    const listDiv = setUpListField(content);
+    const listDiv = setUpListField(content.node);
     createProfileDataList(new userProfileData().testProfileData,listDiv);
 
+    new HTMLTag('p').setText('Adat hozzáadása').append(content);
     const add = new HTMLTag('div').addAttr('id','add').append(content);
     let type = new HTMLTag('input').addAttr('id','type').addAttr('name','type').addAttr('placeholder','Tipus').append(add);
     let value = new HTMLTag('input').addAttr('id','value').addAttr('name','value').addAttr('placeholder','Érték').append(add);

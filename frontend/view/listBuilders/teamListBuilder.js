@@ -1,5 +1,6 @@
 import HTMLTag from '../../utilities/HTMLTag.js';
 import createTeamInfoView from '../content/admin/team/oneTeamA.js';
+import createUsersTeamInfoView from '../content/user/teams/oneTeamU.js';
 
 /**data =teams */
 export function createMyTeamsList(data,appendPoint,options){
@@ -7,7 +8,7 @@ export function createMyTeamsList(data,appendPoint,options){
     for(let team of data){
         const li = new HTMLTag('li');
         if(team.name && team.desc && team.id){
-            li.onclick(createTeamInfoView);
+            li.onclick(createUsersTeamInfoView);
             new HTMLTag('p').setText(team.name).append(li);
             new HTMLTag('p').setText(team.desc).append(li);
             const memP = new HTMLTag('p');

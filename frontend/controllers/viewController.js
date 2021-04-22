@@ -9,6 +9,7 @@ import setUpUserProfile from '../view/content/user/profile/profile.js';
 import setUpAdminProfile from '../view/content/admin/profile/profile.js';
 import setUpUserProjectsViews from '../view/content/user/projects/mainProject.js';
 import setUpAdminTeamsView from '../view/content/admin/team/mainTeamA.js';
+import setUpAdminProjectsView from '../view/content/admin/project/mainProject.js';
 
 
 export default class ViewController{
@@ -38,12 +39,29 @@ export default class ViewController{
         viewController.clearBody();
         createAdminNav();
     }
+
     loadAdminProfile(evt){
         if(evt){
             evt.preventDefault();
         }
         const main = new viewController().setUpMain();
         setUpAdminProfile(main);
+    }
+
+    loadAdminProjects(evt){
+        if(evt){
+            evt.preventDefault();
+        }
+        const main = new viewController().setUpMain();
+        setUpAdminProjectsView(main);
+    }
+
+    loadAdminTeam(evt){
+        if(evt){
+            evt.preventDefault();
+        }
+        const main = new viewController().setUpMain();
+        setUpAdminTeamsView(main);
     }
 
 
