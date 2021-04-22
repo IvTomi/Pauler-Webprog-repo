@@ -1,6 +1,5 @@
 import createAdminNav from '../view/content/admin/admintop.js';
-import {createLogin} from '../view/login.js';
-import {createHashInputView} from '../view/login.js';
+import createLogin from '../view/login.js';
 import createSignup from '../view/signup.js';
 import createUserNav from '../view/content/user/usertop.js';
 import setUpUserRecordViews from '../view/content/user/records/mainRecord.js';
@@ -10,9 +9,9 @@ import setUpAdminProfile from '../view/content/admin/profile/profile.js';
 import setUpUserProjectsViews from '../view/content/user/projects/mainProject.js';
 import setUpAdminTeamsView from '../view/content/admin/team/mainTeamA.js';
 import setUpAdminProjectsView from '../view/content/admin/project/mainProject.js';
+import setUpAdminSettingsView from '../view/content/admin/settings/mainSettings.js';
 
-
-export default class ViewController{
+class viewController{
     clearTag(tag){
         tag.innerHTML = "";
     }
@@ -21,22 +20,27 @@ export default class ViewController{
         this.clearTag(document.body);
     }
 
-    loadLogin(){
-        this.clearBody();
-        if(!sessionStorage.getItem('hash')){
-            createHashInputView();
-        }else{
-            createLogin();
-        }      
+    loadLogin(evt){
+        if(evt){
+            evt.preventDefault();
+        }
+        new viewController().clearBody();
+        createLogin();
     }
 
-    loadSignup(){
-        this.clearBody();
+    loadSignup(evt){
+        if(evt){
+            evt.preventDefault();
+        }
+        new viewController().clearBody();
         createSignup();
     }
 
-    loadAdmin(){
-        viewController.clearBody();
+    loadAdmin(evt){
+        if(evt){
+            evt.preventDefault();
+        }
+        new viewController().clearBody();
         createAdminNav();
     }
 
@@ -62,6 +66,14 @@ export default class ViewController{
         }
         const main = new viewController().setUpMain();
         setUpAdminTeamsView(main);
+    }
+
+    loadAdminSettings(evt){
+        if(evt){
+            evt.preventDefault();
+        }
+        const main = new viewController().setUpMain();
+        setUpAdminSettingsView(main);
     }
 
 
@@ -128,3 +140,4 @@ export default class ViewController{
     } 
 }
 
+export default viewController;
