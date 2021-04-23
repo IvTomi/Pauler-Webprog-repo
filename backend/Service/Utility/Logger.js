@@ -2,9 +2,10 @@ const fs = require("fs");
 const path = require('path');
 const DateFormatter = require("./DateFormatter");
 const dformatter = require('./DateFormatter');
+const configurationManager = require('../Utility/ConfigurationManager');
 
-const logpath = path.normalize("/var/log/");
-const logfilename = 'taskrecorder-service.log'
+const logpath = path.normalize(configurationManager.logPath());
+const logfilename = configurationManager.logFileName();
 
 function createLogStream(){
     if(!fs.existsSync(path.join(logpath+logfilename))){

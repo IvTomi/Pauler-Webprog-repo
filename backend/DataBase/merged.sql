@@ -371,3 +371,444 @@ CREATE VIEW `usertasksview` AS
     WHERE
         (1 = `task_has_user`.`Status`);
 
+DELIMITER $$
+SELECT 'Executing CreatePermissions' $$
+
+
+INSERT INTO Permission (PermissionName, LastModifiedAt, LastModifiedBy)
+SELECT * FROM (SELECT 'IsAdmin', CURRENT_TIMESTAMP(), -1) AS tmp
+WHERE NOT EXISTS (
+    SELECT PermissionName FROM Permission WHERE PermissionName = 'IsAdmin'
+) LIMIT 1;
+$$
+
+INSERT INTO Permission (PermissionName, LastModifiedAt, LastModifiedBy)
+SELECT * FROM (SELECT 'CanCreateTask', CURRENT_TIMESTAMP(), -1) AS tmp
+WHERE NOT EXISTS (
+    SELECT PermissionName FROM Permission WHERE PermissionName = 'CanCreateTask'
+) LIMIT 1;$$
+
+INSERT INTO Permission (PermissionName, LastModifiedAt, LastModifiedBy)
+SELECT * FROM (SELECT 'CanEditTask', CURRENT_TIMESTAMP(), -1) AS tmp
+WHERE NOT EXISTS (
+    SELECT PermissionName FROM Permission WHERE PermissionName = 'CanEditTask'
+) LIMIT 1;$$
+DELIMITER ;;
+
+DELIMITER $$
+SELECT "Executing CreateConfigs" $$
+
+INSERT INTO config (ConfigKey, DefaultValue, LastModifiedBy)
+SELECT * FROM (SELECT 'Language', 'HU', -1) AS tmp
+WHERE NOT EXISTS (
+    SELECT ConfigKey FROM configview WHERE ConfigKey = 'Language'
+) LIMIT 1;
+$$
+
+INSERT INTO config (ConfigKey, DefaultValue, LastModifiedBy)
+SELECT * FROM (SELECT 'Theme', 'Dark', -1) AS tmp
+WHERE NOT EXISTS (
+    SELECT ConfigKey FROM configview WHERE ConfigKey = 'Theme'
+) LIMIT 1;
+$$
+
+INSERT INTO config (ConfigKey, DefaultValue, LastModifiedBy)
+SELECT * FROM (SELECT 'AdminLoginProhinited', 'False', -1) AS tmp
+WHERE NOT EXISTS (
+    SELECT ConfigKey FROM configview WHERE ConfigKey = 'AdminLoginProhinited'
+) LIMIT 1;
+$$
+
+DELIMITER ;;
+
+DELIMITER $$
+SELECT "Creating procedure GetSuperUserByHash" $$
+DROP PROCEDURE IF EXISTS GetSuperUserByHash $$
+CREATE PROCEDURE `GetSuperUserByHash`(IN id INT, IN hash VARCHAR(60))
+BEGIN
+IF NOT EXISTS (SELECT * FROM superuserview WHERE id=superuserview.idSuperUser AND hash=superuserview.Hash) THEN
+ SIGNAL SQLSTATE '45000' 
+ SET MESSAGE_TEXT = 'Invalid credentials';
+ELSE SELECT * FROM superuserview WHERE id=superuserview.idSuperUser AND hash=superuserview.Hash;
+END IF;
+END;
+$$;
+
+DELIMITER $$
+SELECT "Creating procedure GetTaskByHash" $$
+DROP PROCEDURE IF EXISTS GetTaskByHash $$
+CREATE PROCEDURE `GetTaskByHash`(IN id INT, IN hash VARCHAR(60))
+BEGIN
+IF NOT EXISTS (SELECT * FROM taskview WHERE id=taskview.idTask AND hash=taskview.SuperUser_Hash) THEN
+ SIGNAL SQLSTATE '45000' 
+ SET MESSAGE_TEXT = 'Invalid credentials';
+ELSE SELECT * FROM taskview WHERE id=taskview.idTask AND hash=taskview.SuperUser_Hash;
+END IF;
+END;
+$$;
+
+DELIMITER $$
+SELECT "Creating procedure InitializeConfigGroup" $$
+DROP PROCEDURE IF EXISTS InitializeConfigGroup $$
+CREATE PROCEDURE InitializeConfigGroup (IN configgroupid INT, IN userid INT)
+BEGIN
+	START TRANSACTION;
+		INSERT INTO configgroup_has_config (ConfigGroup_idConfigGroup,Config_idConfig,ConfigValue,LastModifiedBy)
+        SELECT configgroupid, c.idConfig, c.DefaultValue,userid FROM config c WHERE c.idConfig 
+        NOT IN (SELECT chc.Config_idConfig FROM configgroup_has_config chc WHERE chc.Config_idConfig = c.idConfig AND 
+        chc.ConfigGroup_idConfigGroup = configgroupid);
+    COMMIT; 
+END;
+$$
+
+DELIMITER ;;
+
+DELIMITER $$
+SELECT "Creating procedure GetContactByHash" $$
+DROP PROCEDURE IF EXISTS GetContactByHash $$
+CREATE PROCEDURE `GetContactByHash`(IN id INT, IN hash VARCHAR(60))
+BEGIN
+IF NOT EXISTS (SELECT * FROM contactview WHERE id=contactview.idContact AND hash=contactview.SuperUser_Hash ) THEN
+ SIGNAL SQLSTATE '45000' 
+ SET MESSAGE_TEXT = 'Invalid credentials';
+ELSE SELECT * FROM contactview WHERE id=contactview.idContact AND hash=contactview.SuperUser_Hash;
+END IF;
+END;
+$$;
+
+DELIMITER $$
+SELECT "Creating procedure CreateContact" $$
+DROP PROCEDURE IF EXISTS CreateContact $$
+CREATE PROCEDURE CreateContact (IN type VARCHAR(45), IN value VARCHAR(100), IN comment TEXT,IN userid INT, IN ispublic TINYINT, IN hash VARCHAR(60))
+BEGIN
+	DECLARE contactId INT;
+    DECLARE typeId INT;
+	START TRANSACTION;
+		CALL InitializeContactType(type,userid,hash,typeId);
+		IF(hash = '') THEN
+			BEGIN
+				INSERT INTO contact (ContactType_idContactType,Value,Comment,IsPublic,LastModifiedBy) VALUES (typeId,value,comment,ispublic,userid);
+			END;
+		ELSE
+			BEGIN
+				INSERT INTO contact (ContactType_idContactType,Value,Comment,IsPublic,LastModifiedBy,SuperUser_Hash) VALUES (typeId,value,comment,ispublic,userid,hash);
+			END;
+		END IF;
+		SET contactId = LAST_INSERT_ID();
+	COMMIT;
+	SELECT contactId as Id;
+END
+$$
+DELIMITER ;;
+
+DELIMITER $$
+SELECT "Creating procedure CreateUser" $$
+DROP PROCEDURE IF EXISTS CreateUser $$
+CREATE PROCEDURE CreateUser (IN username VARCHAR(45), IN password TINYBLOB, IN firstname VARCHAR(45), IN lastname VARCHAR(90), IN hash VARCHAR(60), IN userid INT, IN allprivileges TINYINT)
+BEGIN
+	DECLARE userId INT;
+    DECLARE permissionGroupId INT;
+	START TRANSACTION;		
+		IF(hash = '') THEN
+			BEGIN
+				CALL CreatePermissionGroup (hash, userid);
+				SET permissionGroupId = LAST_INSERT_ID();
+				INSERT INTO user (FirstName,LastName,Username,Password,LastModifiedBy,PermissionGroup_idPermissionGroup) VALUES (firstname,lastname,username,password,userid,permissionGroupId);
+			END;
+		ELSE
+			BEGIN
+				IF EXISTS (SELECT * FROM userview u WHERE u.Username = username AND u.SuperUser_Hash = hash) THEN
+					SIGNAL SQLSTATE '45000'
+						SET MESSAGE_TEXT = 'Username exists';
+				END IF;
+                CALL CreatePermissionGroup (hash, userid);
+				SET permissionGroupId = LAST_INSERT_ID();
+				INSERT INTO user (FirstName,LastName,Username,Password,LastModifiedBy,PermissionGroup_idPermissionGroup,SuperUser_Hash)
+                VALUES (firstname,lastname,username,password,userid,permissionGroupId,hash);
+			END;
+		END IF;
+		SET userId = LAST_INSERT_ID();
+        IF (userid = 0) THEN
+        BEGIN
+        UPDATE permissiongroup SET LastModifiedBy = userId WHERE permissiongroup.idPermissionGroup = permissionGroupId;
+        END;
+        END IF;
+		CALL InitializePermissionGroup(permissionGroupId,allprivileges,userId);
+	COMMIT;
+	SELECT userId as Id;
+END;
+$$
+
+DELIMITER ;;
+
+DELIMITER $$
+SELECT "Creating procedure GetPermissionGroupByHash" $$
+DROP PROCEDURE IF EXISTS GetPermissionGroupByHash $$
+CREATE PROCEDURE `GetPermissionGroupByHash`(IN id INT, IN hash VARCHAR(60))
+BEGIN
+IF NOT EXISTS (SELECT * FROM permissiongroupview WHERE id=permissiongroupview.PermissionGroup_idPermissionGroup AND hash=permissiongroupview.SuperUser_Hash) THEN
+ SIGNAL SQLSTATE '45000' 
+ SET MESSAGE_TEXT = 'Invalid credentials';
+ELSE SELECT * FROM permissiongroupview WHERE id=permissiongroupview.PermissionGroup_idPermissionGroup AND hash=permissiongroupview.SuperUser_Hash ;
+END IF;
+END;
+$$;
+
+DELIMITER $$
+SELECT "Creating procedure ModifyUser" $$
+DROP PROCEDURE IF EXISTS ModifyUser $$
+CREATE PROCEDURE ModifyUser (IN password TINYBLOB, IN firstname VARCHAR(45), IN lastname VARCHAR(90), IN userid INT)
+BEGIN
+	START TRANSACTION;
+		IF(password != "") THEN
+		UPDATE user SET password = password, LastModifiedBy = userid;
+        ELSE
+        UPDATE user SET FirstName = firstname, LastName = lastname,LastModifiedBy = userid;
+        END IF;
+	COMMIT;
+END;
+$$
+
+DELIMITER ;;
+
+DELIMITER $$
+SELECT "Creating procedure GetPermissionGroupPresetByHash" $$
+DROP PROCEDURE IF EXISTS GetPermissionGroupPresetByHash $$
+CREATE PROCEDURE `GetPermissionGroupPresetByHash`(IN id INT, IN hash VARCHAR(60))
+BEGIN
+IF NOT EXISTS (SELECT * FROM permissiongrouppresetview WHERE id=permissiongrouppresetview.idPermissionGroupPreset AND hash=permissiongrouppresetview.SuperUser_Hash) THEN
+ SIGNAL SQLSTATE '45000' 
+ SET MESSAGE_TEXT = 'Invalid credentials';
+ELSE SELECT * FROM permissiongrouppresetview WHERE id=permissiongrouppresetview.idPermissionGroupPreset AND hash=permissiongrouppresetview.SuperUser_Hash;
+END IF;
+END;
+$$;
+
+DELIMITER $$
+SELECT "Creating procedure CreatePermissionGroup" $$
+DROP PROCEDURE IF EXISTS CreatePermissionGroup $$
+CREATE PROCEDURE CreatePermissionGroup (in hash VARCHAR(60), IN userid INT)
+BEGIN
+    DECLARE permissionGroupId INT;
+	START TRANSACTION;
+		IF (hash != '')THEN
+			INSERT INTO permissiongroup (LastModifiedBy,SuperUser_Hash) VALUES (userid,hash);
+        ELSE
+			INSERT INTO permissiongroup (LastModifiedBy) VALUES (userid);
+        END IF;
+        SET permissionGroupId = LAST_INSERT_ID();
+	COMMIT;
+	SELECT permissionGroupId as Id;
+END;
+$$;
+
+DELIMITER $$
+SELECT "Creating procedure GetUserByHash" $$
+DROP PROCEDURE IF EXISTS GetUserByHash $$
+CREATE PROCEDURE `GetUserByHash`(IN id INT, IN hash VARCHAR(60))
+BEGIN
+IF NOT EXISTS (SELECT * FROM userview WHERE id=userview.idUser AND hash=userview.SuperUser_Hash) THEN
+ SIGNAL SQLSTATE '45000' 
+ SET MESSAGE_TEXT = 'Invalid credentials';
+ELSE SELECT * FROM userview WHERE id=userview.idUser AND hash=userview.SuperUser_Hash;
+END IF;
+END;
+$$;
+
+DELIMITER $$
+SELECT "Creating procedure InitializePermissionGroup" $$
+DROP PROCEDURE IF EXISTS InitializePermissionGroup $$
+CREATE PROCEDURE InitializePermissionGroup (IN permissiongroupid INT, IN allprivileges TINYINT, IN userid INT)
+BEGIN
+	START TRANSACTION;
+		INSERT INTO permission_has_permissiongroup (Permission_idPermission,PermissionGroup_idPermissionGroup,IsEnabled,LastModifiedBy)
+        SELECT p.idPermission, permissiongroupid, allprivileges,userid FROM permission p WHERE p.idPermission 
+        NOT IN (SELECT php.Permission_idPermission FROM permission_has_permissiongroup php WHERE php.Permission_idPermission = p.idPermission AND 
+        php.PermissionGroup_idPermissionGroup = permissiongroupid);
+    COMMIT; 
+END;
+$$
+
+DELIMITER ;;
+
+DELIMITER $$
+SELECT "Creating procedure GetConfigGroupByHash" $$
+DROP PROCEDURE IF EXISTS GetConfigGroupByHash $$
+CREATE PROCEDURE `GetConfigGroupByHash`(IN id INT, IN hash VARCHAR(60))
+BEGIN
+IF NOT EXISTS (SELECT * FROM configgroupview WHERE id=configgroupview.ConfigGroup_idConfigGroup AND hash=configgroupview.SuperUser_Hash ) THEN
+ SIGNAL SQLSTATE '45000' 
+ SET MESSAGE_TEXT = 'Invalid credentials';
+ELSE SELECT * FROM configgroupview WHERE id=configgroupview.ConfigGroup_idConfigGroup AND hash=configgroupview.SuperUser_Hash ;
+END IF;
+END;
+$$;
+
+DELIMITER $$
+SELECT "Creating procedure InitializeContactType" $$
+DROP PROCEDURE IF EXISTS InitializeContactType $$
+CREATE PROCEDURE InitializeContactType (in type VARCHAR(45), IN userid INT, IN hash VARCHAR(60), OUT contacttypeid INT)
+BEGIN
+	DECLARE typeId INT;
+	START TRANSACTION;
+		IF (hash = '')THEN
+			BEGIN
+				IF NOT EXISTS (SELECT contacttype.idContactType FROM contacttype WHERE contacttype.TypeName = type AND contacttype.SuperUser_Hash IS NULL)THEN
+					INSERT INTO contacttype (TypeName,LastModifiedBy) VALUES (type,userid);
+				END IF;
+				SELECT contacttype.idContactType INTO typeId FROM contacttype WHERE contacttype.TypeName = type AND contacttype.SuperUser_Hash IS NULL LIMIT 1;
+            END;
+        ELSE
+			BEGIN
+				IF NOT EXISTS (SELECT contacttype.idContactType FROM contacttype WHERE contacttype.TypeName = type AND contacttype.SuperUser_Hash IS NULL)THEN
+					BEGIN
+						IF NOT EXISTS (SELECT contacttype.idContactType FROM contacttype WHERE contacttype.TypeName = type AND contacttype.SuperUser_Hash = hash)THEN
+							INSERT INTO contacttype (TypeName,LastModifiedBy,SuperUser_Hash) VALUES (type,userid,hash);
+						END IF;
+						SELECT contacttype.idContactType INTO typeId FROM contacttype WHERE contacttype.TypeName = type AND contacttype.SuperUser_Hash = hash LIMIT 1;
+					END;
+                ELSE
+					SELECT contacttype.idContactType INTO typeId FROM contacttype WHERE contacttype.TypeName = type AND contacttype.SuperUser_Hash IS NULL LIMIT 1;
+                END IF;
+            END;
+        END IF;
+	COMMIT;
+    SET contacttypeid = typeId;
+END;
+$$;
+
+DELIMITER $$
+SELECT "Creating procedure GetRecordByHash" $$
+DROP PROCEDURE IF EXISTS GetRecordByHash $$
+CREATE PROCEDURE `GetRecordByHash`(IN id INT, IN hash VARCHAR(60))
+BEGIN
+IF NOT EXISTS (SELECT * FROM recordview WHERE id=recordview.idRecord AND hash=recordview.SuperUser_Hash) THEN
+ SIGNAL SQLSTATE '45000' 
+ SET MESSAGE_TEXT = 'Invalid credentials';
+ELSE SELECT * FROM recordview WHERE id=recordview.idRecord AND hash=recordview.SuperUser_Hash;
+END IF;
+END;
+$$;
+
+DELIMITER $$
+SELECT "Creating procedure RegisterSuperUser" $$
+DROP PROCEDURE IF EXISTS RegisterSuperUser $$
+CREATE PROCEDURE RegisterSuperUser (IN username VARCHAR(45),IN password TINYBLOB,IN email VARCHAR(100),IN company VARCHAR(45))
+BEGIN
+	DECLARE contactId INT;
+	DECLARE hash VARCHAR(60);
+	DECLARE configGroupId INT;
+	DECLARE userId INT;
+	DECLARE companyId INT;
+    
+	START TRANSACTION;
+		IF EXISTS (SELECT * FROM superuserview s WHERE s.Value = email) THEN
+			SIGNAL SQLSTATE '45000'
+				SET MESSAGE_TEXT = 'Email exists';
+        END IF;
+		
+		SET hash = TO_BASE64(RANDOM_BYTES(40));
+		WHILE EXISTS (SELECT * FROM superuserview WHERE superuserview.Hash = hash) DO
+			SET hash = TO_BASE64(RANDOM_BYTES(40));
+		END WHILE;		
+        CALL CreateUser(username,password,'','','',0,1);
+        SET userId = LAST_INSERT_ID();
+        CALL CreateContact('Email',email,'Registration email',userId,1,'');
+        SET contactId = LAST_INSERT_ID();
+        INSERT INTO company (CompanyName,LastModifiedBy) VALUES (company,userId);
+        SET companyId = LAST_INSERT_ID();
+        INSERT INTO configgroup (LastModifiedBy) VALUES (userId);
+        SET configGroupId = LAST_INSERT_ID();
+        CALL InitializeConfigGroup(configGroupId,userId);
+        INSERT INTO superuser (User_idUser,Hash,Company_idCompany,Contact_idContact,ConfigGroup_idConfigGroup,LastModifiedBy,IsEmailConfirmed,ConfirmationCode)
+        VALUES (userId,hash,companyId,contactId,configGroupId,userId,1,'');
+        UPDATE user SET LastModifiedBy = userId, SuperUser_Hash = hash WHERE user.idUser = userId;
+		UPDATE contact SET SuperUser_Hash = hash WHERE contact.idContact = contactId;
+        UPDATE permissiongroup SET SuperUser_Hash = hash WHERE permissiongroup.idPermissionGroup = (SELECT PermissionGroup_idPermissionGroup FROM user WHERE user.idUser = userId LIMIT 1);
+	COMMIT;
+	SELECT hash AS 'Hash';
+END;
+$$
+
+DELIMITER ;;
+
+DELIMITER $$
+SELECT "Creating procedure AddContactToUser" $$
+DROP PROCEDURE IF EXISTS AddContactToUser $$
+CREATE PROCEDURE AddContactToUser (IN adduserid INT, IN contactid INT, IN userid INT)
+BEGIN
+	START TRANSACTION;
+		INSERT INTO contact_has_user (User_idUser,Contact_idContact,LastModifiedBy) VALUES (adduserid,contactid,userid);
+	COMMIT;
+END;
+$$
+
+DELIMITER ;;
+
+DELIMITER $$
+SELECT "Creating procedure GetContactTypeByHash" $$
+DROP PROCEDURE IF EXISTS GetContactTypeByHash $$
+CREATE PROCEDURE `GetContactTypeByHash`(IN id INT, IN hash VARCHAR(60))
+BEGIN
+IF NOT EXISTS (SELECT * FROM contacttypeview WHERE id=contacttypeview.idContactType AND hash=contacttypeview.SuperUser_Hash ) THEN
+ SIGNAL SQLSTATE '45000' 
+ SET MESSAGE_TEXT = 'Invalid credentials';
+ELSE SELECT * FROM contacttypeview WHERE id=contacttypeview.idContactType AND hash=contacttypeview.SuperUser_Hash;
+END IF;
+END;
+$$;
+
+DELIMITER $$
+SELECT "Creating procedure AuthenticateUser" $$
+DROP PROCEDURE IF EXISTS AuthenticateUser $$
+CREATE PROCEDURE AuthenticateUser (IN username VARCHAR(45), IN hash VARCHAR(60))
+BEGIN
+	DECLARE pwd TINYBLOB;
+    DECLARE userid INT;
+	START TRANSACTION;
+		IF EXISTS (SELECT * FROM userview w WHERE w.UserName = username AND w.Password = password AND w.SuperUser_Hash = hash) THEN
+			SELECT w.idUser,w.Password INTO  userid,pwd FROM userview w WHERE w.UserName = username AND w.SuperUser_Hash = hash;
+        ELSE
+        SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'Invalid credentials';
+        END IF;
+	COMMIT;
+	SELECT userid as Id,TO_BASE64(pwd) as Cypher;
+END;
+$$
+
+DELIMITER ;;
+
+DELIMITER $$
+SELECT "Creating procedure ModifyPermissionGroupPermission" $$
+DROP PROCEDURE IF EXISTS ModifyPermissionGroupPermission $$
+CREATE PROCEDURE ModifyPermissionGroupPermission (IN permissiongroupid INT, IN permissionid INT,IN isenabled TINYINT, IN userid INT)
+BEGIN
+	START TRANSACTION;
+		IF NOT EXISTS(SELECT * FROM permission_has_permissiongroup php WHERE php.Permission_idPermission = permissionid 
+        AND php.PermissionGroup_idPermissionGroup = permissiongroupid) THEN
+			INSERT INTO permission_has_permissiongroup (Permission_idPermission,PermissionGroup_idPermissionGroup,IsEnabled,LastModifiedBy)
+            VALUES (permissionid,permissiongroupid,isenabled,userid);
+        ELSE
+			UPDATE permission_has_permissiongroup SET IsEnabled = isenabled, LastModifiedBy = userid WHERE Permission_idPermission = permissionid
+            AND PermissionGroup_idPermissionGroup = permissiongroupid AND Status = 1;
+        END IF;
+    COMMIT; 
+END;
+$$
+
+DELIMITER ;;
+
+DELIMITER $$
+SELECT "Creating procedure GetTeamByHash" $$
+DROP PROCEDURE IF EXISTS GetTeamByHash $$
+CREATE PROCEDURE `GetTeamByHash`(IN id INT, IN hash VARCHAR(60))
+BEGIN
+IF NOT EXISTS (SELECT * FROM teamview WHERE id=teamview.idTeam AND hash=teamview.SuperUser_Hash) THEN
+ SIGNAL SQLSTATE '45000' 
+ SET MESSAGE_TEXT = 'Invalid credentials';
+ELSE SELECT * FROM teamview WHERE id=teamview.idTeam AND hash=teamview.SuperUser_Hash;
+END IF;
+END;
+$$;
+
