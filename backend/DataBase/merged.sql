@@ -44,11 +44,9 @@ DROP VIEW IF EXISTS companyview;
 CREATE VIEW `companyview` AS
     SELECT 
         `company`.`idCompany` AS `idCompany`,
-        `company`.`CompanyName` AS `CompanyName`,
-        `superuser`.`Hash` AS `SuperUser_Hash`
+        `company`.`CompanyName` AS `CompanyName`
     FROM
-        (`company`
-        JOIN `superuser` ON ((`company`.`SuperUser_Hash` = `superuser`.`Hash`)))
+        `company`
     WHERE
         (1 = `company`.`Status`);
 
@@ -106,11 +104,9 @@ DROP VIEW IF EXISTS notificationview;
 CREATE VIEW `notificationview` AS
     SELECT 
         `notification`.`idNotification` AS `idNotification`,
-        `notification`.`NotificationName` AS `NotificationName`,
-        `superuser`.`Hash` AS `SuperUser_Hash`
+        `notification`.`NotificationName` AS `NotificationName`
     FROM
-        (`notification`
-        JOIN `superuser` ON ((`notification`.`SuperUser_Hash` = `superuser`.`Hash`)))
+        `notification`
     WHERE
         (1 = `notification`.`Status`);
 
@@ -190,11 +186,9 @@ DROP VIEW IF EXISTS statusview;
 CREATE VIEW `statusview` AS
     SELECT 
         `status`.`idStatus` AS `idStatus`,
-        `status`.`StatusName` AS `StatusName`,
-        `superuser`.`Hash` AS `SuperUser_Hash`
+        `status`.`StatusName` AS `StatusName`
     FROM
-        (`status`
-        JOIN `superuser` ON ((`status`.`SuperUser_Hash` = `superuser`.`Hash`)))
+        `status`
     WHERE
         (1 = `status`.`Status`);
 
@@ -351,8 +345,8 @@ CREATE VIEW `usernotificationsview` AS
     SELECT 
         `notificationview`.`idNotification` AS `Notification_idNotification`,
         `notificationview`.`NotificationName` AS `NotificationName`,
-        `notificationview`.`SuperUser_Hash` AS `SuperUser_Hash`,
-        `notification_has_user`.`User_idUser` AS `User_idUser`
+        `notification_has_user`.`User_idUser` AS `User_idUser`,
+		`notification_has_user`.`IsRead` AS `IsRead`
     FROM
         (`notification_has_user`
         JOIN `notificationview` ON ((`notification_has_user`.`Notification_idNotification` = `notificationview`.`idNotification`)))
