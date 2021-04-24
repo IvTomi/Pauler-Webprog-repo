@@ -33,7 +33,7 @@ function setSessionDataFromLoginForm(){
     
 }
 
-function getHeader(){
-    console.log('asd');
+export function getHeader(){
+    console.log('getting header');
     return JSON.stringify({"username":sessionStorage.getItem('username'),"password":sessionStorage.getItem('password'),"hash":sessionStorage.getItem('hash')});
 }

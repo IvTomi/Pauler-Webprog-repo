@@ -3,6 +3,11 @@ import HTMLTag from '../../../../utilities/HTMLTag.js';
 import listAllTeams from './allTeams.js';
 import viewController from '../../../../controllers/viewController.js';
 import makeNewTeamView from './newTeamA.js';
+import {router} from '../../../../index.js';
+import createTeamInfoView from './oneTeamA.js';
+import { makeRequest } from '../../../../utilities/serviceHandler.js';
+import { getHeader } from '../../../../controllers/logincontroller.js';
+import {getDummyData} from '../../../listBuilders/adminTeamListBuilder.js';
 
 function setUpAdminTeamsView(appendPoint,n){
     const navList = document.querySelector('nav ul');
@@ -11,15 +16,18 @@ function setUpAdminTeamsView(appendPoint,n){
     const selecter=new HTMLTag('ul').addAttr('id','selecter').append(appendPoint);
     new HTMLTag('div').addAttr('id','content').append(appendPoint);
     
-    new HTMLTag('li').setText('Csapatok').append(selecter).onclick(listAllTeams);
-    new HTMLTag('li').setText('Csapat létrehozása').append(selecter).onclick(makeNewTeamView);
-    
+    new HTMLTag('li').setText('Csapatok').append(selecter).onclick(()=>{router.navigate('teamsAdmin')});
+    new HTMLTag('li').setText('Csapat létrehozása').append(selecter).onclick(()=>{router.navigate('teamAdmin')});
     if(n===0){
         listAllTeams();
     }
     else if(n===1){
         makeNewTeamView();
-    }
+    }  
+    else if(n===2){
+        const team = sessionStorage.getItem('activeTeam');
+        getTeamById(team);
+    }  
 }
 
 export function setUpListField(appendPoint){
@@ -42,6 +50,21 @@ export function refreshContent(n){
     const content = document.getElementById('content');
     new viewController().clearTag(content);
     return content;
+}
+
+function getTeamById(id){
+    makeRequest("/test"/*/team/byid*/,'GET',getHeader(),JSON.stringify({"teamid":id}),(data)=>{onGetTeamByIdSucces(data)},()=>{} );
+}
+
+function onGetTeamByIdSucces(data){
+    if(data.Status === /*'Failed'*/'asd'){
+        alert(data.Message);
+    }
+    else{
+        let team = getDummyData()[0];
+        createTeamInfoView(team);
+    }
+    
 }
 
 export default setUpAdminTeamsView;

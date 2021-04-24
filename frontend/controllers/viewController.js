@@ -57,13 +57,7 @@ export default class ViewController{
         setUpAdminProjectsView(main);
     }
 
-    loadAdminTeam(evt){
-        if(evt){
-            evt.preventDefault();
-        }
-        const main = new viewController().setUpMain();
-        setUpAdminTeamsView(main);
-    }
+    
 
     loadAdminSettings(evt){
         if(evt){
@@ -116,12 +110,12 @@ export default class ViewController{
     }
 
     loadAdminTeam(n){
-        //Ideiglenesen
-        this.loadAdmin();
+       
+        /*Ideiglenesen*/this.loadAdmin();
         const main = this.setUpMain();
         setUpAdminTeamsView(main,n);
     }
-
+    
     setUpMain(){
         let main = document.getElementsByTagName('main')[0];
         if(main){
