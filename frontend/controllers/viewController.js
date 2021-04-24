@@ -45,7 +45,8 @@ export default class ViewController{
         if(evt){
             evt.preventDefault();
         }
-        const main = new viewController().setUpMain();
+        this.loadAdmin();
+        const main = this.setUpMain();
         setUpAdminProfile(main);
     }
 
