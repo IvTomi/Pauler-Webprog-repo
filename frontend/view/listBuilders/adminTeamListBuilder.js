@@ -8,18 +8,18 @@ import { router } from '../../index.js';
     for(let team of data){
         const li = new HTMLTag('li');
         if(team.TeamName && team.Description && team.Id){
-            new HTMLTag('p').setText(team.TeamName).append(li).onclick(()=>{sessionStorage.setItem('activeTeam',team.Id); router.navigate('teamInfoAdmin')});
+            new HTMLTag('p').setText(team.TeamName).append(li).onclick(()=>{sessionStorage.setItem('activeTeam',JSON.stringify(team)); router.navigate('teamInfoAdmin')});
             const projectList = new HTMLTag('ul').append(li);
             for(let task of team.TeamTasks){
                 if(task.TaskName && task.Id){
-                new HTMLTag('li').setText(task.TaskName).append(projectList).onclick(()=>{sessionStorage.setItem('activeTask',task.Id); console.log(sessionStorage.getItem('activeTask')) /*router.navigate('taskview')*/});
+                new HTMLTag('li').setText(task.TaskName).append(projectList).onclick(()=>{sessionStorage.setItem('activeTask',JSON.stringify(task)); console.log(sessionStorage.getItem('activeTask')) /*router.navigate('taskview')*/});
                 }
             }
             const memP = new HTMLTag('ul');
             for(let member of team.TeamMembers){
                 let person = member.User;
                 if(person.FirstName && person.LastName && person.Id){
-                    new HTMLTag('li').setText(person.LastName+' '+person.FirstName).append(memP).onclick(()=>{sessionStorage.setItem('activeProfile',person.Id); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
+                    new HTMLTag('li').setText(person.LastName+' '+person.FirstName).append(memP).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(person)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
                 }
             }
             memP.append(li);
@@ -32,9 +32,11 @@ import { router } from '../../index.js';
 export function createAllTeamsList(appendPoint){
     if(sessionStorage.getItem('allTeams')){
         let min = new Date(Date.now()).getMinutes();
-        let savedMin = sessionStorage.getItem('allTeamsRT') || null;
-        if(savedMin){
-            if(min===savedMin){
+        let h = new Date(Date.now()).getHours();
+        let savedMin = sessionStorage.getItem('allTeamsRTM') || null;
+        let savedH = sessionStorage.getItem('allTeamsRTH') || null;
+        if(savedMin && savedH){
+            if(min===savedMin && h===savedH){
                 data = sessionStorage.getItem('allTeams');
                 createList(data,appendPoint);
             }
@@ -52,8 +54,12 @@ function onGetTeamsSucces(data){
         alert(data.Message);
     }
     else{
-        data = getDummyData();
-        createList(data,appendPoint);
+        let toList = data.List;
+        toList = getDummyData();
+        sessionStorage.setItem('allTeams',JSON.stringify(toList));
+        sessionStorage.setItem('allTeamsRTM',new Date(Date.now()).getMinutes());
+        sessionStorage.setItem('allTeamsRTH',new Date(Date.now()).getHours());
+        createList(toList,appendPoint);
     }
     
 }
@@ -160,6 +166,8 @@ export function getDummyData(){
     }]
     return data;
 }
+
+
 
 /*"Team":{
 
