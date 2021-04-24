@@ -4,17 +4,15 @@
     "logFileName":"taskrecorder-service.log",
     "non-identify-routes": [
         "/register",
-        "/login"
+        "/login",
+        "/test"
     ],
     "databaseConnection":{
         "connectionLimit" : 10,
         "host"            : "localhost",
         "user"            : "balint",
         "password"        : "Admin123",
-        "host"            : "127.0.0.1",
         "port"            : 3306,
-        "user"            : "local",
-        "password"        : "BdetaLisH19.19",
         "database"        : "mydb"
     },
     "secret":"JCFqOisOxhg6twSA4Tyi0HSs9o4kfgkH"

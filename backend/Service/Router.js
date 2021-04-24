@@ -11,6 +11,8 @@ const { registerSuperUser } = require('./Model/Repository/SuperUserRepository');
 
 const nonIdentifyRoutes = configurationManager.nonidentifiedRoutes();
 
+router.use(bodyParser.json());
+
 //Middleware logging
 router.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -20,29 +22,36 @@ router.use(function(req, res, next) {
 });
 
 router.use((req,res,next)=>{
-    logger.info('Request from:'+req.ip+' '+req.protocol+' '+req.originalUrl);    
-    /*
-    userrepo.authenticateUser(req.headers['username'],req.headers['hash'],req.headers['password']).then(result=>{
-        logger.debug(result);
-        res.json(result)
-        //next();
-    }).catch((err)=>{
-        logger.debug(err);
-        res.json(jsonParser.combineJSON(protocol.status(false),protocol.error(1)));
-    }) */
-    next();
-});
-
-//Middleware User authentication
-router.use((req,res,next)=>{
-    if(checkIdentification()){
-        
-    } 
-    next();     
+    logger.info('Request from:'+req.ip+' '+req.protocol+' '+req.originalUrl);
+    //getnonidentifiedroutes tömbböt átnéz ha benne akkor végrehajt (nem reg, log)
+    if(nonIdentifyRoutes.includes(req.originalUrl))
+    {
+        next();
+    }
+    else
+    {
+        userrepo.authenticateUser(req.headers['username'],req.headers['hash'],req.headers['password']).then(result=>{
+            logger.debug(result);
+            if(result['status']=='success')
+            {
+                req.userid = result['Userid'];
+                next();
+            }
+            else
+            {
+                res.json(result);
+            }
+        }).catch((err)=>{
+            logger.debug(err);
+            res.json(jsonParser.combineJSON(protocol.status(false),protocol.error(1)));
+        })
+    }
+    
 });
 
 router.get("/test",(req,res)=>{
     logger.debug("Yo");
+    res.json('{"Hash":"rizsa"}');
 })
 
 //ez is amúgy bodyból
@@ -64,7 +73,7 @@ router.get("/userbyhash",(req,res)=>
 
 
 
-router.use(bodyParser.json());
+
 
 function checkIdentification(route){
     return nonIdentifyRoutes.includes(route);

@@ -23,7 +23,7 @@ async function registerSuperUser(username, password, email, company)
 {
 
     return new Promise((resolve, reject)=>{
-        if(!username || !password || !email || !company) //Ha nincs paraméter vagy hiányosak akkor sem ez az if fut le, hanem error 2-t dob
+        if(!username || !password || !email || !company)
         {
             resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(3)));
         }
