@@ -37,7 +37,7 @@ export default class ViewController{
     }
 
     loadAdmin(){
-        viewController.clearBody();
+        this.clearBody();
         createAdminNav();
     }
 
@@ -115,12 +115,11 @@ export default class ViewController{
         setUpUserTeamsView(main);
     }
 
-    loadAdminTeam(evt){
-        if(evt){
-            evt.preventDefault();
-        }
-        const main = new viewController().setUpMain();
-        setUpAdminTeamsView(main);
+    loadAdminTeam(n){
+        //Ideiglenesen
+        this.loadAdmin();
+        const main = this.setUpMain();
+        setUpAdminTeamsView(main,n);
     }
 
     setUpMain(){

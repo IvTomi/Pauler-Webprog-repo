@@ -4,7 +4,7 @@ import listAllTeams from './allTeams.js';
 import viewController from '../../../../controllers/viewController.js';
 import makeNewTeamView from './newTeamA.js';
 
-function setUpAdminTeamsView(appendPoint){
+function setUpAdminTeamsView(appendPoint,n){
     const navList = document.querySelector('nav ul');
     changeHighlithed(2,navList);//Selects the first element [which is the records] on user nav bar
 
@@ -13,8 +13,13 @@ function setUpAdminTeamsView(appendPoint){
     
     new HTMLTag('li').setText('Csapatok').append(selecter).onclick(listAllTeams);
     new HTMLTag('li').setText('Csapat létrehozása').append(selecter).onclick(makeNewTeamView);
-
-    listAllTeams();
+    
+    if(n===0){
+        listAllTeams();
+    }
+    else if(n===1){
+        makeNewTeamView();
+    }
 }
 
 export function setUpListField(appendPoint){
