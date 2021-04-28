@@ -7,6 +7,7 @@ const userrepo = require("./Model/Repository/UserRepository");
 const protocol = require('./Utility/Protocol');
 const jsonParser = require('./Utility/JSONParser');
 const superuserrepo = require("./Model/Repository/SuperUserRepository");
+const recordrepo = require("./Model/Repository/RecordRepository");
 const { registerSuperUser } = require('./Model/Repository/SuperUserRepository');
 
 const nonIdentifyRoutes = configurationManager.nonidentifiedRoutes();
@@ -32,6 +33,8 @@ router.use((req,res,next)=>{
     {
         userrepo.authenticateUser(req.headers['username'],req.headers['hash'],req.headers['password']).then(result=>{
             if(result['Status']==='Success')
+            logger.debug(result);
+            if(result['Status']=='Success')
             {
                 req.userid = result['Userid'];
                 next();
@@ -52,12 +55,19 @@ router.get("/test",(req,res)=>{
     res.json({"test":"test"})
 })
 
+router.get("/test",(req,res)=>
+{
+    logger.debug("Yo");
+
+})
+
 //valós register végpont
 router.post("/register",(req,res)=>{
     registerSuperUser(req.body['username'],req.body['password'],req.body['email'],req.body['company']).then((result)=>{
         res.json(result);
     })
 })
+
 //valós login végpont
 router.post("/login",(req,res)=>{
     userrepo.loginUser(req.userid,false,req.headers["hash"]).then((result)=>{

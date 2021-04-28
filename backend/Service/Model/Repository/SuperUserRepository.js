@@ -7,6 +7,7 @@ const Logger = require("../../Utility/Logger");
 
 const pool = dbConnector.ConnectionPool;
 
+//SUPER USER REGISTRATION
 async function getRegisterSuperUser(username, password, email, company){
     return new Promise((resolve, reject)=>{
         pool.awaitGetConnection().then((res)=>{
@@ -18,10 +19,8 @@ async function getRegisterSuperUser(username, password, email, company){
         })
     })
 }
-
 async function registerSuperUser(username, password, email, company)
 {
-
     return new Promise((resolve, reject)=>{
         if(!checkRegisterInput(username,password,email,company))
         {
@@ -39,6 +38,7 @@ async function registerSuperUser(username, password, email, company)
     })
 }
 
+
 function checkRegisterInput(username,password,email,company){
     if(username && password && email && company){
         return true;
@@ -47,6 +47,45 @@ function checkRegisterInput(username,password,email,company){
     }
 }
 
+//GET SUPERUSER BY HASH
+async function getSuperUserByHash(superuserid, hash)
+{
+    return new Promise((resolve, reject)=>
+    {
+        pool.awaitGetConnection().then((res)=>
+        {
+            res.awaitQuery(`CALL GetSuperUserByHash(${superuserid},'${hash}')`).then((result)=>
+            {
+                resolve(result);
+            }).catch((e)=>
+            {
+                resolve(null);
+            })
+            res.release();
+        })
+    })
+}
+async function superUserByHash(superuserid, hash)
+{
+    return new Promise((resolve, reject)=>
+    {
+        getSuperUserByHash(superuserid, hash).then((result)=>
+        {
+            if(result==null)
+            {
+                resolve(false);
+            }
+            else
+            {
+                Logger.debug(JSON.stringify(result[0][0]));
+                resolve(result[0][0]);
+            }
+        })
+    })
+
+}
+
 module.exports={
-    registerSuperUser:registerSuperUser
+    registerSuperUser:registerSuperUser,
+    superUserByHash:superUserByHash,
 }
