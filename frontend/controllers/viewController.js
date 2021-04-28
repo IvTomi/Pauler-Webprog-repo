@@ -59,14 +59,12 @@ export default class ViewController{
     }
 
     
-
-    loadAdminSettings(evt){
-        if(evt){
-            evt.preventDefault();
-        }
-        const main = new viewController().setUpMain();
-        setUpAdminSettingsView(main);
+    loadAdminSettings(n){
+        this.loadAdmin();
+        const main = this.setUpMain();
+        setUpAdminSettingsView(main,n);
     }
+    
 
     
     loadUser(evt){
