@@ -31,8 +31,7 @@ router.use((req,res,next)=>{
     else
     {
         userrepo.authenticateUser(req.headers['username'],req.headers['hash'],req.headers['password']).then(result=>{
-            logger.debug(result);
-            if(result['status']=='success')
+            if(result['Status']==='Success')
             {
                 req.userid = result['Userid'];
                 next();
@@ -42,31 +41,29 @@ router.use((req,res,next)=>{
                 res.json(result);
             }
         }).catch((err)=>{
-            logger.debug(err);
+            logger.error(err);
             res.json(jsonParser.combineJSON(protocol.status(false),protocol.error(1)));
         })
     }
     
 });
-
+//teszt végpont
 router.get("/test",(req,res)=>{
-    logger.debug("Yo");
-    res.json('{"Hash":"rizsa"}');
+    res.json({"test":"test"})
 })
 
-//ez is amúgy bodyból
-router.get("/register",(req,res)=>{
-    registerSuperUser(req.headers['username'],req.headers['password'],req.headers['email'],req.headers['company']).then((result)=>{
+//valós register végpont
+router.post("/register",(req,res)=>{
+    registerSuperUser(req.body['username'],req.body['password'],req.body['email'],req.body['company']).then((result)=>{
         res.json(result);
     })
 })
-
-//tesztnek
-router.get("/userbyhash",(req,res)=>
-{
-    userrepo.userByHash(req.body['userid'],req.headers['hash']).then((result)=>
-    {
-        res.json(result);
+//valós login végpont
+router.post("/login",(req,res)=>{
+    userrepo.loginUser(req.userid,false,req.headers["hash"]).then((result)=>{
+        res.json(result)
+    }).catch((e)=>{
+        res.json(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
     })
 })
 

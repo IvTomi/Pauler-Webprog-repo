@@ -21,6 +21,14 @@
         "3":{
             "ErrorCode":3,
             "Message":"Missing parameters"
+        },
+        "4":{
+            "ErrorCode":4,
+            "Message":"Invalid Permissions"
+        },
+        "99":{
+            "ErrorCode":99,
+            "Message":"Internal error occured"
         }
     },
 

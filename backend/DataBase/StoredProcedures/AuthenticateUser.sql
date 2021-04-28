@@ -13,7 +13,7 @@ BEGIN
 			SET MESSAGE_TEXT = 'Invalid credentials';
         END IF;
 	COMMIT;
-	SELECT userid as Id,TO_BASE64(pwd) as Cypher;
+	SELECT userid as Id,CONVERT(pwd USING utf8) as Cypher;
 END;
 $$
 
