@@ -21,6 +21,10 @@
         "3":{
             "ErrorCode":3,
             "Message":"Missing parameters"
+        },
+        "4":{
+            "ErrorCode":4,
+            "Message":"Username exists"
         }
     },
 

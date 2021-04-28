@@ -7,6 +7,7 @@ const Logger = require("../../Utility/Logger");
 
 const pool = dbConnector.ConnectionPool;
 
+//SUPER USER REGISTRATION
 async function getRegisterSuperUser(username, password, email, company){
     return new Promise((resolve, reject)=>{
         pool.awaitGetConnection().then((res)=>{
@@ -18,10 +19,8 @@ async function getRegisterSuperUser(username, password, email, company){
         })
     })
 }
-
 async function registerSuperUser(username, password, email, company)
 {
-
     return new Promise((resolve, reject)=>{
         if(!username || !password || !email || !company)
         {
@@ -30,7 +29,6 @@ async function registerSuperUser(username, password, email, company)
         getRegisterSuperUser(username, encrypt(password), email, company).then((result)=>{
             if(result == null){
                 resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(2)));
-                Logger.debug(`Mi van? ${username}`);
             }
             else{
                 Logger.debug(JSON.stringify(result));
@@ -41,6 +39,44 @@ async function registerSuperUser(username, password, email, company)
     })
 }
 
+//GET SUPERUSER BY HASH
+async function getSuperUserByHash(superuserid, hash)
+{
+    return new Promise((resolve, reject)=>
+    {
+        pool.awaitGetConnection().then((res)=>
+        {
+            res.awaitQuery(`CALL GetSuperUserByHash(${superuserid},'${hash}')`).then((result)=>
+            {
+                resolve(result);
+            }).catch((e)=>
+            {
+                resolve(null);
+            })
+            res.release();
+        })
+    })
+}
+async function superUserByHash(superuserid, hash)
+{
+    return new Promise((resolve, reject)=>
+    {
+        getSuperUserByHash(superuserid, hash).then((result)=>
+        {
+            if(result==null)
+            {
+                resolve(false);
+            }
+            else
+            {
+                Logger.debug(JSON.stringify(result[0][0]));
+                resolve(result[0][0]);
+            }
+        })
+    })
+}
+
 module.exports={
-    registerSuperUser:registerSuperUser
+    registerSuperUser:registerSuperUser,
+    superUserByHash:superUserByHash,
 }
