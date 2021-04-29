@@ -66,14 +66,9 @@ export default class ViewController{
     }
     
 
-    
-    loadUser(evt){
-        if(evt){
-            evt.preventDefault();
-        }
-        new viewController().clearBody();
+    loadUser(){
+        this.clearBody();
         createUserNav();
-        new viewController().loadUserRecord();
     }
 
     loadUserRecord(evt){
@@ -88,7 +83,8 @@ export default class ViewController{
         if(evt){
             evt.preventDefault();
         }
-        const main = new viewController().setUpMain();
+        this.loadUser();
+        const main = this.setUpMain();
         setUpUserProfile(main);
     }
 
