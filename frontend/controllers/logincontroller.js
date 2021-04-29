@@ -14,8 +14,17 @@ export function clearSessionHash(){
 
 export function sendLogIn(){
     if(setSessionDataFromLoginForm()){
-        makeRequest('/test','GET',getHeader(),'{}',(data)=>{
-            console.log(data);
+        let uname = sessionStorage.getItem('username');
+        let pass = sessionStorage.getItem('password');
+        let admin = document.getElementById('loginForm_admin').checked;
+        let hash = sessionStorage.getItem('hash');
+        makeRequest('/login','POST',getHeader(),JSON.stringify({"Username":uname,"Password":pass,"Hash":hash,"Admin/User":admin}),(data)=>{
+            if(data.Status === 'Failed'){
+                alert(data.Message);
+            }
+            else{
+                router.navigate("teamsAdmin");
+            }
         },(req,err)=>{
             console.log(err);
         })  
