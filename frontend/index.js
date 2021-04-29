@@ -23,5 +23,5 @@ router.add('userProfile',()=>{viewController.loadUserProfile()})
 
 console.log();
 window.onload = ()=>{router.navigate(router.clearSlashes(router.replaceRoot(window.location.pathname)))};
-router.navigate('login');
+router.navigate('teamsAdmin');
 

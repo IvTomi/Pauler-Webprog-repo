@@ -1,80 +1,62 @@
 import HTMLTag from '../../utilities/HTMLTag.js';
-import {makeRequest} from '../../utilities/serviceHandler.js';
-import {getHeader} from '../../controllers/logincontroller.js';
-import { router } from '../../index.js';
+import {onTeamClicked,onTaskClicked,onUserClicked,onDeleteClicked} from '../../controllers/adminAllTeamscontroller.js';
+import {onFireClick,onHireClick} from '../../controllers/adminSelectedTeamcontroller.js';
+
 
 /**data=teams */
- function createList(data,appendPoint){
+export default function createList(data,appendPoint){
     for(let team of data){
         const li = new HTMLTag('li');
         if(team.TeamName && team.Description && team.Id){
-            new HTMLTag('p').setText(team.TeamName).append(li).onclick(()=>{sessionStorage.setItem('activeTeam',JSON.stringify(team)); router.navigate('teamInfoAdmin')});
+            new HTMLTag('p').setText(team.TeamName).append(li).onclick(()=>onTeamClicked(team));
             const projectList = new HTMLTag('ul').append(li);
             for(let task of team.TeamTasks){
                 if(task.TaskName && task.Id){
-                new HTMLTag('li').setText(task.TaskName).append(projectList).onclick(()=>{sessionStorage.setItem('activeTask',JSON.stringify(task)); console.log(sessionStorage.getItem('activeTask')) /*router.navigate('taskview')*/});
+                new HTMLTag('li').setText(task.TaskName).append(projectList).onclick(()=>onTaskClicked(task));
                 }
             }
             const memP = new HTMLTag('ul');
             for(let member of team.TeamMembers){
                 let person = member.User;
                 if(person.FirstName && person.LastName && person.Id){
-                    new HTMLTag('li').setText(person.LastName+' '+person.FirstName).append(memP).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(person)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
+                    new HTMLTag('li').setText(person.LastName+' '+person.FirstName).append(memP).onclick(()=>onUserClicked(person));
                 }
             }
             memP.append(li);
-            new HTMLTag('button').setText('X').append(li).onclick(()=>{makeRequest('/team/remove','POST',getHeader(),JSON.stringify({"teamid":team.Id}),(data)=>{onDeleteSucces(data)},()=>{onAjaxFail()})});
+            new HTMLTag('button').setText('X').append(li).onclick(()=>onDeleteClicked(team));
         }
         li.append(appendPoint);
     }
 }
 
-export function createAllTeamsList(appendPoint){
-    if(sessionStorage.getItem('allTeams')){
-        let min = new Date(Date.now()).getMinutes();
-        let h = new Date(Date.now()).getHours();
-        let savedMin = sessionStorage.getItem('allTeamsRTM') || null;
-        let savedH = sessionStorage.getItem('allTeamsRTH') || null;
-        if(savedMin && savedH){
-            if(min===savedMin && h===savedH){
-                data = sessionStorage.getItem('allTeams');
-                createList(data,appendPoint);
-            }
-        }
+export function addNewMemberToExisting(user,appendPoint,team){
+    if(!team){
+        team = JSON.parse(sessionStorage.getItem('activeTeam'));
     }
-    makeRequest(/*'/team/list'*/'/test','GET',getHeader(),'{}',(data)=>{onGetTeamsSucces(data)},()=>onAjaxFail());
-
-
-    
+    const li = new HTMLTag('li').addAttr('id','user-info'+user.Id);
+    if(user.FirstName && user.LastName && user.Id){
+        new HTMLTag('p').setText(user.LastName+' '+user.FirstName).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
+        new HTMLTag('button').setText('Töröl').append(li).onclick(()=>{onHireClick(team,user)});
+    }
+    li.append(appendPoint);
 }
 
-function onGetTeamsSucces(data){
-    const appendPoint = document.getElementById('list');
-    if(data.Status === /*'Failed'*/'rest'){
-        alert(data.Message);
+export function addNonMemberToExisting(user,appendPoint,team){
+    if(!team){
+        team = JSON.parse(sessionStorage.getItem('activeTeam'));
     }
-    else{
-        let toList = data.List;
-        toList = getDummyData();
-        sessionStorage.setItem('allTeams',JSON.stringify(toList));
-        sessionStorage.setItem('allTeamsRTM',new Date(Date.now()).getMinutes());
-        sessionStorage.setItem('allTeamsRTH',new Date(Date.now()).getHours());
-        createList(toList,appendPoint);
+    const li = new HTMLTag('li').addAttr('id','user-info'+user.Id);
+    if(user.FirstName && user.LastName && user.Id){
+        new HTMLTag('p').setText(user.LastName+' '+user.FirstName).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
+        new HTMLTag('button').setText('Hozzáad').append(li).onclick(()=>{onFireClick(team,user)});
     }
-    
+    li.append(appendPoint);
 }
 
-function onAjaxFail(){
-    alert('Server not found');
-}
-
-function onDeleteSucces(data){
-    if(data.Status === /*'Failed'*/'rest'){
-        alert(data.Message);
-    }
-    else{
-        sessionStorage.removeItem('allTeams');
-        router.navigate('teamsAdmin');
+export function createTeamProjectsList(team,appendpoint){
+    for(let task of team.TeamTasks){
+        const li = new HTMLTag('li').setText(task.TaskName).append(appendpoint).onclick(()=>onTaskClicked(task));
+        
     }
 }
 

@@ -1,7 +1,6 @@
-import teamData from '../../../../datasets/teamData.js';
-import changeHighlithed from '../../../../utilities/changeHighlighted.js';
+
 import HTMLTag from '../../../../utilities/HTMLTag.js';
-import { createAllTeamsList } from '../../../listBuilders/adminTeamListBuilder.js';
+import { createAllTeamsList } from '../../../../controllers/adminAllTeamscontroller.js';
 import {setUpListField, refreshContent} from './mainTeamA.js';
 
 function listAllTeams(){
