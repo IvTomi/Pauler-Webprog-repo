@@ -79,11 +79,14 @@ export default class ViewController{
         setUpUserRecordViews(main);
     }
 
-    loadUserProfile(evt){
-        if(evt){
-            evt.preventDefault();
+    loadUserProfile(n){
+        
+        if(n === 0){
+            this.loadUser();
         }
-        this.loadUser();
+        if(n === 1){
+            this.loadAdmin();
+        }
         const main = this.setUpMain();
         setUpUserProfile(main);
     }
