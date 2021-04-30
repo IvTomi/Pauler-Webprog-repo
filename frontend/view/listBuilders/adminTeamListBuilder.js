@@ -1,6 +1,7 @@
 import HTMLTag from '../../utilities/HTMLTag.js';
 import {onTeamClicked,onTaskClicked,onUserClicked,onDeleteClicked} from '../../controllers/adminAllTeamscontroller.js';
 import {onFireClick,onHireClick} from '../../controllers/adminSelectedTeamcontroller.js';
+import {onSuccesfulFire, onSuccesfulHire} from '../../controllers/adminNewTeamController.js';
 
 
 /**data=teams */
@@ -60,6 +61,23 @@ export function createTeamProjectsList(team,appendpoint){
     }
 }
 
+export function addNewMemberToNew(user,appendPoint){
+    const li = new HTMLTag('li').addAttr('id','user-info'+user.Id).addAttr('data-id',user.Id);
+    if(user.FirstName && user.LastName && user.Id){
+        new HTMLTag('p').setText(user.LastName+' '+user.FirstName).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
+        new HTMLTag('button').setText('Töröl').append(li).onclick(()=>{onSuccesfulFire(user)});
+    }
+    li.append(appendPoint);
+}
+
+export function addNonMemberToNew(user,appendPoint){
+    const li = new HTMLTag('li').addAttr('id','user-info'+user.Id);
+    if(user.FirstName && user.LastName && user.Id){
+        new HTMLTag('p').setText(user.LastName+' '+user.FirstName).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
+        new HTMLTag('button').setText('Hozzáad').append(li).onclick(()=>{onSuccesfulHire(user)});
+    }
+    li.append(appendPoint);
+}
 
 export function getDummyData(){
     let data = [{
