@@ -13,7 +13,7 @@ export function modifyUser(){
     
     if(oldpass && pass && passAgain === pass){
         
-        makeRequest('/user/create','POST',getHeader(),JSON.stringify({/*"userid":userid,*/"password":pass}),(data)=>{modifyUserOnSuccess(data)},()=>{modifyUserOnFail()});
+        makeRequest('/user/create','POST',getHeader(),JSON.stringify({/*"userid":userid,*/"password":pass}),(data)=>{modifyUserOnSuccess(data)},()=>{OutPutOnFail()});
 
         //itt még feltételek és felh módosítása
     }
@@ -25,23 +25,40 @@ export function modifyUser(){
         
     }
 }
+function getUserPermissions(){
+    makeRequest('/user/get/permissions','POST',getHeader(),JSON.stringify({/*"userid":userid,*/}),(data)=>{getUserPermissionsSuccess(data)},()=>{OutPutOnFail()});
+}
+
+function getUserPermissionsSuccess(data){
+    if(data.Status === 'Failed'){
+        if(data.Error === 'InvalidCredentials'){
+            console.log('InvalidCredentials');
+        }
+        else if(data.Error === 'InvalidPermission'){
+            console.log('InvalidPermission');
+        }
+        else if(data.Error === 'UserNotExists'){
+            console.log('UserNotExists');
+        }
+    }
+    else if(data.Status === 'Success'){
+        console.log(data);
+    }
+}
+
 
 function modifyUserOnSuccess(data){
     alert('ok');
 }
 
-function modifyUserOnFail(){
-    alert(fail);
-}
-
 export function deleteUser(){
-    makeRequest('/user/remove','POST',getHeader(),'{}',(data)=>{OnDeleteSuccess(data)},()=>{OnDeleteFail()});
+    makeRequest('/user/remove','POST',getHeader(),'{}',(data)=>{OnDeleteSuccess(data)},()=>{OutPutOnFail()});
 
 }
 function OnDeleteSuccess(data){
     console.log(data);
 }
 
-function OnDeleteFail(){
+function OutPutOnFail(){
     console.log('hibbaaaa');
 }
