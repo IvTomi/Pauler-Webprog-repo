@@ -2,16 +2,16 @@ import HTMLTag from '../utilities/HTMLTag.js';
 import {makeRequest} from '../utilities/serviceHandler.js';
 import {router} from '../index.js';
 import { getHeader } from './logincontroller.js';
+import {HTMLview} from '../view/listBuilders/userProfileListBuilder.js';
 
 
-export function allUsers(){
-    makeRequest('/user/list','POST',getHeader(),'{}',(data)=>{OnListSuccess(data)},()=>{OnListFail()});
+export function allUsers(userid){
+    makeRequest('/user/list','POST',getHeader(),'{}',(data)=>{OnListSuccess(data,userid)},()=>{OnListFail()});
 
 }
 
-function OnListSuccess(data){
-    return data;
-    //a kapott userlistet hogy adom vissza a listbuildernek?
+function OnListSuccess(data,userid){
+    HTMLview(data,userid);
 }
 
 function OnListFail(){
