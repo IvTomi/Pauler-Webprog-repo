@@ -3,8 +3,11 @@ import RecordData from "../../datasets/userProfileData.js";
 import {allUsers,CreateContact,getContacts,removeContact} from '../../controllers/userProfileController.js';
 
 
-export function createProfileDataList(userid,appendPoint){
+export function createProfileDataList(userid,){
     //ehelyett lekérés a users-ből
+    allUsers(userid);
+
+    //ez nem kell majd, ha meglesz az endpoint
     const users = [
         {Id:0,FirstName:'Minta',LastName:'Máté',Contacts:[
             {
@@ -46,7 +49,12 @@ export function createProfileDataList(userid,appendPoint){
 
         ]}
     ];
+    //ez sem kell majd, ha meglesz az endpoint
+    HTMLview(users,userid);
 
+}
+export function HTMLview(users,userid){
+    const appendPoint = document.getElementById('content');
     let firstName = "";
     let lastName = "";
     let contacts = [];
@@ -61,8 +69,6 @@ export function createProfileDataList(userid,appendPoint){
     }
     
 
-    const content = new HTMLTag('div').addAttr('id','content').append(appendPoint);
-    const img = new HTMLTag('img').addAttr('src','./res/defaultUser.png').addAttr('alt','user képe').append(appendPoint);
     new HTMLTag('h1').setText(firstName + ' ' + lastName).append(appendPoint);
 
     /*getContacts(userid);
@@ -76,16 +82,18 @@ export function createProfileDataList(userid,appendPoint){
     }
 
     //if(van jogosultdága)
-    new HTMLTag('p').setText('Adat hozzáadása').append(appendPoint);
-    const add = new HTMLTag('div').addAttr('id','add').append(appendPoint);
-    let type = new HTMLTag('input').addAttr('id','type').addAttr('name','type').addAttr('placeholder','Tipus').append(add);
-    let value = new HTMLTag('input').addAttr('id','value').addAttr('name','value').addAttr('placeholder','Érték').append(add);
-    const button = new HTMLTag('button').setText('Hozzáadás').append(add).onclick(()=>{CreateContact(userid)}).preventDefaultEvent('click');
+    if(!document.getElementById('add')){
+        new HTMLTag('p').setText('Adat hozzáadása').append(appendPoint);
+        const add = new HTMLTag('div').addAttr('id','add').append(appendPoint);
+        let type = new HTMLTag('input').addAttr('id','type').addAttr('name','type').addAttr('placeholder','Tipus').append(add);
+        let value = new HTMLTag('input').addAttr('id','value').addAttr('name','value').addAttr('placeholder','Érték').append(add);
+        const button = new HTMLTag('button').setText('Hozzáadás').append(add).onclick(()=>{CreateContact(userid)}).preventDefaultEvent('click');
+        
+    }
     
-
-
 }
 
+    
 
 function setUpListField(appendPoint){
     let list = document.getElementById('list');
