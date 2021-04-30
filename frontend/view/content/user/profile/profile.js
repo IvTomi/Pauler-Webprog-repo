@@ -8,8 +8,9 @@ function setUpUserProfile(appendPoint){
     const navList = document.querySelector('nav ul');
     changeHighlithed(-1,navList);
 
-    
-    const listDiv = createProfileDataList(0,appendPoint);
+    const thisUserId = 0;
+
+    const listDiv = createProfileDataList(thisUserId,appendPoint);
     //= setUpListField(content.node);
     //createProfileDataList(new userProfileData().testProfileData,listDiv);
  
