@@ -1,10 +1,8 @@
 import viewController from '../../../../controllers/viewController.js';
 import HTMLTag from '../../../../utilities/HTMLTag.js';
-import {createProfileDataList} from '../../../listBuilders/profileListBuilder.js';
 import adminProfileData from '../../../../datasets/adminProfileData.js';
 import changeHighlithed from '../../../../utilities/changeHighlighted.js';
 import {getCompanyName,addNewContact} from '../../../listBuilders/adminProfileListBuilder.js';
-
 
 function setUpAdminProfile(appendPoint){
     const navList = document.querySelector('nav ul');
