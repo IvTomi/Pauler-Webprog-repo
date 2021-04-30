@@ -7,10 +7,11 @@ import changeHighlithed from '../../../../utilities/changeHighlighted.js';
 function setUpUserProfile(appendPoint){
     const navList = document.querySelector('nav ul');
     changeHighlithed(-1,navList);
+    const content = new HTMLTag('div').addAttr('id','content').append(appendPoint);
+    const thisUserId = 1;
 
-    const thisUserId = 0;
-
-    const listDiv = createProfileDataList(thisUserId,appendPoint);
+    createProfileDataList(thisUserId);
+    ;
     //= setUpListField(content.node);
     //createProfileDataList(new userProfileData().testProfileData,listDiv);
  
