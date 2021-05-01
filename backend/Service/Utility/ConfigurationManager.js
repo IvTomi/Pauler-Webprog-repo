@@ -8,6 +8,10 @@ function getPort(){
     return config['port'];
 }
 
+function getEncryptionMethod(){
+    return config['encryptionMethod'];
+}
+
 function getLogPath(){
     return config['logPath'];
 }
@@ -35,5 +39,6 @@ module.exports = {
     logFileName:getLogFileName,
     nonidentifiedRoutes:getNonIdentifiedRoutes,
     databaseConnection:getDatabaseConnection,
-    secret:getSecret
+    secret:getSecret,
+    encryptionMethod:getEncryptionMethod
 }
