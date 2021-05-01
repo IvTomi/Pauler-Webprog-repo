@@ -5,7 +5,7 @@ CREATE PROCEDURE ModifyUser (IN targetuserid INT, IN password TINYBLOB, IN first
 BEGIN
 	START TRANSACTION;
 		IF(password != "") THEN
-		UPDATE user u SET u.Password = password, u.LastModifiedBy = userid WHERE u.idUser = targetuserid;
+		UPDATE user u SET u.Password = password,u.FirstName = firstname, u.LastName = lastname, u.LastModifiedBy = userid WHERE u.idUser = targetuserid;
         ELSE
         UPDATE user u SET u.FirstName = firstname, u.LastName = lastname,u.LastModifiedBy = userid WHERE u.idUser = targetuserid;
         END IF;

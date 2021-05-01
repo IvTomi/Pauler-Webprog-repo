@@ -25,10 +25,16 @@
         "4":{
             "ErrorCode":4,
             "Message":"Invalid Permissions"
+        },"5":{
+            "ErrorCode":5,
+            "Message":"Team member already added"
         },
         "99":{
             "ErrorCode":99,
             "Message":"Internal error occured"
+        },"100":{
+            "ErrorCode":100,
+            "Message":"Invalid request format"
         }
     },
 

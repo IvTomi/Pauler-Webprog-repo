@@ -307,5 +307,6 @@ module.exports={
     userContacts:userContacts,
     userPermissions:userPermissions,
     userCreator:userCreator,
+    getUserPermission,getUserPermission
 
 }
