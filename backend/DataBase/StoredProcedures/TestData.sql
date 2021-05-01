@@ -71,7 +71,8 @@ START TRANSACTION;
         UPDATE contact SET SuperUser_Hash = hashNumber WHERE idContact = contactID;
         UPDATE permissiongroup SET SuperUser_Hash = hashNumber WHERE idPermissionGroup = permissiongroupID;
         UPDATE permissiongrouppreset SET SuperUser_Hash = hashNumber WHERE idPermissionGroupPreset = permissiongrouppresetID;
-        UPDATE user SET SuperUser_Hash = hashNumber WHERE idUser = userIDSuper AND idUser = userID;
+        UPDATE user SET SuperUser_Hash = hashNumber WHERE idUser = userIDSuper;
+        UPDATE user SET SuperUser_Hash = hashNumber WHERE idUser = userID;
     COMMIT;
 END;
 $$

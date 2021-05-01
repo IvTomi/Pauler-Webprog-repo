@@ -11,7 +11,8 @@ CREATE VIEW `companycontactsview` AS
         `contactview`.`SuperUser_Hash` AS `SuperUser_Hash`,
         `contact_has_company`.`Company_idCompany` AS `Company_idCompany`
     FROM
-        (`contact_has_company`
+        ((`contact_has_company`
         JOIN `contactview` ON ((`contact_has_company`.`Contact_idContact` = `contactview`.`idContact`)))
+        JOIN `companyview` ON ((`contact_has_company`.`Company_idCompany` = `companyview`.`idCompany`)))
     WHERE
         (1 = `contact_has_company`.`Status`)

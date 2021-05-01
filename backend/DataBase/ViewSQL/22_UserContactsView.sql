@@ -10,8 +10,9 @@ CREATE VIEW `usercontactsview` AS
         `contactview`.`TypeName` AS `TypeName`,
         `contactview`.`SuperUser_Hash` AS `SuperUser_Hash`,
         `contact_has_user`.`User_idUser` AS `User_idUser`
-    FROM
-        (`contact_has_user`
+     FROM
+        ((`contact_has_user`
         JOIN `contactview` ON ((`contact_has_user`.`Contact_idContact` = `contactview`.`idContact`)))
+        JOIN `userview` ON ((`contact_has_user`.`User_idUser` = `userview`.`idUser`)))
     WHERE
         (1 = `contact_has_user`.`Status`)
