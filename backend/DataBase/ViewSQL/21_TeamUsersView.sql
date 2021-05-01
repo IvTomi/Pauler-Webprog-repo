@@ -12,7 +12,8 @@ CREATE VIEW `teamusersview` AS
         `userview`.`SuperUser_Hash` AS `SuperUser_Hash`,
         `team_has_user`.`Team_idTeam` AS `Team_idTeam`
     FROM
-        (`team_has_user`
+        ((`team_has_user`
         JOIN `userview` ON ((`team_has_user`.`User_idUser` = `userview`.`idUser`)))
+        JOIN `teamview` ON ((`team_has_user`.`Team_idTeam` = `teamview`.`idTeam`)))
     WHERE
         (1 = `team_has_user`.`Status`)

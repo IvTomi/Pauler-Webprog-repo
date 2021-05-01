@@ -11,7 +11,8 @@ CREATE VIEW `taskcontactsview` AS
         `contactview`.`SuperUser_Hash` AS `SuperUser_Hash`,
         `contact_has_task`.`Task_idTask` AS `Task_idTask`
     FROM
-        (`contact_has_task`
+        ((`contact_has_task`
         JOIN `contactview` ON ((`contact_has_task`.`Contact_idContact` = `contactview`.`idContact`)))
+        JOIN `taskview` ON ((`contact_has_task`.`Task_idTask` = `taskview`.`idTask`)))
     WHERE
         (1 = `contact_has_task`.`Status`)

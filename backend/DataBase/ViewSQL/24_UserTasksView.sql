@@ -11,7 +11,8 @@ CREATE VIEW `usertasksview` AS
         `taskview`.`SuperUser_Hash` AS `SuperUser_Hash`,
         `task_has_user`.`User_idUser` AS `User_idUser`
     FROM
-        (`task_has_user`
+        ((`task_has_user`
         JOIN `taskview` ON ((`task_has_user`.`Task_idTask` = `taskview`.`idTask`)))
+        JOIN `userview` ON ((`userview`.`idUser` = `task_has_user`.`User_idUser`)))
     WHERE
         (1 = `task_has_user`.`Status`)
