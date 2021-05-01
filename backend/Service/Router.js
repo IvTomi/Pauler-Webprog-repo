@@ -41,10 +41,9 @@ router.use((req,res,next)=>{
     else
     {
         userrepo.authenticateUser(req.headers['username'],req.headers['hash'],req.headers['password']).then(result=>{
-            if(result['Status']==='Success')
-            logger.debug(result);
-            if(result['Status']=='Success')
+            if(result['Status']==='Success') 
             {
+                logger.debug(result);
                 req.userid = result['Userid'];
                 next();
             }
@@ -175,10 +174,94 @@ router.post("/team/remove/user",(req,res)=>
 
 })
 
+//tesztelni!
+router.get("/user/list",(req,res)=>
+{
+    userrepo.users(req.headers['hash']).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+//tesztelni!
+router.post("/user/create",(req,res)=>
+{
+    userrepo.userCreator(req.body['username'], req.body['password'], req.body['firstname'], req.body['lastname'], req.headers['hash'], req.userid, req.body['allprivileges']).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+//teszt!
+router.post("/user/remove",(req,res)=>
+{
+    userrepo.removeUser(req.body['userid'],req.userid).then((result)=>
+    {
+        res.json(result);
+    })
+})
 
 
+router.post("/user/add/contact",(req,res)=>
+{
+
+})
+
+router.post("/user/remove/contact",(req,res)=>
+{
+    
+})
 
 
+router.get("/user/get/contacts",(req,res)=>
+{
+    //userid-ből hash
+})
+
+router.get("/user/get/permissions", (req, res)=>
+{
+    userrepo.userPermissions(req.userid).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/user/permission",(req,res)=>
+{
+
+})
+
+router.post("/user/modify",(req,res)=>
+{
+    userrepo.changeUser(req.body['userid'],req.body['password'],req.body['firstname'],req.body['lastname'],req.userid).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/contact/create",(req,res)=>
+{
+    userrepo.newContact(req.body['typename'],req.body['value'],req.body['description'],req.userid,req.body['ispublic'],req.headers['hash']).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/contact/modify",(req,res)=>
+{
+    userrepo.changeContact(req.body['contactId'],req.body['value'],req.body['description'],req.body['ispublic'],req.userid).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/contact/remove",(req,res)=>
+{
+    userrepo.contactDeleter(req.body['contactId'],req.userid).then((result)=>
+    {
+        res.json(result);
+    })
+})
 
 function checkIdentification(route){
     return nonIdentifyRoutes.includes(route);
