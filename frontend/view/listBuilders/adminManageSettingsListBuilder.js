@@ -43,3 +43,10 @@ export function ManageUser(appendPoint){
     new HTMLTag('button').setText('Módosítás').append(modifyForm).onclick(()=>{modifyUser()}).preventDefaultEvent('click');
    
 }
+
+
+export function modifyButtons(data){
+    const permissions = document.getElementsByClassName('modifyForm_chb');
+
+    //gombok pepipálása majd a megadott értékek alapján
+}
