@@ -1,6 +1,6 @@
 import HTMLTag from '../../utilities/HTMLTag.js';
 import {onTeamClicked,onTaskClicked,onUserClicked,onDeleteClicked} from '../../controllers/adminAllTeamscontroller.js';
-import {onFireClick,onHireClick} from '../../controllers/adminSelectedTeamcontroller.js';
+import {ChangeTag, onFireClick,onHireClick} from '../../controllers/adminSelectedTeamcontroller.js';
 import {onSuccesfulFire, onSuccesfulHire} from '../../controllers/adminNewTeamController.js';
 
 
@@ -30,7 +30,7 @@ export default function createList(data,appendPoint){
     }
 }
 
-export function addNewMemberToExisting(user,appendPoint,team){
+export function addNewMemberToExisting(user,appendPoint,team,tag){
     if(!team){
         team = JSON.parse(sessionStorage.getItem('activeTeam'));
     }
@@ -38,6 +38,9 @@ export function addNewMemberToExisting(user,appendPoint,team){
     if(user.FirstName && user.LastName && user.Id){
         new HTMLTag('p').setText(user.LastName+' '+user.FirstName).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
         new HTMLTag('button').setText('Töröl').append(li).onclick(()=>{onHireClick(team,user)});
+        new HTMLTag('p').setText(tag).addAttr('id','user-info-tag'+user.Id).append(li);
+        new HTMLTag('input').addAttr('type','text').addAttr('id','user-info-newtag'+user.Id).append(li);
+        new HTMLTag('button').setText('Tag frissít').append(li).onclick(()=>ChangeTag(user.Id,team.Id));
     }
     li.append(appendPoint);
 }
@@ -66,6 +69,7 @@ export function addNewMemberToNew(user,appendPoint){
     if(user.FirstName && user.LastName && user.Id){
         new HTMLTag('p').setText(user.LastName+' '+user.FirstName).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
         new HTMLTag('button').setText('Töröl').append(li).onclick(()=>{onSuccesfulFire(user)});
+        new HTMLTag('input').addAttr('type','text').addAttr('id','user-info-newtag'+user.Id).addAttr('placeholder','Tag').append(li);
     }
     li.append(appendPoint);
 }

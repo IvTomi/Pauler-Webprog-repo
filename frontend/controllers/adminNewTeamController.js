@@ -4,15 +4,19 @@ import { addNewMemberToNew, addNonMemberToNew } from "../view/listBuilders/admin
 import { getHeader } from "./logincontroller.js";
 
 export function onCreate(){
-    const memberids = [];
+    const teamMembers = [];
     const members = document.getElementById('members');
     for(let element of members.children){
-        memberids.push(element.dataset.id);
+        let member = {};
+        member.Id = element.dataset.id;
+        member.Tag = document.getElementById('user-info-newtag'+member.Id).value;
+        teamMembers.push(member);
     }
     const name = document.getElementById('teamname').value;
     const desc = document.getElementById('desc').value;
-    makeRequest('/team/create','POST',getHeader(),JSON.stringify({"Name":name,"Description":desc,"Ids":memberids}),(data)=>{onCreateSucces(data),alert('Serve not found')})
-    console.log(memberids);
+    console.log({"Name":name,"Description":desc,"TeamMembers":teamMembers});
+    makeRequest('/team/create','POST',getHeader(),JSON.stringify({"Name":name,"Description":desc,"TeamMembers":teamMembers}),(data)=>{onCreateSucces(data),alert('Serve not found')})
+    
 }
 
  function onCreateSucces(data){
@@ -39,14 +43,12 @@ export function createNonTeamMemberList(users,appendpoint){
 
 
 export function onSuccesfulFire(user){
-    console.log(user);
     const list = document.getElementById('members');
     list.removeChild(document.getElementById('user-info'+user.Id));
     const otherList = document.getElementById('nonmembers');
     addNonMemberToNew(user,otherList);
 }
 export function onSuccesfulHire(user){
-    console.log(user);
     const list = document.getElementById('nonmembers');
     list.removeChild(document.getElementById('user-info'+user.Id));
     const otherList = document.getElementById('members');

@@ -1,6 +1,6 @@
 import { router } from "../index.js";
 import { makeRequest } from "../utilities/serviceHandler.js";
-import createList, { addNewMemberToExisting, addNonMemberToExisting, getDummyData } from "../view/listBuilders/adminTeamListBuilder.js";
+import  { addNewMemberToExisting, addNonMemberToExisting } from "../view/listBuilders/adminTeamListBuilder.js";
 import { getHeader } from "./logincontroller.js";
 
 
@@ -14,11 +14,24 @@ export function onTaskClicked(task){
 export function createTeamMembersList(team,appendPoint){
     for(let member of team.TeamMembers){
         let user = member.User;
-        addNewMemberToExisting(user,appendPoint,team);
+        let tag = member.Tag;
+        addNewMemberToExisting(user,appendPoint,team,tag);
     }
 }
 
+export function ChangeTag(id,teamid){
+    const tag = document.getElementById('user-info-newtag'+id).value; 
+    makeRequest('/team/modify/tag','POST',getHeader(),JSON.stringify({"teamid":teamid,"user":id,"tag":tag}),(data)=>{onChangeTagSucces(data,id,tag)},()=>alert("Server not found"));
+}
 
+function onChangeTagSucces(data,id,tag){
+    if(data.Status === /*'Failed'*/'rest'){
+        alert(data.Message);
+    }
+    else{
+        document.getElementById('user-info-tag'+id).textContent = tag;
+    }
+}
 
 
 

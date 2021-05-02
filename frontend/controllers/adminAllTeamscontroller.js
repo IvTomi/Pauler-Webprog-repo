@@ -30,7 +30,6 @@ function onGetTeamsSucces(data,appendPoint){
         sessionStorage.setItem('allTeams',JSON.stringify(toList));
         sessionStorage.setItem('allTeamsRTM',new Date(Date.now()).getMinutes());
         sessionStorage.setItem('allTeamsRTH',new Date(Date.now()).getHours());
-        console.log(appendPoint);
         createList(toList,appendPoint);
     }
     
