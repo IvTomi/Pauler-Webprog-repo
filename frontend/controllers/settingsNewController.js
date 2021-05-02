@@ -5,7 +5,7 @@ import { getHeader } from './logincontroller.js';
 
 
 
-export function addUserToDb(){
+export function addUserToDb(userid){
     const permissions = document.getElementsByClassName('createForm_chb');
     const username = document.getElementById('createForm_username').value;
     const lastname = document.getElementById('createForm_lastname').value;
@@ -18,9 +18,11 @@ export function addUserToDb(){
     }
     for(let i = 0; i < 7; i++){
         if(permissions[i].checked){
-            alert(permissions[i].value);
-
-            //itt írja be az adatbázisba a value értékét
+            makeRequest('/user/create','POST',getHeader(),JSON.stringify({"username":username,"permissionname":permissions[i].value,"isenabled":true}),(data)=>{ModifyPesmissionSuccess(data)},()=>{OutputOnFail()});
+        }
+        else{
+            makeRequest('/user/create','POST',getHeader(),JSON.stringify({"username":username,"permissionname":permissions[i].value,"isenabled":false}),(data)=>{ModifyPesmissionSuccess(data)},()=>{OutputOnFail()});
+    
         }
         
     }
@@ -28,6 +30,15 @@ export function addUserToDb(){
 }
 
 function OutputOnSuccess(data){
+    if(data.Status === "Failed"){
+        alert('nope');
+    }
+    else if(data.Status === "Success"){
+        alert('ok');
+    }
+}
+
+function ModifyPesmissionSuccess(data){
     if(data.Status === "Failed"){
         alert('nope');
     }
