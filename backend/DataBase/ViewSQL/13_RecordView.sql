@@ -7,11 +7,13 @@ CREATE VIEW `recordview` AS
         `record`.`Comment` AS `Comment`,
         `record`.`Minute` AS `Minute`,
         `record`.`Hour` AS `Hour`,
-        `user`.`idUser` AS `User_idUser`,
+        `userview`.`idUser` AS `User_idUser`,
+        `taskview`.`idTask` AS `Task_idTask`,
         `superuser`.`Hash` AS `SuperUser_Hash`
     FROM
-        ((`record`
+        (((`record`
         JOIN `superuser` ON ((`record`.`SuperUser_Hash` = `superuser`.`Hash`)))
-        JOIN `user` ON ((`record`.`User_idUser` = `user`.`idUser`)))
+        JOIN `userview` ON ((`record`.`User_idUser` = `userview`.`idUser`)))
+        JOIN `taskview` ON ((`record`.`Task_idTask` = `taskview`.`idTask`)))
     WHERE
         (1 = `record`.`Status`)

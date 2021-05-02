@@ -1,7 +1,7 @@
 DELIMITER $$
-SELECT "Creating procedure RegisterSuperUser" $$
-DROP PROCEDURE IF EXISTS RegisterSuperUser $$
-CREATE PROCEDURE RegisterSuperUser (IN username VARCHAR(45),IN password TINYBLOB,IN email VARCHAR(100),IN company VARCHAR(45))
+SELECT "Creating procedure CreateSuperUser" $$
+DROP PROCEDURE IF EXISTS CreateSuperUser $$
+CREATE PROCEDURE CreateSuperUser (IN username VARCHAR(45),IN password TINYBLOB,IN email VARCHAR(100),IN company VARCHAR(45))
 BEGIN
 	DECLARE contactId INT;
 	DECLARE hash VARCHAR(60);
