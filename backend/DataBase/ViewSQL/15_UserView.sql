@@ -7,11 +7,11 @@ CREATE VIEW `userview` AS
         `user`.`LastName` AS `LastName`,
         `user`.`Username` AS `Username`,
         `user`.`Password` AS `Password`,
-        `permissiongroup`.`idPermissionGroup` AS `PermissionGroup_idPermissionGroup`,
+        `permissiongroupview`.`PermissionGroup_idPermissionGroup` AS `PermissionGroup_idPermissionGroup`,
         `superuser`.`Hash` AS `SuperUser_Hash`
     FROM
         ((`user`
         JOIN `superuser` ON ((`user`.`SuperUser_Hash` = `superuser`.`Hash`)))
-        JOIN `permissiongroup` ON ((`user`.`PermissionGroup_idPermissionGroup` = `permissiongroup`.`idPermissionGroup`)))
+        JOIN `permissiongroupview` ON ((`user`.`PermissionGroup_idPermissionGroup` = `permissiongroupview`.`PermissionGroup_idPermissionGroup`)))
     WHERE
         (1 = `user`.`Status`)
