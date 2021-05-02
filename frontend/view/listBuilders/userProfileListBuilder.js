@@ -3,7 +3,7 @@ import RecordData from "../../datasets/userProfileData.js";
 import {allUsers,CreateContact,getContacts,removeContact} from '../../controllers/userProfileController.js';
 
 
-export function createProfileDataList(userid,){
+export function createProfileDataList(userid){
     //ehelyett lekérés a users-ből
     allUsers(userid);
 
@@ -68,29 +68,29 @@ export function HTMLview(users,userid){
         }
     }
     
+    if(firstName && lastName && contacts){
+        new HTMLTag('h1').setText(firstName + ' ' + lastName).append(appendPoint);
 
-    new HTMLTag('h1').setText(firstName + ' ' + lastName).append(appendPoint);
+        /*getContacts(userid);
+        Ez alapértelmezetten visszaadná a userhez tartozó contactokat*/
+        for(let contanct of contacts){
+            //if(van jogosultsága)
+            new HTMLTag('button').setText("X").append(appendPoint).onclick(()=>{removeContact(userid,contanct.Id)}).preventDefaultEvent('click');
+            
+            new HTMLTag('p').setText(contanct.TypeName).append(appendPoint);
+            new HTMLTag('p').setText(contanct.Value).append(appendPoint);
+        }
 
-    /*getContacts(userid);
-    Ez alapértelmezetten visszaadná a userhez tartozó contactokat*/
-    for(let contanct of contacts){
-        //if(van jogosultsága)
-        new HTMLTag('button').setText("X").append(appendPoint).onclick(()=>{removeContact(userid,contanct.Id)}).preventDefaultEvent('click');
-        
-        new HTMLTag('p').setText(contanct.TypeName).append(appendPoint);
-        new HTMLTag('p').setText(contanct.Value).append(appendPoint);
+        //if(van jogosultdága)
+        if(!document.getElementById('add')){
+            new HTMLTag('p').setText('Adat hozzáadása').append(appendPoint);
+            const add = new HTMLTag('div').addAttr('id','add').append(appendPoint);
+            let type = new HTMLTag('input').addAttr('id','type').addAttr('name','type').addAttr('placeholder','Tipus').append(add);
+            let value = new HTMLTag('input').addAttr('id','value').addAttr('name','value').addAttr('placeholder','Érték').append(add);
+            const button = new HTMLTag('button').setText('Hozzáadás').append(add).onclick(()=>{CreateContact(userid)}).preventDefaultEvent('click');
+            
+        }
     }
-
-    //if(van jogosultdága)
-    if(!document.getElementById('add')){
-        new HTMLTag('p').setText('Adat hozzáadása').append(appendPoint);
-        const add = new HTMLTag('div').addAttr('id','add').append(appendPoint);
-        let type = new HTMLTag('input').addAttr('id','type').addAttr('name','type').addAttr('placeholder','Tipus').append(add);
-        let value = new HTMLTag('input').addAttr('id','value').addAttr('name','value').addAttr('placeholder','Érték').append(add);
-        const button = new HTMLTag('button').setText('Hozzáadás').append(add).onclick(()=>{CreateContact(userid)}).preventDefaultEvent('click');
-        
-    }
-    
 }
 
     
