@@ -91,12 +91,10 @@ export default class ViewController{
         setUpUserProfile(main);
     }
 
-    loadUserProject(evt){
-        if(evt){
-            evt.preventDefault();
-        }
-        const main = new viewController().setUpMain();
-        setUpUserProjectsViews(main);
+    loadUserProject(n){
+        this.loadUser();
+        const main = this.setUpMain();
+        setUpUserProjectsViews(main,n);
     }
 
     loadUserTeam(evt){
