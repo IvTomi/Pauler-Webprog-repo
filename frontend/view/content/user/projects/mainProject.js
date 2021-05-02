@@ -3,18 +3,20 @@ import changeHighlithed from '../../../../utilities/changeHighlighted.js';
 import HTMLTag from '../../../../utilities/HTMLTag.js';
 import createMyProjectsView from './myProjects.js';
 import createOneProjectView from './oneProject.js'
+import {router} from '../../../../index.js';
 
-
-function setUpUserProjectsViews(appendPoint){
+function setUpUserProjectsViews(appendPoint,n){
     const navList = document.querySelector('nav ul');
     changeHighlithed(1,navList);//Selects the first element [which is the records] on user nav bar
 
     const selecter = new HTMLTag('ul').addAttr('id','selecter').append(appendPoint);
     new HTMLTag('div').addAttr('id','content').append(appendPoint);
     
-    new HTMLTag('li').setText('Feladataim').append(selecter).onclick(createMyProjectsView);
-    new HTMLTag('li').setText('egy feladat').append(selecter).onclick(createOneProjectView);
+    new HTMLTag('li').setText('Feladataim').append(selecter).onclick(()=>{router.navigate('myProjectsUser')});
 
+    if(n === 0){
+        createMyProjectsView();
+    }
 }
 
 export function refreshContent(n){

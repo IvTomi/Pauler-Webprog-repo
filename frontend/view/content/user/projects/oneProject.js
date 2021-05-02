@@ -4,8 +4,8 @@ import {createProjectMembersList,createProjectRecordList} from '../../../listBui
 import ProjectData from '../../../../datasets/projectData.js'
 
 
-function createOneProjectView(){
-    const content = refreshContent(2);
+function createOneProjectView(projectid){
+
 
     new HTMLTag('h1').setText('Feladatnév').append(content);
     new HTMLTag('p').setText('Ezt a leírást is amúgy majd adatbázisból kell beolvasni').append(content);
