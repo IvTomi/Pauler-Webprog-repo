@@ -2,9 +2,10 @@ import HTMLTag from '../utilities/HTMLTag.js';
 import {makeRequest} from '../utilities/serviceHandler.js';
 import {router} from '../index.js';
 import { getHeader } from './logincontroller.js';
+import {modifyButtons} from '../view/listBuilders/adminManageSettingsListBuilder.js';
 
 
-export function modifyUser(){
+export function modifyUser(/*userid*/){
     const permissions = document.getElementsByClassName('modifyForm_chb');
     
     const oldpass = document.getElementById('modifyForm_oldpass').value;
@@ -25,7 +26,7 @@ export function modifyUser(){
         
     }
 }
-function getUserPermissions(){
+export function getUserPermissions(/*userid*/){
     makeRequest('/user/get/permissions','POST',getHeader(),JSON.stringify({/*"userid":userid,*/}),(data)=>{getUserPermissionsSuccess(data)},()=>{OutPutOnFail()});
 }
 
@@ -42,7 +43,7 @@ function getUserPermissionsSuccess(data){
         }
     }
     else if(data.Status === 'Success'){
-        console.log(data);
+        modifyButtons(data);
     }
 }
 
