@@ -13,7 +13,7 @@ export function AllTeamList(){
 }
 function onGetTeamsSucces(data){
     console.log(data);
-    createmyTeamsView(new teamData().teamTestData);
+    createmyTeamsView(data.Teams);
 }
 
 function onAjaxFail(){
