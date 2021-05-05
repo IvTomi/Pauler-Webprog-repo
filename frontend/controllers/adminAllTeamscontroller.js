@@ -1,7 +1,7 @@
 import { router } from "../index.js";
 import { makeRequest } from "../utilities/serviceHandler.js";
 import createList, { getDummyData } from "../view/listBuilders/adminTeamListBuilder.js";
-import { getHeader } from "./logincontroller.js";
+import { getHeader } from '../utilities/sessionJanitor.js';
 
 
 export function createAllTeamsList(appendPoint){

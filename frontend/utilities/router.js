@@ -49,12 +49,11 @@ class Router{
     }
 
     /**used for navigation between added routes */
-    navigate = (path = '') =>{
-        console.log(path);
+    navigate = (path = '',param) =>{
         if(this.routes.some(element=>element['path']===path)){
             if(this.mode === 'history'){
                 window.history.pushState(null,null,this.root + path);
-                this.routes.find(element=>element['path']===path)['cb'].apply();
+                this.routes.find(element=>element['path']===path)['cb'](param?param:null);
             }else{
                 window.location.href = `${window.location.href.replace(/#(.*)$/,'')}#${path}`;
             }

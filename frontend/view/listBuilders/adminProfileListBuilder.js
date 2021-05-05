@@ -1,6 +1,6 @@
 import HTMLTag from '../../utilities/HTMLTag.js';
 import {makeRequest} from '../../utilities/serviceHandler.js';
-import {getHeader} from '../../controllers/logincontroller.js';
+import {getHeader} from '../../utilities/sessionJanitor.js';
 import { router } from '../../index.js';
 
 export function getCompanyName(){
@@ -18,6 +18,8 @@ function onNameFail(){
 
 
 export function getCompanyContacts(appendPoint){ 
+    
+    
     
     //lekéri az adatbázisból a kontaktokat -> 
     //fail: 

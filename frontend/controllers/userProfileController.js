@@ -1,7 +1,7 @@
 import HTMLTag from '../utilities/HTMLTag.js';
 import {makeRequest} from '../utilities/serviceHandler.js';
 import {router} from '../index.js';
-import { getHeader } from './logincontroller.js';
+import { getHeader, SessionJanitor } from '../utilities/sessionJanitor.js';
 import {HTMLview} from '../view/listBuilders/userProfileListBuilder.js';
 
 
@@ -11,7 +11,7 @@ export function allUsers(userid){
 }
 
 function OnListSuccess(data,userid){
-    HTMLview(data,userid);
+    //HTMLview(data,userid);
 }
 
 function OnListFail(){
@@ -35,7 +35,16 @@ function OnAddFail(){
 
 export function removeContact(userid,contactid){
 
-    makeRequest('/user/remove/contact','POST',getHeader(),JSON.stringify({"userid":userid,"contactid":contactid}),(data)=>{OnRemoveSuccess(data)},()=>{OnRemoveFail()});
+    makeRequest('/user/contact/remove','POST',getHeader(),JSON.stringify({'Userid':userid,'Contactid':contactid}),(data)=>{
+        if(data.Status === 'Failed'){
+            alert(data.Message);
+        }
+        else{  
+            SessionJanitor.getAllUsers(()=>{HTMLview(SessionJanitor.getAllUsers(null),userid?userid:SessionJanitor.getSessionUser().id)})
+        }           
+    },(req,err)=>{
+        console.log(err);
+    }) 
 
 }
 
@@ -55,10 +64,20 @@ function getContactsSuccess(){}
 function getContactsFail(){}
 
 export function CreateContact(userid){
-    let typeRead = document.getElementById('type').value;
-    let valueRead = document.getElementById('value').value;
+    let typeRead = document.getElementById('contacttype').value;
+    let valueRead = document.getElementById('contactvalue').value;
+    let commentRead = document.getElementById('contactcomment').value;
     if(typeRead && valueRead){
-        makeRequest('/contact/create','POST',getHeader(),JSON.stringify({"typename":typeRead,"value":valueRead,"description":"","ispublic":"true"}),(data)=>{CreateContactSuccess(data,userid)},()=>{CreateContactFail()});
+        makeRequest('/user/contact/create','POST',getHeader(),JSON.stringify({'Userid':userid,'Typename':typeRead,'Value':valueRead,'Comment':commentRead?commentRead:null}),(data)=>{
+            if(data.Status === 'Failed'){
+                alert(data.Message);
+            }
+            else{  
+                SessionJanitor.getAllUsers(()=>{HTMLview(SessionJanitor.getAllUsers(null),userid?userid:SessionJanitor.getSessionUser().id)})
+            }           
+        },(req,err)=>{
+            console.log(err);
+        }) 
     }
 }
 

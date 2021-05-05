@@ -11,7 +11,7 @@ import setUpUserProjectsViews from '../view/content/user/projects/mainProject.js
 import setUpAdminTeamsView from '../view/content/admin/team/mainTeamA.js';
 import setUpAdminProjectsView from '../view/content/admin/project/mainProject.js';
 import setUpAdminSettingsView from '../view/content/admin/settings/mainSettings.js';
-
+import {viewController} from '../index.js'
 
 export default class ViewController{
     clearTag(tag){
@@ -19,11 +19,11 @@ export default class ViewController{
     }
 
     clearBody(){
-        this.clearTag(document.body);
+        viewController.clearTag(document.body);
     }
 
     loadLogin(){
-        this.clearBody();
+        viewController.clearBody();
         if(!sessionStorage.getItem('hash')){
             createHashInputView();
         }else{
@@ -32,12 +32,12 @@ export default class ViewController{
     }
 
     loadSignup(){
-        this.clearBody();
+        viewController.clearBody();
         createSignup();
     }
 
     loadAdmin(){
-        this.clearBody();
+        viewController.clearBody();
         createAdminNav();
     }
 
@@ -45,8 +45,8 @@ export default class ViewController{
         if(evt){
             evt.preventDefault();
         }
-        this.loadAdmin();
-        const main = this.setUpMain();
+        viewController.loadAdmin();
+        const main = viewController.setUpMain();
         setUpAdminProfile(main);
     }
 
@@ -54,46 +54,46 @@ export default class ViewController{
         if(evt){
             evt.preventDefault();
         }
-        const main = new viewController().setUpMain();
+        const main = viewController.setUpMain();
         setUpAdminProjectsView(main);
     }
 
     
     loadAdminSettings(n){
-        this.loadAdmin();
-        const main = this.setUpMain();
+        viewController.loadAdmin();
+        const main = viewController.setUpMain();
         setUpAdminSettingsView(main,n);
     }
     
 
-    loadUser(){
-        this.clearBody();
-        createUserNav();
+    loadUser(username){
+        viewController.clearBody();
+        createUserNav(username?username:null);
     }
 
     loadUserRecord(evt){
         if(evt){
             evt.preventDefault();
         }
-        const main = new viewController().setUpMain();
+        const main = viewController.setUpMain();
         setUpUserRecordViews(main);
     }
 
-    loadUserProfile(n){
+    loadUserProfile(n,id){
         
         if(n === 0){
-            this.loadUser();
+            viewController.loadUser(id);
         }
         if(n === 1){
-            this.loadAdmin();
+            viewController.loadAdmin();
         }
-        const main = this.setUpMain();
-        setUpUserProfile(main);
+        const main = viewController.setUpMain();
+        setUpUserProfile(main,id);
     }
 
     loadUserProject(n){
-        this.loadUser();
-        const main = this.setUpMain();
+        viewController.loadUser();
+        const main = viewController.setUpMain();
         setUpUserProjectsViews(main,n);
     }
 
@@ -101,14 +101,14 @@ export default class ViewController{
         if(evt){
             evt.preventDefault();
         }
-        const main = new viewController().setUpMain();
+        const main = viewController.setUpMain();
         setUpUserTeamsView(main);
     }
 
     loadAdminTeam(n){
        
-        /*Ideiglenesen*/this.loadAdmin();
-        const main = this.setUpMain();
+        /*Ideiglenesen*/viewController.loadAdmin();
+        const main = viewController.setUpMain();
         setUpAdminTeamsView(main,n);
     }
     

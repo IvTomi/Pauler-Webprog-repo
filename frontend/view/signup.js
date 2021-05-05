@@ -1,6 +1,7 @@
 
 import HTMLTag from '../utilities/HTMLTag.js';
 import {router} from '../index.js';
+import {sendRegister} from '../controllers/registrationController.js'
 
 function createSignup(){
     const formID= 'signupForm';
@@ -15,7 +16,7 @@ function createSignup(){
     new HTMLTag('input').addAttr('id',formID+'_passAgain').addAttr('name',formID+'_passAgain').addAttr('placeholder','Jelszó megerősítés').addAttr('type','password').append(signupForm);
     new HTMLTag('a').setText('Vissza a bejelentkezéshez').addAttr('href','').append(signupForm).onclick(()=>{router.navigate('login')}).preventDefaultEvent('click');
     
-    new HTMLTag('button').setText('Regisztráció').append(signupForm).onclick(()=>{router.navigate('login')}).preventDefaultEvent('click');
+    new HTMLTag('button').setText('Regisztráció').append(signupForm).onclick(()=>{sendRegister()}).preventDefaultEvent('click');
    
 }
 

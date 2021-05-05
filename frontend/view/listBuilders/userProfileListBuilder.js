@@ -1,95 +1,61 @@
 import HTMLTag from "../../utilities/HTMLTag.js";
 import RecordData from "../../datasets/userProfileData.js";
-import {allUsers,CreateContact,getContacts,removeContact} from '../../controllers/userProfileController.js';
-
+import {allUsers,CreateContact,removeContact} from '../../controllers/userProfileController.js';
+import {SessionJanitor} from '../../utilities/sessionJanitor.js'
 
 export function createProfileDataList(userid){
     //ehelyett lekérés a users-ből
-    allUsers(userid);
-
-    //ez nem kell majd, ha meglesz az endpoint
-    const users = [
-        {Id:0,FirstName:'Minta',LastName:'Máté',Contacts:[
-            {
-                Id: 0,
-                TypeName: 'email',
-                Value: 'vasadsa@asds.hu'
-            },
-            {
-                Id: 1,
-                TypeName: 'telefon',
-                Value: '30020443'
-            }
-
-        ]},
-        {Id:1,FirstName:'Minta',LastName:'Mónika',Contacts:[
-            {
-                Id: 0,
-                TypeName: 'email',
-                Value: 'moni@asds.hu'
-            },
-            {
-                Id: 1,
-                TypeName: 'telefon',
-                Value: '55555555'
-            }
-
-        ]},
-        {Id:2,FirstName:'Minta',LastName:'Péter',Contacts:[
-            {
-                Id: 0,
-                TypeName: 'email',
-                Value: 'peti@asds.hu'
-            },
-            {
-                Id: 1,
-                TypeName: 'telefon',
-                Value: '77777777'
-            }
-
-        ]}
-    ];
+    console.log(SessionJanitor.getSessionUser().id)
     //ez sem kell majd, ha meglesz az endpoint
-    HTMLview(users,userid);
-
+    SessionJanitor.getAllUsers(()=>{HTMLview(SessionJanitor.getAllUsers(null),userid?userid:SessionJanitor.getSessionUser().id)})
+    
 }
+
 export function HTMLview(users,userid){
-    const appendPoint = document.getElementById('content');
+    const appendPoint = document.getElementById('content');   
+    appendPoint.innerHTML = ""
     let firstName = "";
     let lastName = "";
     let contacts = [];
 
-
-    for(let user of users){
-        if(userid === user.Id && user.FirstName && user.LastName && user.Contacts){
-            firstName = user.FirstName;
-            lastName = user.LastName;
-            contacts = user.Contacts;
-        }
+    console.log('user'+ users)  
+    
+    new HTMLTag('h1').setText(firstName + ' ' + lastName).append(appendPoint);
+    let canedit = false
+    if((SessionJanitor.getSessionUser().permissions.find(x=>x.isenabled && x.permissionname === 'CanEditUser')) || userid == SessionJanitor.getSessionUser().id){
+        canedit = true;
+    }
+    if(canedit){
+        new HTMLTag('p').setText('Adat hozzáadása').append(appendPoint);
+    const add = new HTMLTag('div').addAttr('id','contactadd').append(appendPoint);
+    let type = new HTMLTag('input').addAttr('id','contacttype').addAttr('name','type').addAttr('placeholder','Tipus').append(add);
+    let value = new HTMLTag('input').addAttr('id','contactvalue').addAttr('name','value').addAttr('placeholder','Érték').append(add);
+    let comment = new HTMLTag('input').addAttr('id','contactcomment').addAttr('name','value').addAttr('placeholder','Megjegyzés').append(add);
+    const button = new HTMLTag('contactaddbutton').setText('Hozzáadás').append(add).onclick(()=>{CreateContact(userid)}).preventDefaultEvent('click');
     }
     
-    if(firstName && lastName && contacts){
-        new HTMLTag('h1').setText(firstName + ' ' + lastName).append(appendPoint);
+    users.forEach(element => {
+        if(element.id == userid){
+            console.log('useridLOL:' + userid)
+            SessionJanitor.getUserContacts(()=>{getContacts(appendPoint,SessionJanitor.getUserContacts(null,userid),canedit,userid)},userid)
+        }
+    });
+}
 
-        /*getContacts(userid);
-        Ez alapértelmezetten visszaadná a userhez tartozó contactokat*/
-        for(let contanct of contacts){
-            //if(van jogosultsága)
-            new HTMLTag('button').setText("X").append(appendPoint).onclick(()=>{removeContact(userid,contanct.Id)}).preventDefaultEvent('click');
-            
-            new HTMLTag('p').setText(contanct.TypeName).append(appendPoint);
-            new HTMLTag('p').setText(contanct.Value).append(appendPoint);
+function getContacts(appendPoint,contacts,canedit,userid){
+    console.log('cigg: ',contacts)
+    for(let contanct of contacts){
+        console.log('a' + contacts.typename)
+        //if(van jogosultsága)
+        if(canedit){
+            new HTMLTag('button').setText("X").append(appendPoint).onclick(()=>{removeContact(userid,contanct.id)}).preventDefaultEvent('click');
+
         }
 
-        //if(van jogosultdága)
-        if(!document.getElementById('add')){
-            new HTMLTag('p').setText('Adat hozzáadása').append(appendPoint);
-            const add = new HTMLTag('div').addAttr('id','add').append(appendPoint);
-            let type = new HTMLTag('input').addAttr('id','type').addAttr('name','type').addAttr('placeholder','Tipus').append(add);
-            let value = new HTMLTag('input').addAttr('id','value').addAttr('name','value').addAttr('placeholder','Érték').append(add);
-            const button = new HTMLTag('button').setText('Hozzáadás').append(add).onclick(()=>{CreateContact(userid)}).preventDefaultEvent('click');
-            
-        }
+        
+        new HTMLTag('p').setText(contanct.typename).append(appendPoint);
+        new HTMLTag('p').setText(contanct.value).append(appendPoint);
+        new HTMLTag('p').setText(contanct.description).append(appendPoint);
     }
 }
 

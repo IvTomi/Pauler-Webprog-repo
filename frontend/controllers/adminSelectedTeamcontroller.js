@@ -1,7 +1,7 @@
 import { router } from "../index.js";
 import { makeRequest } from "../utilities/serviceHandler.js";
 import  { addNewMemberToExisting, addNonMemberToExisting } from "../view/listBuilders/adminTeamListBuilder.js";
-import { getHeader } from "./logincontroller.js";
+import { getHeader } from '../utilities/sessionJanitor.js';
 
 
 

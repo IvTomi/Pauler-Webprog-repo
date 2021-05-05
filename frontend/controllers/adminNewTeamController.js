@@ -1,7 +1,7 @@
 import { router } from "../index.js";
 import { makeRequest } from "../utilities/serviceHandler.js";
 import { addNewMemberToNew, addNonMemberToNew } from "../view/listBuilders/adminTeamListBuilder.js";
-import { getHeader } from "./logincontroller.js";
+import { getHeader } from '../utilities/sessionJanitor.js';
 
 export function onCreate(){
     const teamMembers = [];
