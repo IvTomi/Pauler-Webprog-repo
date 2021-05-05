@@ -4,10 +4,17 @@ import {SessionJanitor} from '../../utilities/sessionJanitor.js'
 import { viewController } from '../../index.js';
 import {router} from '../../index.js'
 
-function createAside(title){
-    title = title.toString();
-    const aside = new HTMLTag('aside').append(document.body);
-    new HTMLTag('h3').setText(title).append(aside);
+const title = 'Alkalmazottak'
+
+export function createAside(t){
+    let aside
+    if(!document.getElementById('aside')){
+        aside = new HTMLTag('aside').addAttr('id','aside').append(document.body);
+    }else{
+        aside = document.getElementById('aside');
+    }
+    
+    new HTMLTag('h3').setText(t?t:title).append(aside);
     const ul = new HTMLTag('ul').addClass('scroll').append(aside);
     SessionJanitor.getAllUsers(()=>{makeUserList(SessionJanitor.getAllUsers(null),ul)})
 }
