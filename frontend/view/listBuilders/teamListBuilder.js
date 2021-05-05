@@ -1,3 +1,4 @@
+import { getTeamAttributes } from '../../controllers/userOneTeamController.js';
 import HTMLTag from '../../utilities/HTMLTag.js';
 import createUsersTeamInfoView from '../content/user/teams/oneTeamU.js';
 
@@ -7,7 +8,7 @@ export function createMyTeamsList(data,appendPoint,options){
     for(let team of data){
         const li = new HTMLTag('li');
         if(team.name && team.desc && team.id){
-            li.onclick(createUsersTeamInfoView);
+            li.onclick(() => getTeamAttributes(team.id,team.name,team.desc));
             new HTMLTag('p').setText(team.name).append(li);
             new HTMLTag('p').setText(team.desc).append(li);
             const memP = new HTMLTag('p');

@@ -1,10 +1,9 @@
 import HTMLTag from '../../../../utilities/HTMLTag.js';
 import {createTeamMembersList, createTeamProjectsList} from '../../../listBuilders/teamListBuilder.js';
 import viewController from '../../../../controllers/viewController.js';
-import teamData from '../../../../datasets/teamData.js';
 
-function createUsersTeamInfoView(team){
-    team = new teamData().teamTestData[1];//Egyelőre fixen meg van adva melyik csapatot töltik be
+function createUsersTeamInfoView(name,desc,members,projects){
+    //team = new teamData().teamTestData[1];//Egyelőre fixen meg van adva melyik csapatot töltik be
     if(!(team.name && team.desc && team.members && team.projects)){//A szükséges információk meglétének ellenőrzése
         return false;
     }

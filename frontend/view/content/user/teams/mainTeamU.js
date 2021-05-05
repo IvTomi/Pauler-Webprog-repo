@@ -1,6 +1,7 @@
 import changeHighlithed from '../../../../utilities/changeHighlighted.js';
 import HTMLTag from '../../../../utilities/HTMLTag.js';
 import createmyTeamsView from './myTeamsU.js';
+import { AllTeamList } from '../../../../controllers/userMyTeamsController.js';
 
 function setUpUserTeamsView(appendPoint){
     const navList = document.querySelector('nav ul');
@@ -8,7 +9,8 @@ function setUpUserTeamsView(appendPoint){
 
     new HTMLTag('content').addAttr('id','content').append(appendPoint);
     
-    createmyTeamsView();
+    AllTeamList();
+    //createmyTeamsView();
 }
 
 export default setUpUserTeamsView

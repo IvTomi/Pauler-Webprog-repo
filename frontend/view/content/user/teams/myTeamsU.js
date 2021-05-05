@@ -3,7 +3,8 @@ import {createMyTeamsList} from '../../../listBuilders/teamListBuilder.js';
 import teamData from '../../../../datasets/teamData.js';
 import HTMLTag from '../../../../utilities/HTMLTag.js';
 
-function createmyTeamsView(){
+function createmyTeamsView(data){
+    
     const content = document.getElementById('content');
     new viewController().clearTag(content);
     new HTMLTag('h2').setText('Saját csapataim').append(content);
@@ -16,7 +17,10 @@ function createmyTeamsView(){
         list.setAttribute('id','list');
         content.appendChild(list);
     }
-    createMyTeamsList(new teamData().teamTestData,list,{});
+    //if(data.iterable){
+        createMyTeamsList(data,list,{});
+    //};
+    
 }
 
 export default createmyTeamsView;
