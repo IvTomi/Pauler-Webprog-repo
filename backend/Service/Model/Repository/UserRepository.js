@@ -303,16 +303,12 @@ async function ModifyUserPermission(userid,hash,permissionname,isenabled,targeti
             return
         }
         //check can edit permission
-        getUserPermissions(userid).then(res=>{
-            if(res.filter(x=>x['IsEnabled']==='000').length>0){
+        getUserPermission('CanEditUser',userid).then(res=>{
+            if(!res){
                 resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(4)));
                 return
             }
             //check if permissionname valid
-            if(!res.filter(x=>x['PermissionName'] === permissionname)){
-                resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(1)));
-                return
-            }
             //check target user exists
             userByHash(targetid,hash).then(res2=>{
                 if(!res2){
