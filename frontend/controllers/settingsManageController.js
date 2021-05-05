@@ -2,54 +2,122 @@ import HTMLTag from '../utilities/HTMLTag.js';
 import {makeRequest} from '../utilities/serviceHandler.js';
 import {router} from '../index.js';
 import { getHeader } from '../utilities/sessionJanitor.js';
-import {modifyButtons} from '../view/listBuilders/adminManageSettingsListBuilder.js';
 
+import {SessionJanitor} from "../utilities/sessionJanitor.js";
+import {createProfile} from "../view/listBuilders/profileListBuilder.js";
+import {createAside} from '../view/listBuilders/asideBuilder.js'
 
 export function modifyUser(/*userid*/){
-    const permissions = document.getElementsByClassName('modifyForm_chb');
     
-    const oldpass = document.getElementById('modifyForm_oldpass').value;
-    const pass = document.getElementById('modifyForm_pass').value;
-    const passAgain = document.getElementById('modifyForm_passAgain').value;
-    
-    if(oldpass && pass && passAgain === pass){
+    let pass = document.getElementById('modifyForm_pass').value;
+    let passAgain = document.getElementById('modifyForm_passAgain').value;
+    let firstname = document.getElementById('modifyForm_firstname').value;
+    let lastname = document.getElementById('modifyForm_lastname').value;
+    let ispass;
+    if(pass){
+        ispass = true
+        if(passAgain != pass){
+            alert('Jelszavak nem egyeznek')
+            return;
+        }
+    }else{
+        ispass = false
+    }
+
+    if(SessionJanitor.getActiveProfile()){
         
-        makeRequest('/user/create','POST',getHeader(),JSON.stringify({/*"userid":userid,*/"password":pass}),(data)=>{modifyUserOnSuccess(data)},()=>{OutPutOnFail()});
+        let user = SessionJanitor.getActiveProfile()
+        makeRequest('/user/modify','POST',getHeader(),JSON.stringify({"Userid":user.id,"Password":ispass?pass:null,"Firstname":firstname,"Lastname":lastname}),(data)=>{modifyUserOnSuccess(data,user)},()=>{OutPutOnFail()});
 
         //itt még feltételek és felh módosítása
+    }else{
+        alert('Nincs felhasználó kiválasztva')
     }
-    for(let i = 0; i < 7; i++){
-        if(permissions[i].checked){
-            alert(permissions[i].value);
-            //itt írja be az adatbázisba a value értékét
+}
+
+
+export function initProfiles(appendPoint){
+    let profiles;
+    if(SessionJanitor.getAllUsers(null)){
+        profiles = SessionJanitor.getAllUsers(null);
+    }else{
+        SessionJanitor.getAllUsers(()=>{initProfiles()});
+    }
+    profiles.forEach(element => {
+        createProfile(element,appendPoint);
+    });
+}
+
+export function resetInputData(){
+    let profile = SessionJanitor.getActiveProfile();
+    console.log(profile)
+    if(profile){
+        document.getElementById('modifyForm_firstname').value = profile.firstname
+        document.getElementById('modifyForm_lastname').value = profile.lastname
+        getUserPermissions(profile.id)
+    }else{modifyUserOnSuccess
+        document.getElementById('modifyForm_firstname').value = ""
+        document.getElementById('modifyForm_lastname').value = ""
+        getUserPermissions(null)
+    }
+    document.getElementById('modifyForm_pass').value = ""
+    document.getElementById('modifyForm_passAgain').value = ""
+    
+
+}
+
+export function getUserPermissions(userid){
+
+    if(userid){
+        makeRequest('/user/get/permissions','POST',getHeader(),JSON.stringify({"Userid":userid}),(data)=>{getUserPermissionsSuccess(data)},(data)=>{OutPutOnFail(data)});
+    }else{
+        document.getElementsByClassName('modifyForm_chb').forEach(x=>x.checked = false);
+    }
+   
+
+}
+
+async function setPermissions(userid){
+    let permissions = document.getElementsByClassName('modifyForm_chb');
+    for(let item of permissions){
+        if(item.checked){
+            makeRequest('/user/permission/modify','POST',getHeader(),JSON.stringify({"Userid":userid,"Permissionname":item.value,"Isenabled":true}),(data)=>{ModifyPesmissionSuccess(data)},(xhr, ajaxOptions, thrownError)=>{OutputOnFail(xhr, ajaxOptions, thrownError)});
         }
-        
+        else{
+            makeRequest('/user/permission/modify','POST',getHeader(),JSON.stringify({"Userid":userid,"Permissionname":item.value,"Isenabled":false}),(data)=>{ModifyPesmissionSuccess(data)},(xhr, ajaxOptions, thrownError)=>{OutputOnFail(xhr, ajaxOptions, thrownError)});
+    
+        }      
+        console.log(item)
     }
+
+   
 }
-export function getUserPermissions(/*userid*/){
-    makeRequest('/user/get/permissions','POST',getHeader(),JSON.stringify({/*"userid":userid,*/}),(data)=>{getUserPermissionsSuccess(data)},()=>{OutPutOnFail()});
-}
+
+const timer = ms => new Promise(res => setTimeout(res, ms))
+
 
 function getUserPermissionsSuccess(data){
+    let permissions = document.getElementsByClassName('modifyForm_chb');
     if(data.Status === 'Failed'){
-        if(data.Error === 'InvalidCredentials'){
-            console.log('InvalidCredentials');
-        }
-        else if(data.Error === 'InvalidPermission'){
-            console.log('InvalidPermission');
-        }
-        else if(data.Error === 'UserNotExists'){
-            console.log('UserNotExists');
-        }
+        alert(data.Message)
     }
     else if(data.Status === 'Success'){
-        modifyButtons(data);
+        data.Permissions.forEach(e=>{
+            for(let item of permissions){
+                //console.log(item.value)
+                if(item.value === e['Permission']['permissionname']){
+                    item.checked = e['Permission']['isenabled']
+                }
+            }
+        })
     }
 }
 
 
-function modifyUserOnSuccess(data){
-    alert('ok');
+function modifyUserOnSuccess(data,user){
+    resetInputData();
+    //createAside(); 
+    setPermissions(user.id)
 }
 
 export function deleteUser(){
@@ -60,6 +128,6 @@ function OnDeleteSuccess(data){
     console.log(data);
 }
 
-function OutPutOnFail(){
-    console.log('hibbaaaa');
+function OutPutOnFail(xhr, ajaxOptions, thrownError){
+    alert('error');
 }
