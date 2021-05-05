@@ -463,7 +463,7 @@ async function ListTeamUsers(hash,userid,teamid){
                 }
                 getTeamMembers(teamid).then(async result=>{   
                     console.log(result)                         
-                    resolve((jsonParser.combineJSON(protocol.status(true),UserDaO.GetUserListJson(result.map(element=>userrepo.ViewToUser(element))))));
+                    resolve((jsonParser.combineJSON(protocol.status(true),UserDaO.GetUserListJson(result.map(element=>jsonParser.combineJSON(userrepo.ViewToUser(element),{"Tag":result['Tag']?result['Tag']:""}))))));
                 }).catch((e)=>{
                     logger.error(e);
                     resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
