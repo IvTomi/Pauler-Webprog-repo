@@ -143,7 +143,7 @@ router.post("/team/delete",(req,res)=>
 router.post("/team/modify/tag",(req,res)=>
 {
 
-    teamrepo.ModifyTeamMemberTag(req.userid,req.headers['hash'],req.body['MemberId'],req.body['Tag'],req.body['TeamId']).then(result=>{
+    teamrepo.ModifyTeamMemberTag(req.userid,req.headers['hash'],req.body['Memberid'],req.body['Tag'],req.body['TeamId']).then(result=>{
         res.json(result);
     }).catch((e)=>{
         logger.error(e)
@@ -156,7 +156,7 @@ router.post("/team/modify/tag",(req,res)=>
 router.post("/team/add/user",(req,res)=>
 {
 
-    teamrepo.AddMemberToTeam(req.userid,req.headers['hash'],req.body['TeamId'],req.body['MemberId'],req.body['Tag']).then(result=>{
+    teamrepo.AddMemberToTeam(req.userid,req.headers['hash'],req.body['Teamid'],req.body['Memberid'],req.body['Tag']).then(result=>{
         res.json(result);
     }).catch((e)=>{
         logger.error(e)
@@ -295,6 +295,14 @@ router.post("/user/get/tasks",(req,res)=>
 router.post("/user/get/permissions", (req, res)=>
 {
     userrepo.ListUserPermissions(req.body['Userid'],req.headers['hash']).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/team/get/users", (req, res)=>
+{
+    teamrepo.ListTeamUsers(req.headers['hash'],req.userid,req.body['Teamid']).then((result)=>
     {
         res.json(result);
     })
