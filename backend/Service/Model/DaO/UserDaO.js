@@ -55,7 +55,12 @@ function GetUser(id,username,firstname,lastname,contacts,tasks,permissions){
     return new UserBuilder().setId(id).setUsername(username).setFirstname(firstname).setLastname(lastname).setContacts(contacts).setTasks(tasks).setPermissions(permissions);
 }
 
+function GetUserListJson(users){
+    return {"Users":users}
+}
+
 module.exports={
     UserBuilder : UserBuilder,
-    GetUser:GetUser
+    GetUser:GetUser,
+    GetUserListJson:GetUserListJson
 }

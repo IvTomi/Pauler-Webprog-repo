@@ -13,10 +13,34 @@ async function getCreateTeam(name, description,userid,hash){
         pool.awaitGetConnection().then((res)=>{
             res.awaitQuery(`CALL CreateTeam('${name}','${description}','${userid}','${hash}')`).then((result)=>{
                 resolve(result[result.length-2][0]);                     
-            }).catch((e)=>{
-                
-                logger.error(e);
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            }).catch((e)=>{              
+                reject(e)
+            })
+            res.release();   
+        })
+    })
+}
+
+async function getTeamMembers(teamid){
+    return new Promise((resolve,reject)=>{
+        pool.awaitGetConnection().then((res)=>{
+            res.awaitQuery(`CALL GetTeamUsersw('${teamid}')`).then((result)=>{
+                resolve(result[result.length-2]);                     
+            }).catch((e)=>{              
+                reject(e)
+            })
+            res.release();   
+        })
+    })
+}
+
+async function getUserTeams(userid){
+    return new Promise((resolve,reject)=>{
+        pool.awaitGetConnection().then((res)=>{
+            res.awaitQuery(`CALL GetTeamUsersw('${teamid}')`).then((result)=>{
+                resolve(result[result.length-2]);                     
+            }).catch((e)=>{              
+                reject(e)
             })
             res.release();   
         })
@@ -82,7 +106,7 @@ async function getRemoveUserFromTeam(teamid, memberid,userid){
             }).catch((e)=>{
                 
                 logger.error(e);
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
             })
             res.release();   
         })
@@ -99,6 +123,38 @@ async function getTeamByHash(id, hash){
                 resolve(null);
             })
             res.release();   
+        })
+    })
+}
+
+async function getTeamTaskByHash(teamid,taskid, hash){   
+    return new Promise((resolve,reject)=>{
+        pool.awaitGetConnection().then((res)=>{
+            res.awaitQuery(`CALL GetTeamTasksByHash('${teamid}','${taskid}','${hash}')`).then((result)=>{
+                resolve(result[result.length-2][0]);                     
+            }).catch((e)=>{
+                
+                resolve(null);
+            })
+            res.release();   
+        })
+    })
+}
+
+function teamTaskByHash(teamid,taskid,hash){
+    return new Promise((resolve,reject)=>{
+        getTeamTaskByHash(teamid, taskid,hash).then((result)=>
+        {
+            if(result==null)
+            {
+                resolve(false);
+            }
+            else
+            {
+                resolve(true);
+            }
+        }).catch((e)=>{
+            reject(e)
         })
     })
 }
@@ -128,7 +184,7 @@ async function getTeamUsers(id){
             }).catch((e)=>{
                 
                 logger.error(e);
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
             })
             res.release();   
         })
@@ -142,7 +198,7 @@ async function getDeleteTeam(id,userid){
                 resolve(true)                   
             }).catch((e)=>{
                 
-                resolve(false)
+                reject(e)
             })
             res.release();   
         })
@@ -170,7 +226,7 @@ async function getTeams(hash){
                 resolve(result[result.length-2]);                     
             }).catch((e)=>{               
                 logger.error(e);
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
             })
             res.release();   
         })
@@ -181,18 +237,18 @@ async function CreateNewTeam(userid,hash,name,description,teammembers){
     return new Promise((resolve,reject)=>{
         userrepo.getUserPermission("CanEditTeam",userid).then(result=>{
             if(!result){
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
                 return
             }
 
             if(!name){
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
                 return
             }
             teammembers.forEach(async element=>{
                 const a = await userrepo.userByHash(element['Id'],hash)
                 if(!a){
-                    resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
                     return
                 }
             })
@@ -200,21 +256,21 @@ async function CreateNewTeam(userid,hash,name,description,teammembers){
                 teammembers.forEach(async member=>{
                     await getAddUserToTeam(member['Id'],result['Id'],member['Tags'],userid).catch((e)=>{
                         logger.error(e);
-                        resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                        resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
                         return
                     })
                     
                 })
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(true),{"Id":result['Id']})));
+                resolve((jsonParser.combineJSON(protocol.status(true),{"Id":result['Id']})));
             }).catch((e)=>{
                 logger.error(e);
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
                 return
             })
 
         }).catch((e)=>{
             logger.error(e);
-            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
             return
         })            
         
@@ -224,62 +280,62 @@ async function CreateNewTeam(userid,hash,name,description,teammembers){
 async function AddMemberToTeam(userid,hash,teamid,memberid,tags){
     return new Promise((resolve,reject)=>{
         if(!teamid && !memberid){
-            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
             return
         }
         //check permission
         userrepo.getUserPermission("CanEditTeam",userid).then(result=>{
             if(!result){
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
                 return
             }
             //check team exist
             teamByHash(teamid,hash).then(res2=>{
                 if(!res2){
-                    resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
                     return
                 }
                 //check user exist
                 userrepo.userByHash(memberid,hash).then(res3=>{
                     if(!res3){
-                        resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1)))); 
+                        resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1)))); 
                         return
                     }
                     //check member added
                     teamMemberByHash(teamid,memberid,hash).then(res4=>{
                         logger.debug(res4)
                         if(res4){
-                            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(5)))); 
+                            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(5)))); 
                             return
                         }
                         logger.debug("wait")
                         //add member
                         getAddUserToTeam(memberid,teamid,tags?tags:"",userid).then(res5=>{
-                            resolve(JSON.stringify(protocol.status(true)));
+                            resolve((protocol.status(true)));
                         }).catch((e)=>{
                             logger.error(e);
-                            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+                            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
                             return
                         })
                     }).catch((e)=>{
                         logger.error(e);
-                        resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+                        resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
                         return
                     })
                 }).catch((e)=>{
                     logger.error(e);
-                    resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
                     return
                 })
             }).catch((e)=>{
                 logger.error(e);
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
                 return
             })
             //check team exists
         }).catch((e)=>{
             logger.error(e);
-            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
             return     
         })
     })
@@ -288,61 +344,61 @@ async function AddMemberToTeam(userid,hash,teamid,memberid,tags){
 async function RemoveMemberFromTeam(userid,hash,teamid,memberid){
     return new Promise((resolve,reject)=>{
         if(!teamid && !memberid){
-            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
             return
         }
         //check permission
         userrepo.getUserPermission("CanEditTeam",userid).then(result=>{
             if(!result){
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
                 return
             }
             //check team exist
             teamByHash(teamid,hash).then(res2=>{
                 if(!res2){
-                    resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
                     return
                 }
                 //check user exist
                 userrepo.userByHash(memberid,hash).then(res3=>{
                     if(!res3){
-                        resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1)))); 
+                        resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1)))); 
                         return
                     }
                     //check member added
                     teamMemberByHash(teamid,memberid,hash).then(res4=>{
                         logger.debug(res4)
                         if(!res4){
-                            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1))));      
+                            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));      
                             return
                         }
                         //remove member
                         getRemoveUserFromTeam(teamid,memberid,userid).then(res5=>{
-                            resolve(JSON.stringify(protocol.status(true)));
+                            resolve((protocol.status(true)));
                         }).catch((e)=>{
                             logger.error(e);
-                            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+                            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
                             return
                         })
                     }).catch((e)=>{
                         logger.error(e);
-                        resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+                        resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
                         return
                     })
                 }).catch((e)=>{
                     logger.error(e);
-                    resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
                     return
                 })
             }).catch((e)=>{
                 logger.error(e);
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
                 return
             })
             //check team exists
         }).catch((e)=>{
             logger.error(e);
-            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
             return     
         })
     })
@@ -362,48 +418,94 @@ async function getModifyMemberTag(memberid,teamid,tags,userid){
 }
 
 function viewToTeam(viewobj){
-    return teamdao.GetTeam(viewobj["idTeam"],viewobj["TeamName"],viewobj["Description"],null,null,null);
+    return {"Team":teamdao.GetTeam(viewobj["idTeam"],viewobj["TeamName"],viewobj["Description"],null,null)};
 }
 
-async function ListTeams(hash){
+async function ListTeams(hash,userid){
     return new Promise((resolve,reject)=>{
-        getTeams(hash).then(result=>{                             
-            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(true),teamdao.GetTeamListJson(result.map(element=>viewToTeam(element))))));
+        userrepo.getUserPermission('IsAdmin').then(res=>{
+            if(!res){
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                return
+            }
+            getTeams(hash).then(async result=>{                            
+                resolve((jsonParser.combineJSON(protocol.status(true),teamdao.GetTeamListJson(result.map(element=>viewToTeam(element))))));
+            }).catch((e)=>{
+                logger.error(e);
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            })
         }).catch((e)=>{
             logger.error(e);
-            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
         })
+        
     })
 }
+
+async function ListUserTeams(hash,userid,callerid){
+    return new Promise((resolve,reject)=>{
+        if(!userid){
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(3))));
+            return
+        }
+        userrepo.userByHash(userid,hash).then(res1=>{
+            if(!res1){
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+            return
+            }
+            userrepo.getUserPermission('IsAdmin').then(res=>{
+                if(!res && callerid != userid){
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                    return
+                }
+                getTeams(hash).then(async result=>{                            
+                    resolve((jsonParser.combineJSON(protocol.status(true),teamdao.GetTeamListJson(result.map(element=>viewToTeam(element))))));
+                }).catch((e)=>{
+                    logger.error(e);
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                })
+            }).catch((e)=>{
+                logger.error(e);
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            })
+        }).catch((e)=>{
+            logger.error(e);
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+        })       
+        
+    })
+}
+
+
 
 async function MoidifyTeam(userid,hash,teamid,teamname,teamdescription){
     return new Promise((resolve,reject)=>{
         userrepo.getUserPermission("CanEditTeam",userid).then(result=>{
             if(!result){
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
                 return
             }
             if(!teamid){
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
                 return
             }
            
             teamByHash(teamid,hash).then(result=>{           
                 if(!result){
-                    resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
                     return
                 }
                 getModifyTeam(teamid,teamname?teamname:result['TeamName'],teamdescription?teamdescription:result['Description'],userid).then(res2=>{
-                    resolve(JSON.stringify(protocol.status(true)));
+                    resolve((protocol.status(true)));
                     return
                 }).catch((e)=>{
                     logger.error(e);
-                    resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
                     return
                 })
             }).catch((e)=>{
                 logger.error(e);
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
                 return
             })
         })           
@@ -414,33 +516,33 @@ async function MoidifyTeam(userid,hash,teamid,teamname,teamdescription){
 async function DeleteTeam(userid,hash,teamid){
     return new Promise((resolve,reject)=>{
         if(!teamid){
-            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
             return
         }
         teamByHash(teamid,hash).then(result=>{
             if(!result){
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
                 return
             }
             userrepo.getUserPermission('CanEditTeam',userid).then(result=>{
                 if(!result){
-                    resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
                     return
                 }
                 getDeleteTeam(teamid,userid).then(result=>{
-                    resolve(JSON.stringify(protocol.status(true)))
+                    resolve((protocol.status(true)))
                 }).catch((e)=>{
-                    resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
                     return
                 })
             }).catch((e)=>{
                 logger.error(e)
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
                 return
             })
         }).catch((e)=>{
             logger.error(e)
-            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
             return
         })
     })
@@ -452,44 +554,44 @@ async function ModifyTeamMemberTag(userid,hash,memberid,tag,teamid){
             //Permission can edit team
             userrepo.getUserPermission('CanEditTeam',userid).then(result=>{
                 if(!result){
-                    resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
                     return
                 }
                 //Team with id exists
                 teamByHash(teamid,hash).then(res=>{
                     if(!res){
-                        resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1)))); 
+                        resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1)))); 
                         return
                     }
                     //check team member exists with id
                     getTeamMemberByHash(teamid,memberid,hash).then(res2=>{
                         if(!res2){
-                            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1)))); 
+                            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1)))); 
                             return
                         }
                         //modify team member tag
                         getModifyMemberTag(memberid,teamid,tag?tag:res2['Tag'],userid).then(res=>{
-                            resolve(JSON.stringify(protocol.status(true)))
+                            resolve((protocol.status(true)))
                         }).catch((e)=>{
-                            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
                             return
                         })
                     }).catch((e)=>{
-                        resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                        resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
                         return
                     })
                 }).catch((e)=>{
                     logger.error(e)
-                    resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
                     return
                 })
             }).catch((e)=>{
                 logger.error(e)
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
                 return
             })
         }else{
-            resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
             return
         }
     })
@@ -502,5 +604,8 @@ module.exports={
     DeleteTeam:DeleteTeam,
     ModifyTeamMemberTag:ModifyTeamMemberTag,
     AddMemberToTeam:AddMemberToTeam,
-    RemoveMemberFromTeam:RemoveMemberFromTeam
+    RemoveMemberFromTeam:RemoveMemberFromTeam,
+    teamByHash:teamByHash,
+    teamTaskByHash:teamTaskByHash,
+    teamMemberByHash:teamMemberByHash
 }

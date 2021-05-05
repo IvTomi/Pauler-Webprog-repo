@@ -11,11 +11,12 @@ const pool = dbConnector.ConnectionPool;
 async function getRegisterSuperUser(username, password, email, company){
     return new Promise((resolve, reject)=>{
         pool.awaitGetConnection().then((res)=>{
-            pool.awaitQuery(`CALL RegisterSuperUser('${username}','${password}','${email}','${company}')`).then((result)=>{
+            pool.awaitQuery(`CALL CreateSuperUser('${username}','${password}','${email}','${company}')`).then((result)=>{
                 resolve(result[result.length-2][0]);
             }).catch((e)=>{
                 resolve(null);
             })
+            res.release()
         })
     })
 }

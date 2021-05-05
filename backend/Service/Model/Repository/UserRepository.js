@@ -5,6 +5,10 @@ const encryptor = require('../../Utility/Encryptor');
 const { encrypt } = require("../../Utility/Encryptor");
 const jsonParser = require('../../Utility/JSONParser');
 const userdao = require('../DaO/UserDaO');
+const contactrepo = require('./ContactRepository');
+const contactdao = require('../DaO/ContactDaO');
+const permissiondao = require('../DaO/PermissionDaO');
+
 
 const pool = dbConnector.ConnectionPool;
 
@@ -39,7 +43,7 @@ async function authenticateUser(username,hash,password){
                         logger.debug('password doesnt match');
                     }
                 }catch(e){
-                    resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
                     logger.debug(e);
                 }
                 
@@ -55,35 +59,35 @@ async function loginUser(userid,isadmin,hash){
             getUserPermission("IsAdmin",userid).then((result)=>{          
                 if(result){
                      getUserByHash(userid,hash).then((res2)=>{
-                        resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(true),
+                        resolve((jsonParser.combineJSON(protocol.status(true),
                         ViewToUser(res2))));
                      }).catch((e)=>{
                          logger.error(e)
-                         resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                         resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
                      })
                 }else{
-                    resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
                 } 
                 
             }).catch((e)=>{
                 logger.error(e);
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
             })
         }else{
             getUserByHash(userid,hash).then((res2)=>{
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(true),
+                resolve((jsonParser.combineJSON(protocol.status(true),
                 ViewToUser(res2))));
              }).catch((e)=>{
                 logger.error(e)
-                resolve(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
              })
         }
                 
     })
 }
 
-function ViewToUser(viewobj){
-    return {"User":userdao.GetUser(viewobj["idUser"],viewobj["Username"],viewobj["FirstName"],viewobj["LastName"],null,null,null)};
+function ViewToUser(viewobj,tasklist,contactslist,permissionlist){
+    return {"User":userdao.GetUser(viewobj["idUser"],viewobj["Username"],viewobj["FirstName"],viewobj["LastName"],contactslist,tasklist,permissionlist)};
 }
 
 
@@ -98,8 +102,11 @@ async function getUserByHash(userid, hash)
                 resolve(result[result.length-2][0]);
             }).catch((e)=>
             {
-                logger.error(e)
-                resolve(null);
+                if(e['sqlState'] === '45000'){
+                    resolve(null);
+                }else{
+                   reject(e)
+                }
             })
             res.release();
         })
@@ -114,10 +121,11 @@ async function getUserPermission(permissionName, userid)
         {
             res.awaitQuery(`CALL GetUserPermission('${permissionName}','${userid}')`).then((result)=>
             {
+                console.log(result[result.length-2][0]);
                 resolve(parseInt(result[result.length-2][0]['IsEnabled']) === 1? true:false)
             }).catch((e)=>
             {
-                resolve(null);
+                reject(e)
             })
             res.release();
         })
@@ -126,7 +134,7 @@ async function getUserPermission(permissionName, userid)
 async function userByHash(userid, hash)
 {
     return new Promise((resolve, reject)=>
-    {
+    {       
         getUserByHash(userid, hash).then((result)=>
         {
             if(result==null)
@@ -137,6 +145,8 @@ async function userByHash(userid, hash)
             {
                 resolve(true);
             }
+        }).catch((e)=>{
+            reject(e)
         })
     })
 }
@@ -159,59 +169,67 @@ async function getUsers(hash)
         })
     })
 }
-async function users(hash)
+async function ListUsers(userid,hash)
 {
     return new Promise((resolve, reject)=>
     {
         getUsers(hash).then((result)=>
         {
-            if(result==null)
-            {
-                resolve(false);
-            }
-            else
-            {
-                logger.debug(JSON.stringify(result));
-                resolve((jsonParser.combineJSON(protocol.status(true),ViewToUser(result))));
-                //resolve(result);
-            }
+            resolve((jsonParser.combineJSON(protocol.status(true),userdao.GetUserListJson(result.map(element=>ViewToUser(element,null,null,null))))));
+        }).catch((e)=>{
+            logger.error(e);
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
         })
     })
 }
 
 //GET USER CONTACTS (az eredmény am üres nincs adat db-ben hozzá még)
-async function getUserContacts(hash)
+async function getUserContacts(hash,userid)
 {
     return new Promise((resolve, reject)=>
     {
         pool.awaitGetConnection().then((res)=>
         {
-            res.awaitQuery(`CALL GetUserContacts('${hash}')`).then((result)=>
+            res.awaitQuery(`CALL GetUserContacts('${hash}','${userid}')`).then((result)=>
             {
-                resolve(result);
+                resolve(result[result.length-2]);
             }).catch((e)=>
             {
-                resolve(null);
+                reject(e)
             })
             res.release();
         })
     })
 }
-async function userContacts(hash)
+async function ListUserContacts(hash,userid,callerid)
 {
     return new Promise((resolve, reject)=>
     {
-        getUserContacts(hash).then((result)=>
-        {
-            if(result==null)
-            {
-                resolve(false);
+        
+        //get by permission
+        getUserPermission("IsAdmin",callerid).then(res=>{
+            console.log(res)
+            if(!res && callerid != userid){
+                getUserContacts(hash,userid).then(res2=>{
+                    resolve((jsonParser.combineJSON(protocol.status(true),contactdao.GetContactListJson(res2.map(element=>contactrepo.viewToContact(element)).filter(x=>x['Contact']['ispublic'])))));
+                }).catch((e)=>{
+                    logger.error(e)
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                    return
+                })
+            }else{
+                getUserContacts(hash,userid).then(res2=>{
+                    resolve((jsonParser.combineJSON(protocol.status(true),contactdao.GetContactListJson(res2.map(element=>contactrepo.viewToContact(element))))));
+                }).catch((e)=>{
+                    logger.error(e)
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                    return
+                })
             }
-            else
-            {
-                logger.debug(JSON.stringify(result[0]));
-                resolve(true);
-            }
+        }).catch((e)=>{
+            logger.error(e)
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            return
         })
     })
 }
@@ -223,9 +241,10 @@ async function getUserPermissions(userid)
     {
         pool.awaitGetConnection().then((res)=>
         {
+            
             res.awaitQuery(`CALL GetUserPermissions('${userid}')`).then((result)=>
             {
-                resolve(result);
+                resolve(result[result.length-2])             
             }).catch((e)=>
             {
                 resolve(null);
@@ -234,27 +253,95 @@ async function getUserPermissions(userid)
         })
     })
 }
-async function userPermissions(userid)
+async function ListUserPermissions(userid,hash)
 {
     return new Promise((resolve, reject)=>
     {
-        getUserPermissions(userid).then((result)=>
+        //check user exist
+        userByHash(userid,hash).then(res=>{
+            if(!res){
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                return;
+            }
+            getUserPermissions(userid).then(res2=>{
+                resolve((jsonParser.combineJSON(protocol.status(true),permissiondao.GetPermissionListJson(res2.map(element=>ViewToPermission(element))))));
+            }).catch((e)=>{
+                logger.error(e)
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                return
+            })
+        }).catch((e)=>{
+            logger.error(e)
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            return
+        })
+    })
+}
+
+async function getUpdateUserPermission(userid,permissionname,isenabled,modifierid){
+    return new Promise((resolve, reject)=>
+    {
+        pool.awaitGetConnection().then((res)=>
         {
-            if(result==null)
+            res.awaitQuery(`CALL UpdateUserPermission(${userid},'${permissionname}','${isenabled}','${modifierid}')`).then((result)=>
             {
-                resolve(false);
-            }
-            else
+                resolve(true);
+            }).catch((e)=>
             {
-                logger.debug(JSON.stringify(result[0]));
-                resolve(result[0]);
+                reject(e)
+            })
+            res.release();
+        })
+    })
+}
+
+async function ModifyUserPermission(userid,hash,permissionname,isenabled,targetid){
+    return new Promise((resolve, reject)=>
+    {
+        if(!permissionname || isenabled===null || !targetid){
+            resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(3)));
+            return
+        }
+        //check can edit permission
+        getUserPermissions(userid).then(res=>{
+            if(res.filter(x=>x['IsEnabled']==='000').length>0){
+                resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(4)));
+                return
             }
+            //check if permissionname valid
+            if(!res.filter(x=>x['PermissionName'] === permissionname)){
+                resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(1)));
+                return
+            }
+            //check target user exists
+            userByHash(targetid,hash).then(res2=>{
+                if(!res2){
+                    resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(1)));
+                    return
+                }
+                //update user permission
+                getUpdateUserPermission(targetid,permissionname,isenabled?'001':'000',userid).then(res3=>{
+                    resolve(jsonParser.combineJSON(protocol.status(true)));
+                }).catch((e)=>{
+                    logger.error(e)
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                    return
+                })
+            }).catch((e)=>{
+                logger.error(e)
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                return
+            })
+        }).catch((e)=>{
+                logger.error(e)
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                return
         })
     })
 }
 
 //MODIFY USER (az eredmény nem a user obj még) [probléma sql-ben CSAK jelszóváltoztatás VAGY CSAK first/last name változtatás]
-async function modifyUser(targetuserid, password, firstname, lastname, idmodifiedBy)
+async function getModifyUser(targetuserid, password, firstname, lastname, idmodifiedBy)
 {
     return new Promise((resolve, reject)=>
     {
@@ -271,31 +358,52 @@ async function modifyUser(targetuserid, password, firstname, lastname, idmodifie
         })
     })
 }
-async function changeUser(targetuserid, password, firstname, lastname, idmodifiedBy)
+async function ModifyUser(userid,hash,targetuserid, password, firstname, lastname)
 {
     return new Promise((resolve, reject)=>
     {
         if(!targetuserid)
         {
             resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(3)));
+            return
         }
-        modifyUser(targetuserid, password, firstname, lastname, idmodifiedBy).then((result)=>
-        {
-            if(result==null)
-            {
-                resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(1)));
+        //check permission
+        getUserPermission("CanEditUser",userid).then(res=>{
+            if(!res && userid != targetuserid){
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                return
             }
-            else
-            {
-                logger.debug(JSON.stringify(result));
-                resolve(jsonParser.combineJSON(protocol.status(true),result));
-            }
+            //check user exists
+            getUserByHash(userid,hash).then(res=>{
+                if(!res){
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                    return
+                }
+                //modify user
+                getModifyUser(targetuserid,password?password:"",firstname?firstname:res['FirstName'],lastname?lastname:res['LastName'],userid).then(res2=>{
+                    resolve(jsonParser.combineJSON(protocol.status(true)));
+                }).catch((e)=>{
+                    logger.error(e)
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                    return
+                })
+                
+            }).catch((e)=>{
+                logger.error(e)
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                return
+            })
+        }).catch((e)=>{
+            logger.error(e)
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            return
         })
+        
     })
 }
 
 //REMOVE USER ("user not exist" hibát nem ad vissza)
-async function deleteUser(userid, idlastmodified)
+async function getDeleteUser(userid, idlastmodified)
 {
     return new Promise((resolve, reject)=>
     {
@@ -306,37 +414,60 @@ async function deleteUser(userid, idlastmodified)
                 resolve(result);
             }).catch((e)=>
             {
-                resolve(null);
+                reject(e);
             })
             res.release();
         })
     })
 }
-async function removeUser(userid, idlastmodified)
+async function DeleteUser(userid, idlastmodified,hash)
 {
     return new Promise((resolve, reject)=>
     {
-        if(!userid || !idlastmodified)
+        if(!userid)
         {
             resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(3)));
+            return;
         }
-        deleteUser(userid, idlastmodified).then((result)=>
-        {
-            if(result==null)
-            {
-                resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(1)));
+        //check permission
+        getUserPermission("CanEditUser",idlastmodified).then(res=>{
+            if(!res){
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                return
             }
-            else
-            {
-                logger.debug(JSON.stringify(result));
-                resolve(jsonParser.combineJSON(protocol.status(true)));
-            }
-        })
+            //check id exists
+            userByHash(userid,hash).then(res=>{
+                if(!res){
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                    return
+                }
+                //delete user
+                getDeleteUser(userid, idlastmodified).then((result)=>
+                {
+                        logger.debug((result));
+                        resolve(jsonParser.combineJSON(protocol.status(true)));
+                }).catch((e)=>{
+                   
+                    logger.error(e)
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                    return
+                })
+            }).catch((e)=>{
+                    logger.error(e)
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                    return
+            })
+        }).catch((e)=>{
+            logger.error(e)
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            return
+        })       
+        
     })
 }
 
 //CREATE USER (nem user objectet ad vissza)
-async function createUser(username, password, firstname, lastname, hash, userid, allprivileges)
+async function getCreateUser(username, password, firstname, lastname, hash, userid, allprivileges)
 {
     return new Promise((resolve, reject)=>
     {
@@ -344,161 +475,292 @@ async function createUser(username, password, firstname, lastname, hash, userid,
         {
             res.awaitQuery(`CALL CreateUser('${username}','${password}','${firstname}','${lastname}','${hash}',${userid},${allprivileges})`).then((result)=>
             {
-                resolve(result);
+                resolve(result[result.length-2][0]);
             }).catch((e)=>
             {
-                resolve(null);
+                if(e['sqlState'] === '45000'){
+                    resolve(null);
+                }else{
+                   reject(e)
+                }
+                
             })
             res.release();
         })
     })
 }
-async function userCreator(username, password, firstname, lastname, hash, userid, allprivileges)
+
+async function getAddContactToUser(contactid, userid, modifierid,hash)
 {
     return new Promise((resolve, reject)=>
     {
-        if(!username || !password || !hash || !userid)
+        pool.awaitGetConnection().then((res)=>
+        {
+            console.log(contactid)
+            res.awaitQuery(`CALL AddContactToUser('${userid}','${contactid}','${modifierid}')`).then((result)=>
+            {
+                contactrepo.getContactByHash(contactid,hash).then(res2=>{                   
+                    resolve(res2);
+                }).catch((e)=>{
+                    if(e['sqlState'] === '45000'){
+                        resolve(null);
+                    }else{
+                       reject(e)
+                    }
+                })
+            }).catch((e)=>
+            {
+                if(e['sqlState'] === '45000'){
+                    resolve(null);
+                }else{
+                   reject(e)
+                }
+                
+            })
+            res.release();
+        })
+    })
+}
+
+async function getUserContactsByHash(userid,contactid,hash){
+    return new Promise((resolve, reject)=>
+    {
+        pool.awaitGetConnection().then((res)=>
+        {
+            res.awaitQuery(`CALL GetUserContactsByHash('${userid}','${contactid}','${hash}')`).then((result)=>
+            {
+                resolve(result[result.length-2][0])
+            }).catch((e)=>
+            {
+
+                reject(e)
+                
+            })
+            res.release();
+        })
+    })
+}
+
+async function getUserTaskByHash(userid,taskid,hash){
+    return new Promise((resolve, reject)=>
+    {
+        pool.awaitGetConnection().then((res)=>
+        {
+            res.awaitQuery(`CALL GetUserTasksByHash('${userid}','${taskid}','${hash}')`).then((result)=>
+            {
+                resolve(result[result.length-2][0])
+            }).catch((e)=>
+            {
+
+                reject(e)
+                
+            })
+            res.release();
+        })
+    })
+}
+
+async function userContactByHash(userid,contactid,hash){
+    return new Promise((resolve, reject)=>
+    {
+        getUserContactsByHash(userid,contactid,hash).then(res=>{
+            if(!res){
+                resolve(false)
+            }else{
+                resolve(true)
+            }
+        }).catch((e)=>{
+            reject(e)
+        })
+    })
+}
+
+async function userTaskByHash(userid,taskid,hash){
+    return new Promise((resolve, reject)=>
+    {
+        getUserTaskByHash(userid,taskid,hash).then(res=>{
+            if(!res){
+                resolve(false)
+            }else{
+                resolve(true)
+            }
+        }).catch((e)=>{
+            reject(e)
+        })
+    })
+}
+
+async function getRemoveContactFromUser(contactid, userid, modifierid)
+{
+    return new Promise((resolve, reject)=>
+    {
+        pool.awaitGetConnection().then((res)=>
+        {
+            res.awaitQuery(`CALL RemoveContactFromUser('${userid}','${contactid}','${modifierid}')`).then((result)=>
+            {
+                contactrepo.getDeleteContact(contactid,modifierid).then(res=>{
+                    resolve(true)
+                }).catch((e)=>{
+                    reject(e)
+                })
+            }).catch((e)=>
+            {
+
+                reject(e)
+                
+            })
+            res.release();
+        })
+    })
+}
+
+async function CreateUser(username, password, firstname, lastname, hash, userid, allprivileges)
+{
+    return new Promise((resolve, reject)=>
+    {
+        if(!username || !password || !hash || allprivileges===null)
         {
             resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(3)));
+            return
         }
-        else if(!firstname || !lastname)
+        //check permission
+        getUserPermission("CanEditUser",userid).then(res=>{
+            if(!res){
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                return
+            }
+            //create user
+            getCreateUser(username, encrypt(password), firstname?firstname:"", lastname?lastname:"", hash, userid, allprivileges?1:0).then((result)=>
+            {
+                if(!result){
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                    return
+                }else{
+                    resolve((jsonParser.combineJSON(protocol.status(true),{"Id":result['Id']})));
+                }
+            }).catch((e)=>{
+                logger.error(e);
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                return
+            })
+        }).catch((e)=>{
+                logger.error(e);
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                return
+        })
+        
+    })
+}
+
+async function AddContactToUser(userid,hash,typename,value,description,ispublic,targetid){
+    return new Promise((resolve, reject)=>
+    {
+        if(!targetid || !typename || !value || ispublic===null)
         {
-            firstname = "";
-            lastname = "";
+            resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(3)));
+            return
         }
-        createUser(username, encrypt(password), firstname, lastname, hash, userid, allprivileges).then((result)=>
-        {
-            if(result==null)
-            {
-                resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(1)));
+        //check permission
+        getUserPermission("CanEditUser",userid).then(res=>{
+            if(!res && userid != targetid){
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                return
             }
-            else
-            {
-                logger.debug(JSON.stringify(result));
-                resolve(protocol.status(true));
+            //check target user exists
+            userByHash(targetid,hash).then(res2=>{
+                if(!res2){
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                    return 
+                }
+                //create contact
+                contactrepo.getCreateContact(typename,value,description?description:"",ispublic?1:0,userid,hash).then(res=>{
+                    //add contact to user
+                    getAddContactToUser(res['Id'],targetid,userid,hash).then(res2=>{
+
+                        resolve((jsonParser.combineJSON(protocol.status(true),contactrepo.viewToContact(res2))));
+                    }).catch((e)=>{
+                        logger.error(e);
+                        resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                        return
+                    }).catch((e)=>{
+                        logger.error(e);
+                        resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                        return
+                    })
+                }).catch((e)=>{
+                    logger.error(e);
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                    return
+                })
+            }).catch((e)=>{
+                logger.error(e);
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                return
+            })
+        }).catch((e)=>{
+            logger.error(e);
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            return
+        })
+    })
+
+}
+
+async function RemoveContactFromUser(userid,hash,contactid,targetid){
+    return new Promise((resolve,reject)=>{
+        if(!contactid || !targetid){
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+            return
+        }
+        //check permission
+        getUserPermission("CanEditUser",userid).then(result=>{
+            if(!result && userid != targetid){
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                return
             }
+            //check user
+            logger.debug(targetid)
+            userByHash(targetid,hash).then(res2=>{
+                if(!res2){
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                    return
+                }
+                //check contact exist of user
+                userContactByHash(targetid,contactid,hash).then(res3=>{
+                    if(!res3){
+                        resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1)))); 
+                        return
+                    }
+                    //remove contact
+                    getRemoveContactFromUser(contactid,targetid,userid).then(res=>{
+                        resolve(jsonParser.combineJSON(protocol.status(true)));
+                    }).catch((e)=>{
+                        logger.error(e);
+                        resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+                        return
+                    })
+                    
+                }).catch((e)=>{
+                    logger.error(e);
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+                    return
+                })
+            }).catch((e)=>{
+                logger.error(e);
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+                return
+            })
+            //check team exists
+        }).catch((e)=>{
+            logger.error(e);
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));  
+            return     
         })
     })
 }
 
-//CREATE CONTACT (Csak id-t ad vissza, nem contact obj-ot)
-async function createContact(typename, value, description, userid, ispublic, hash)
-{
-    return new Promise((resolve, reject)=>
-    {
-        pool.awaitGetConnection().then((res)=>
-        {
-            res.awaitQuery(`CALL CreateContact('${typename}','${value}','${description}',${userid},${ispublic},'${hash}')`).then((result)=>
-            {
-                resolve(result);
-            }).catch((e)=>
-            {
-                resolve(null);
-            })
-            res.release();
-        })
-    })
-}
-async function newContact(typename, value, description, userid, ispublic, hash)
-{
-    return new Promise((resolve, reject)=>
-    {
-        if(!description) description="";
-        createContact(typename, value, description, userid, ispublic, hash).then((result)=>
-        {
-            if(result==null)
-            {
-                resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(1)));
-            }
-            else
-            {
-                logger.debug(JSON.stringify(result));
-                resolve(jsonParser.combineJSON(protocol.status(true),result[0][0]));
-            }
-        })
-    })
-}
-
-//MODIFY CONTACT (Csak id-t, nem contact obj-ot ad még vissza) (contact not exist eset nincs megírva)
-async function modifyContact(contactId, value, description, ispublic, userid)
-{
-    return new Promise((resolve, reject)=>
-    {
-        pool.awaitGetConnection().then((res)=>
-        {
-            res.awaitQuery(`CALL ModifyContact(${contactId},'${value}','${description}',${ispublic},${userid})`).then((result)=>
-            {
-                resolve(result);
-            }).catch((e)=>
-            {
-                resolve(null);
-            })
-            res.release();
-        })
-    })
-}
-async function changeContact(contactId, value, description, ispublic, userid)
-{
-    return new Promise((resolve, reject)=>
-    {
-        if(!description || !value || !ispublic)
-        {
-            description="";
-            value="";
-            ispublic=true;
-        }
-        modifyContact(contactId, value, description, ispublic, userid).then((result)=>
-        {
-            if(result==null)
-            {
-                resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(1)));
-            }
-            else
-            {
-                //ide egy if a contact not existre
-                logger.debug(JSON.stringify(result));
-                resolve(jsonParser.combineJSON(protocol.status(true),result));
-            }
-        })
-    })
-}
-
-//DELETE CONTACT (a "contactId nem létezik" hiba nincs megírva)
-async function deleteContact(contactId, userid)
-{
-    return new Promise((resolve, reject)=>
-    {
-        pool.awaitGetConnection().then((res)=>
-        {
-            res.awaitQuery(`CALL DeleteContact(${contactId},${userid})`).then((result)=>
-            {
-                resolve(result);
-            }).catch((e)=>
-            {
-                resolve(null);
-            })
-            res.release();
-        })
-    })
-}
-async function contactDeleter(contactId, userid)
-{
-    return new Promise((resolve, reject)=>
-    {
-        deleteContact(contactId,userid).then((result)=>
-        {
-            if(result==null)
-            {
-                resolve(jsonParser.combineJSON(protocol.status(false),protocol.error(1)));
-            }
-            else
-            {
-                //ide egy if a contact not existre
-                logger.debug(JSON.stringify(result));
-                resolve(jsonParser.combineJSON(protocol.status(true)));
-            }
-        })
-    })
+function ViewToPermission(viewobj){
+    return {'Permission':permissiondao.GetPermission(viewobj['Permission_idPermission'],viewobj['PermissionName'],viewobj['IsEnabled']==='001'?true:false)}
 }
 
 
@@ -507,15 +769,16 @@ module.exports={
     authenticateUser:authenticateUser,
     userByHash:userByHash,
     loginUser:loginUser,
-    users:users,
-    userContacts:userContacts,
-    userPermissions:userPermissions,
-    userCreator:userCreator,
-    getUserPermission,getUserPermission,
-    newContact:newContact,
-    changeContact:changeContact,
-    contactDeleter:contactDeleter,
-    removeUser:removeUser,
-    changeUser:changeUser,
+    ListUsers:ListUsers,
+    ListUserContacts:ListUserContacts,
+    ListUserPermissions:ListUserPermissions,
+    CreateUser:CreateUser,
+    getUserPermission:getUserPermission,
+    DeleteUser:DeleteUser,
+    ModifyUser:ModifyUser,
+    RemoveContactFromUser:RemoveContactFromUser,
+    AddContactToUser:AddContactToUser,
+    ModifyUserPermission:ModifyUserPermission,
+    userTaskByHash:userTaskByHash
 
 }

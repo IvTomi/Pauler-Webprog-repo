@@ -43,7 +43,12 @@ function GetContact(id,typename,value,description,ispublic){
     return new ContactBuilder().setId(id).setTypename(typename).setValue(value).setDescription(description).setIspublic(ispublic)
 }
 
+function GetContactListJson(contacts){
+    return {'Contacts':contacts}
+}
+
 module.exports={
     ContactBuilder : ContactBuilder,
-    GetContact:GetContact
+    GetContact:GetContact,
+    GetContactListJson:GetContactListJson
 }

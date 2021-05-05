@@ -32,7 +32,12 @@ function GetPermission(id,permissionname,isenabled){
     return new PermissionBuilder().setId(id).setPermissionname(permissionname).setIsenabled(isenabled)
 }
 
+function GetPermissionListJson(permissions){
+    return {"Permissions":permissions}
+}
+
 module.exports={
     PermissionBuilder : PermissionBuilder,
-    GetPermission:GetPermission
+    GetPermission:GetPermission,
+    GetPermissionListJson:GetPermissionListJson
 }

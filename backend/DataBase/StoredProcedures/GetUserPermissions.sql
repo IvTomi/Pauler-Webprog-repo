@@ -3,7 +3,7 @@ SELECT "Creating procedure GetUserPermissions" $$
 DROP PROCEDURE IF EXISTS GetUserPermissions $$
 CREATE PROCEDURE `GetUserPermissions`(IN id INT)
 BEGIN
-SELECT userview.PermissionGroup_idPermissionGroup FROM userview WHERE id=userview.idUser;
+SELECT * FROM permissiongrouppermissionsview pp INNER JOIN userview u ON u.PermissionGroup_idPermissionGroup = pp.PermissionGroup_idPermissionGroup  WHERE id=u.idUser;
 END;
 $$
 

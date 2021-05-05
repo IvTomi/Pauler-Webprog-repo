@@ -3,7 +3,7 @@ DROP VIEW IF EXISTS recordview;
 CREATE VIEW `recordview` AS
     SELECT 
         `record`.`idRecord` AS `idRecord`,
-        `record`.`Date` AS `Date`,
+         DATE_FORMAT(`record`.`Date`, '%Y.%m.%d') AS `Date`,
         `record`.`Comment` AS `Comment`,
         `record`.`Minute` AS `Minute`,
         `record`.`Hour` AS `Hour`,

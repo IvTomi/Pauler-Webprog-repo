@@ -8,8 +8,10 @@ const protocol = require('./Utility/Protocol');
 const jsonParser = require('./Utility/JSONParser');
 const superuserrepo = require("./Model/Repository/SuperUserRepository");
 const teamrepo = require('./Model/Repository/TeamRepository')
-const recordrepo = require("./Model/Repository/RecordRepository");
+const taskrepo = require('./Model/Repository/TaskRepository')
+const recordrepo = require('./Model/Repository/RecordRepository')
 const { registerSuperUser } = require('./Model/Repository/SuperUserRepository');
+
 
 const nonIdentifyRoutes = configurationManager.nonidentifiedRoutes();
 
@@ -60,17 +62,18 @@ router.use((req,res,next)=>{
 });
 //teszt végpont
 
-router.get("/test",(req,res)=>
+router.post("/test",(req,res)=>
 {
-    teamrepo.CreateNewTeam(6,req.headers['hash'],"Valami","Cucc",[]).then(result=>{
-        logger.debug(result);
+    testrepo.test().then(resu=>{
+        res.json({"oh":resu})
     })
 
 })
 
 //valós register végpont
 router.post("/register",(req,res)=>{
-    registerSuperUser(req.body['username'],req.body['password'],req.body['email'],req.body['company']).then((result)=>{
+    console.log(req.body)
+    registerSuperUser(req.body['Username'],req.body['Password'],req.body['Email'],req.body['Company']).then((result)=>{
         res.json(result);
     }).catch((e)=>{
         logger.error(e)
@@ -80,7 +83,7 @@ router.post("/register",(req,res)=>{
 
 //valós login végpont
 router.post("/login",(req,res)=>{
-    userrepo.loginUser(req.userid,false,req.headers["hash"]).then((result)=>{
+    userrepo.loginUser(req.userid,req.body['Isadmin'],req.headers["hash"]).then((result)=>{
         res.json(result)
     }).catch((e)=>{
         logger.error(e)
@@ -103,7 +106,7 @@ router.post("/team/create",(req,res)=>
 //valós teams/list végpont
 router.post("/team/list",(req,res)=>
 {
-    teamrepo.ListTeams(req.headers['hash']).then(result=>{
+    teamrepo.ListTeams(req.headers['hash'],req.userid).then(result=>{
         res.json(result);
     }).catch((e)=>{
         logger.error(e)
@@ -162,6 +165,44 @@ router.post("/team/add/user",(req,res)=>
 
 })
 
+//valós delete team végpont
+router.post("/user/add/task",(req,res)=>
+{
+
+    taskrepo.AddTaskToUser(req.body['Userid'],req.body['Taskid'],req.userid,req.headers['hash']).then(result=>{
+        res.json(result);
+    }).catch((e)=>{
+        logger.error(e)
+        res.json(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+    })
+
+})
+
+
+router.post("/team/add/task",(req,res)=>
+{
+
+    taskrepo.AddTaskToTeam(req.body['Taskid'],req.body['Teamid'],req.userid,req.headers['hash']).then(result=>{
+        res.json(result);
+    }).catch((e)=>{
+        logger.error(e)
+        res.json(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+    })
+
+})
+
+router.post("/team/remove/task",(req,res)=>
+{
+
+    taskrepo.RemoveTaskFromTeam(req.userid,req.headers['hash'],req.body['Taskid'],req.body['Teamid']).then(result=>{
+        res.json(result);
+    }).catch((e)=>{
+        logger.error(e)
+        res.json(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+    })
+
+})
+
 router.post("/team/remove/user",(req,res)=>
 {
 
@@ -174,10 +215,22 @@ router.post("/team/remove/user",(req,res)=>
 
 })
 
-//tesztelni!
-router.get("/user/list",(req,res)=>
+router.post("/team/get/tasks",(req,res)=>
 {
-    userrepo.users(req.headers['hash']).then((result)=>
+
+    taskrepo.ListTeamTasks(req.headers['hash'],req.body['Teamid'],req.userid).then(result=>{
+        res.json(result);
+    }).catch((e)=>{
+        logger.error(e)
+        res.json(JSON.stringify(jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+    })
+
+})
+
+//tesztelni!
+router.post("/user/list",(req,res)=>
+{
+    userrepo.ListUsers(req.userid,req.headers['hash']).then((result)=>
     {
         res.json(result);
     })
@@ -186,7 +239,7 @@ router.get("/user/list",(req,res)=>
 //tesztelni!
 router.post("/user/create",(req,res)=>
 {
-    userrepo.userCreator(req.body['username'], req.body['password'], req.body['firstname'], req.body['lastname'], req.headers['hash'], req.userid, req.body['allprivileges']).then((result)=>
+    userrepo.CreateUser(req.body['Username'], req.body['Password'], req.body['Firstname'], req.body['Lastname'], req.headers['hash'], req.userid, req.body['Allprivileges']).then((result)=>
     {
         res.json(result);
     })
@@ -195,69 +248,149 @@ router.post("/user/create",(req,res)=>
 //teszt!
 router.post("/user/remove",(req,res)=>
 {
-    userrepo.removeUser(req.body['userid'],req.userid).then((result)=>
+    userrepo.DeleteUser(req.body['Userid'],req.userid,req.headers['hash']).then((result)=>
     {
         res.json(result);
     })
 })
 
-
-router.post("/user/add/contact",(req,res)=>
+router.post("/task/list",(req,res)=>
 {
-
-})
-
-router.post("/user/remove/contact",(req,res)=>
-{
-    
-})
-
-
-router.get("/user/get/contacts",(req,res)=>
-{
-    //userid-ből hash
-})
-
-router.get("/user/get/permissions", (req, res)=>
-{
-    userrepo.userPermissions(req.userid).then((result)=>
+    taskrepo.ListTasks(req.userid,req.headers['hash']).then((result)=>
     {
         res.json(result);
     })
 })
 
-router.post("/user/permission",(req,res)=>
+router.post("/task/remove",(req,res)=>
 {
+    taskrepo.DeleteTask(req.body['Taskid'],req.userid,req.headers['hash']).then((result)=>
+    {
+        res.json(result);
+    })
+})
 
+router.post("/user/remove/task",(req,res)=>
+{
+    taskrepo.RemoveTaskFromUser(req.userid,req.headers['hash'],req.body["Taskid"],req.body['Userid']).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/user/get/contacts",(req,res)=>
+{
+    userrepo.ListUserContacts(req.headers['hash'],req.body['Userid'],req.userid).then(result=>{
+        res.json(result)
+    })
+})
+
+router.post("/user/get/tasks",(req,res)=>
+{
+    taskrepo.ListUserTasks(req.headers['hash'],req.body['Userid'],req.userid).then(result=>{
+        res.json(result)
+    })
+})
+
+router.post("/user/get/permissions", (req, res)=>
+{
+    userrepo.ListUserPermissions(req.body['Userid'],req.headers['hash']).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/user/get/records", (req, res)=>
+{
+    recordrepo.ListUserRecords(req.body['Userid'],req.headers['hash'],req.userid).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/user/permission/modify",(req,res)=>
+{
+    userrepo.ModifyUserPermission(req.userid,req.headers['hash'],req.body['Permissionname'],req.body['Isenabled'],req.body['Userid']).then((result)=>
+    {
+        res.json(result);
+    })
 })
 
 router.post("/user/modify",(req,res)=>
 {
-    userrepo.changeUser(req.body['userid'],req.body['password'],req.body['firstname'],req.body['lastname'],req.userid).then((result)=>
+    userrepo.ModifyUser(req.userid,req.headers['hash'],req.body['Userid'],req.body['Password'],req.body['Firstname'],req.body['Lastname']).then((result)=>
     {
         res.json(result);
     })
 })
 
-router.post("/contact/create",(req,res)=>
+router.post("/user/contact/create",(req,res)=>
 {
-    userrepo.newContact(req.body['typename'],req.body['value'],req.body['description'],req.userid,req.body['ispublic'],req.headers['hash']).then((result)=>
+    userrepo.AddContactToUser(req.userid,req.headers['hash'],req.body['Typename'],req.body['Value'],req.body['Comment'],req.body['Ispublic'],req.body['Userid']).then((result)=>
     {
         res.json(result);
     })
 })
 
-router.post("/contact/modify",(req,res)=>
+router.post("/user/contact/remove",(req,res)=>
 {
-    userrepo.changeContact(req.body['contactId'],req.body['value'],req.body['description'],req.body['ispublic'],req.userid).then((result)=>
+    userrepo.RemoveContactFromUser(req.userid,req.headers['hash'],req.body['Contactid'],req.body['Userid']).then((result)=>
     {
         res.json(result);
     })
 })
 
-router.post("/contact/remove",(req,res)=>
+router.post("/task/create",(req,res)=>
 {
-    userrepo.contactDeleter(req.body['contactId'],req.userid).then((result)=>
+    taskrepo.CreateTask(req.userid,req.headers['hash'],req.body['Taskname'],req.body['Description'],req.body['Deadline']).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/task/get/records",(req,res)=>
+{
+    recordrepo.ListTaskRecords(req.body['Taskid'],req.headers['hash'],req.userid).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/task/modify",(req,res)=>
+{
+    taskrepo.ModifyTask(req.userid,req.headers['hash'],req.body['Taskname'],req.body['Description'],req.body['Deadline'],req.body['Taskid']).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/record/create",(req,res)=>
+{
+    recordrepo.CreateRecord(req.body['Date'],req.body['Comment'],req.body['Minute'],req.body['Hour'],req.body['Userid'],req.body['Taskid'],req.userid,req.headers['hash']).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/record/modify",(req,res)=>
+{
+    recordrepo.ModifyRecord(req.body['Recordid'],req.body['Date'],req.body['Comment'],req.body['Minute'],req.body['Hour'],req.body['Userid'],req.body['Taskid'],req.userid,req.headers['hash']).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/record/remove",(req,res)=>
+{
+    recordrepo.DeleteRecord(req.headers['hash'],req.userid,req.body['Recordid']).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
+router.post("/record/list",(req,res)=>
+{
+    recordrepo.ListAllRecords(req.userid,req.headers['hash']).then((result)=>
     {
         res.json(result);
     })

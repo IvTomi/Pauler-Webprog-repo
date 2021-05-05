@@ -32,4 +32,10 @@ SELECT * FROM (SELECT 'CanEditPermission', CURRENT_TIMESTAMP(), -1) AS tmp
 WHERE NOT EXISTS (
     SELECT PermissionName FROM Permission WHERE PermissionName = 'CanEditPermission'
 ) LIMIT 1;$$
+
+INSERT INTO Permission (PermissionName, LastModifiedAt, LastModifiedBy)
+SELECT * FROM (SELECT 'CanEditRecord', CURRENT_TIMESTAMP(), -1) AS tmp
+WHERE NOT EXISTS (
+    SELECT PermissionName FROM Permission WHERE PermissionName = 'CanEditRecord'
+) LIMIT 1;$$
 DELIMITER ;

@@ -5,7 +5,7 @@ CREATE VIEW `taskview` AS
         `task`.`idTask` AS `idTask`,
         `task`.`TaskName` AS `TaskName`,
         `task`.`Description` AS `Description`,
-        `task`.`Deadline` AS `Deadline`,
+        DATE_FORMAT(`task`.`Deadline`, '%Y.%m.%d') AS `Deadline`,
         `statusview`.`idStatus` AS `Status_idStatus`,
         `statusview`.`StatusName` AS `StatusName`,
         `superuser`.`Hash` AS `SuperUser_Hash`
