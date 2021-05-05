@@ -226,8 +226,7 @@ async function getTeams(hash){
             res.awaitQuery(`CALL GetTeams('${hash}')`).then((result)=>{
                 resolve(result[result.length-2]);                     
             }).catch((e)=>{               
-                logger.error(e);
-                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                reject(e)
             })
             res.release();   
         })
@@ -418,7 +417,7 @@ async function getModifyMemberTag(memberid,teamid,tags,userid){
 }
 
 function viewToTeam(viewobj){
-    return {"Team":teamdao.GetTeam(viewobj["idTeam"],viewobj["TeamName"],viewobj["Description"],null,null)};
+    return {"Team":teamdao.GetTeam(viewobj["idTeam"]?viewobj["idTeam"]:viewobj['Team_idTeam'],viewobj["TeamName"],viewobj["Description"],null,null)};
 }
 
 async function ListTeams(hash,userid){
@@ -428,8 +427,9 @@ async function ListTeams(hash,userid){
                 resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
                 return
             }
-            getTeams(hash).then(async result=>{                            
-                resolve((jsonParser.combineJSON(protocol.status(true),teamdao.GetTeamListJson(result.map(element=>viewToTeam(element['Team']))))));
+            getTeams(hash).then(async result=>{      
+                console.log(result)                      
+                resolve((jsonParser.combineJSON(protocol.status(true),teamdao.GetTeamListJson(result.map(element=>viewToTeam(element))))));
             }).catch((e)=>{
                 logger.error(e);
                 resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
@@ -461,7 +461,8 @@ async function ListTeamUsers(hash,userid,teamid){
                     resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
                     return
                 }
-                getTeamMembers(teamid).then(async result=>{                            
+                getTeamMembers(teamid).then(async result=>{   
+                    console.log(result)                         
                     resolve((jsonParser.combineJSON(protocol.status(true),UserDaO.GetUserListJson(result.map(element=>userrepo.ViewToUser(element))))));
                 }).catch((e)=>{
                     logger.error(e);

@@ -376,7 +376,7 @@ async function ModifyUser(userid,hash,targetuserid, password, firstname, lastnam
                     return
                 }
                 //modify user
-                getModifyUser(targetuserid,password?password:"",firstname?firstname:res['FirstName'],lastname?lastname:res['LastName'],userid).then(res2=>{
+                getModifyUser(targetuserid,password?encrypt(password):"",firstname?firstname:res['FirstName'],lastname?lastname:res['LastName'],userid).then(res2=>{
                     resolve(jsonParser.combineJSON(protocol.status(true)));
                 }).catch((e)=>{
                     logger.error(e)
