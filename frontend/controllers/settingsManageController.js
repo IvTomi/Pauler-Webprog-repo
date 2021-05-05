@@ -27,7 +27,7 @@ export function modifyUser(/*userid*/){
     if(SessionJanitor.getActiveProfile()){
         
         let user = SessionJanitor.getActiveProfile()
-        makeRequest('/user/modify','POST',getHeader(),JSON.stringify({"Userid":user.id,"Password":ispass?pass:null,"Firstname":firstname,"Lastname":lastname}),(data)=>{modifyUserOnSuccess(data,user)},()=>{OutPutOnFail()});
+        makeRequest('/user/modify','POST',getHeader(),JSON.stringify({"Userid":user.id,"Password":ispass?pass:null,"Firstname":firstname,"Lastname":lastname}),(data)=>{modifyUserOnSuccess(data,user)},(data)=>{OutPutOnFail(data)});
 
         //itt még feltételek és felh módosítása
     }else{
@@ -77,14 +77,14 @@ export function getUserPermissions(userid){
 
 }
 
-async function setPermissions(userid){
+function setPermissions(userid){
     let permissions = document.getElementsByClassName('modifyForm_chb');
     for(let item of permissions){
         if(item.checked){
-            makeRequest('/user/permission/modify','POST',getHeader(),JSON.stringify({"Userid":userid,"Permissionname":item.value,"Isenabled":true}),(data)=>{ModifyPesmissionSuccess(data)},(xhr, ajaxOptions, thrownError)=>{OutputOnFail(xhr, ajaxOptions, thrownError)});
+            //makeRequest('/user/permission/modify','POST',getHeader(),JSON.stringify({"Userid":userid,"Permissionname":item.value,"Isenabled":true}),(data)=>{modifyPermissionOnSuccess(data)},(data)=>{OutputOnFail(data)});
         }
         else{
-            makeRequest('/user/permission/modify','POST',getHeader(),JSON.stringify({"Userid":userid,"Permissionname":item.value,"Isenabled":false}),(data)=>{ModifyPesmissionSuccess(data)},(xhr, ajaxOptions, thrownError)=>{OutputOnFail(xhr, ajaxOptions, thrownError)});
+            //makeRequest('/user/permission/modify','POST',getHeader(),JSON.stringify({"Userid":userid,"Permissionname":item.value,"Isenabled":false}),(data)=>{modifyPermissionOnSuccess(data)},(data)=>{OutputOnFail(data)});
     
         }      
         console.log(item)
@@ -93,10 +93,7 @@ async function setPermissions(userid){
    
 }
 
-const timer = ms => new Promise(res => setTimeout(res, ms))
-
-
-function getUserPermissionsSuccess(data){
+function modifyPermissionOnSuccess(data){
     let permissions = document.getElementsByClassName('modifyForm_chb');
     if(data.Status === 'Failed'){
         alert(data.Message)
@@ -113,11 +110,17 @@ function getUserPermissionsSuccess(data){
     }
 }
 
+const timer = ms => new Promise(res => setTimeout(res, ms))
 
-function modifyUserOnSuccess(data,user){
-    resetInputData();
-    //createAside(); 
-    setPermissions(user.id)
+
+function getUserPermissionsSuccess(data){
+
+}
+
+
+function modifyUserOnSuccess(data,user){  
+    SessionJanitor.getAllUsers(()=>{location.reload();})
+    
 }
 
 export function deleteUser(){
@@ -128,6 +131,6 @@ function OnDeleteSuccess(data){
     console.log(data);
 }
 
-function OutPutOnFail(xhr, ajaxOptions, thrownError){
-    alert('error');
+function OutPutOnFail(data){
+    console.log(data)
 }
