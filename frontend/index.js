@@ -9,8 +9,6 @@ export const viewController = new ViewController();
 router.add("login", ()=>{viewController.loadLogin()});
 router.add("register",()=>{viewController.loadSignup()});
 
-router.add("profileAdmin",()=>{viewController.loadAdminProfile()});
-
 router.add("manageSettingsAdmin",()=>{viewController.loadAdminSettings(0)});
 router.add("newSettingsAdmin",()=>{viewController.loadAdminSettings(1)});
 

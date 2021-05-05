@@ -17,8 +17,6 @@ export function ManageUser(appendPoint){
     const modifyForm = new HTMLTag('form').addAttr('class','modifyForm').addAttr('id',modifyID).append(frame);
     new HTMLTag('h2').setText('Jelszó megváltoztatása').append(modifyForm);
 
-    new HTMLTag('p').setText('Régi jelszó').append(modifyForm);
-    new HTMLTag('input').addAttr('id',modifyID+'_oldpass').addAttr('name',modifyID+'_oldpass').addAttr('type','password').append(modifyForm);
     new HTMLTag('p').setText('Új jelszó').append(modifyForm);
     new HTMLTag('input').addAttr('id',modifyID+'_pass').addAttr('name',modifyID+'_pass').addAttr('type','password').append(modifyForm);
     new HTMLTag('p').setText('Jelszó újra').append(modifyForm);

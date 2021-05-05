@@ -1,6 +1,7 @@
 import viewController from '../../../controllers/viewController.js';
 import HTMLTag from '../../../utilities/HTMLTag.js';
 import createAside from '../../listBuilders/asideBuilder.js';
+import {router} from '../../../index.js'
 
         
 function createAdminNav(){
@@ -10,7 +11,7 @@ function createAdminNav(){
         new HTMLTag('li').setText('Riportok').append(ul)//.onclick(this.load);
         new HTMLTag('li').setText('Projectek').append(ul).onclick(new viewController().loadAdminProjects);
         new HTMLTag('li').setText('Csapatok').append(ul).onclick(new viewController().loadAdminTeam);
-        new HTMLTag('li').setText('Beállítások').append(ul).onclick(new viewController().loadAdminSettings);
+        new HTMLTag('li').setText('Beállítások').append(ul).onclick(()=>{router.navigate('newSettingsAdmin')});
         createAside('Alkalmazottak');
     }
 
