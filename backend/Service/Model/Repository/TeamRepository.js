@@ -423,13 +423,13 @@ function viewToTeam(viewobj){
 
 async function ListTeams(hash,userid){
     return new Promise((resolve,reject)=>{
-        userrepo.getUserPermission('IsAdmin').then(res=>{
+        userrepo.getUserPermission('IsAdmin',userid).then(res=>{
             if(!res){
                 resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
                 return
             }
             getTeams(hash).then(async result=>{                            
-                resolve((jsonParser.combineJSON(protocol.status(true),teamdao.GetTeamListJson(result.map(element=>viewToTeam(element))))));
+                resolve((jsonParser.combineJSON(protocol.status(true),teamdao.GetTeamListJson(result.map(element=>viewToTeam(element['Team']))))));
             }).catch((e)=>{
                 logger.error(e);
                 resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
