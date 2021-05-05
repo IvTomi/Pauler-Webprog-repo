@@ -3,26 +3,28 @@ import viewController from '../../../../controllers/viewController.js';
 import { refreshContent } from './mainTeamA.js';
 import { createNonTeamMemberList, createTeamMembersList,  onDeleteClicked} from '../../../../controllers/adminSelectedTeamcontroller.js';
 import { createTeamProjectsList } from '../../../listBuilders/adminTeamListBuilder.js';
-
+import { SessionJanitor } from '../../../../utilities/sessionJanitor.js';
 
 
 
 function createTeamInfoView(team){
     
-    if(!(team.TeamName && team.Description && team.TeamMembers && team.TeamTasks)){//A szükséges információk meglétének ellenőrzése
+    if(!(team.teamname && team.description && team.teammembers && team.teamtasks)){//A szükséges információk meglétének ellenőrzése
         return false;
     }
     const content = refreshContent(-1);
     new viewController().clearTag(content);
-    new HTMLTag('h2').setText(team.TeamName).append(content);
-    new HTMLTag('p').setText(team.Description).append(content);
+    new HTMLTag('h2').setText(team.teamname).append(content);
+    new HTMLTag('p').setText(team.description).append(content);
     new HTMLTag('p').setText('Tagok').append(content);
     const memList = new HTMLTag('ul').addAttr('id','members').append(content);
     memList.node.style.background='red';
     createTeamMembersList(team,memList);
     const nonMemList = new HTMLTag('ul').addAttr('id','nonmembers').append(content);
     //get list of all users
-    let users = [{
+    let users = SessionJanitor.getAllUsers(()=>{SessionJanitor.getAllUsers(null)});
+   
+    /*let users = [{
         User:{
             Id:11,
             Username: 'nagypeti',
@@ -66,12 +68,12 @@ function createTeamInfoView(team){
             LastName: 'Baila'
         },
         Tag:'#boss'
-    }];
+    }];*/
     createNonTeamMemberList(users,team,nonMemList)
     new HTMLTag('p').setText('Projektek').append(content);
     const projList = new HTMLTag('ul').addClass('projects').append(content); 
     createTeamProjectsList(team,projList);
-    new HTMLTag('button').setText('Csapat törlése').append(content).onclick(()=>{onDeleteClicked});
+    new HTMLTag('button').setText('Csapat törlése').append(content).onclick(()=>{onDeleteClicked(team)});
 }
 
 

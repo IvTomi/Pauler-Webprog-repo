@@ -1,17 +1,18 @@
+import { getTeamAttributes } from '../../controllers/userOneTeamController.js';
 import HTMLTag from '../../utilities/HTMLTag.js';
 import createUsersTeamInfoView from '../content/user/teams/oneTeamU.js';
 
 /**data =teams */
 export function createMyTeamsList(data,appendPoint,options){
     
-    for(let team of data){
+    for(let Team of data){
         const li = new HTMLTag('li');
-        if(team.name && team.desc && team.id){
-            li.onclick(createUsersTeamInfoView);
-            new HTMLTag('p').setText(team.name).append(li);
-            new HTMLTag('p').setText(team.desc).append(li);
+        if(Team.Team.teamname && Team.Team.description && Team.Team.id){
+            li.onclick(() => getTeamAttributes(Team.Team.id,Team.Team.teamname,Team.Team.description));
+            new HTMLTag('p').setText(Team.Team.teamname).append(li);
+            new HTMLTag('p').setText(Team.Team.description).append(li);
             const memP = new HTMLTag('p');
-            for(let member of team.members){
+            for(let member of Team.Team.teammembers){
                 if(member.name){
                     memP.pushText(member.name +', ')
                 }

@@ -90,6 +90,28 @@ export class SessionJanitor{
         
         return JSON.parse(sessionStorage.getItem('allUsers'))
     }
+    static setAllTeams(callback){
+        makeRequest('/team/list','POST',getHeader(),JSON.stringify({}),(data)=>{
+            if(data.Status === 'Failed'){
+                alert(data.Message);
+            }
+            else{
+                let toList = data.Teams;
+                sessionStorage.setItem('allTeams',JSON.stringify(JSON.parse(JSON.stringify(toList))));
+                if(callback){
+                    callback.apply();
+                }
+            }
+            
+        },()=>{alert('Server not found')});
+
+    }
+    static getAllTeams(callback){
+        if(callback){
+            SessionJanitor.setAllTeams(callback);
+        }
+        return JSON.parse(sessionStorage.getItem('allTeams'));
+    }
     static setUserContacts(callback,userid){
         console.log('useridlel:' + userid)
         makeRequest('/user/get/contacts','POST',getHeader(),JSON.stringify({'Userid':userid}),(data)=>{
@@ -102,7 +124,7 @@ export class SessionJanitor{
                     if(element.id === userid){
                         
                         element.contacts=JSON.parse(JSON.stringify(data.Contacts.map(x=>mapContact(x.Contact))))
-                        console.log(element.contacts)
+                        //console.log(element.contacts)
                     }
                 });  
                 sessionStorage.setItem('allUsers',JSON.stringify(users))             
@@ -130,7 +152,7 @@ export class SessionJanitor{
 
 
 export function getHeader(){
-    console.log('getting header');
+   // console.log('getting header');
     return JSON.stringify({"username":sessionStorage.getItem('username'),"password":sessionStorage.getItem('password'),"hash":sessionStorage.getItem('hash')});
 }
 

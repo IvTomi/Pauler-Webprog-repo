@@ -2,6 +2,7 @@
 
 import { createNonTeamMemberList, onCreate } from '../../../../controllers/adminNewTeamController.js';
 import HTMLTag from '../../../../utilities/HTMLTag.js';
+import { SessionJanitor } from '../../../../utilities/sessionJanitor.js';
 import { refreshContent} from './mainTeamA.js';
 
 function makeNewTeamView(){
@@ -14,7 +15,8 @@ function makeNewTeamView(){
     selectedMembers.node.style.background = 'red';
     const employees = new HTMLTag('ul').addAttr('id','nonmembers').append(content);
     //get list of all users
-    let users = [ {
+    SessionJanitor.getAllUsers(()=>{afterGotUsers()});
+    /*let users = [ {
         User:{
             Id:11,
             Username: 'nagypeti',
@@ -59,11 +61,17 @@ function makeNewTeamView(){
         },
         Tag:'#boss'
     }
-];
+];*/
+    
+}
+
+
+function afterGotUsers(){
+    let users = JSON.parse(sessionStorage.getItem('allUsers'));
+    let employees = document.getElementById('nonmembers');
     createNonTeamMemberList(users,employees);
     new HTMLTag('button').setText('Létrehozás').append(content).onclick(onCreate);
 }
-
 
 
 

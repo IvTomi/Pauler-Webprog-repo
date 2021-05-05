@@ -97,12 +97,10 @@ export default class ViewController{
         setUpUserProjectsViews(main,n);
     }
 
-    loadUserTeam(evt){
-        if(evt){
-            evt.preventDefault();
-        }
+    loadUserTeam(n){
+        viewController.loadUser();
         const main = viewController.setUpMain();
-        setUpUserTeamsView(main);
+        setUpUserTeamsView(main,n);
     }
 
     loadAdminTeam(n){

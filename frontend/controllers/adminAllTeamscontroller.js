@@ -1,10 +1,9 @@
 import { router } from "../index.js";
 import { makeRequest } from "../utilities/serviceHandler.js";
-import createList, { getDummyData } from "../view/listBuilders/adminTeamListBuilder.js";
 import { getHeader } from '../utilities/sessionJanitor.js';
 
 
-export function createAllTeamsList(appendPoint){
+/*export function createAllTeamsList(appendPoint){
     if(sessionStorage.getItem('allTeams')){
         let min = new Date(Date.now()).getMinutes();
         let h = new Date(Date.now()).getHours();
@@ -17,23 +16,12 @@ export function createAllTeamsList(appendPoint){
             }
         }
     }
-    makeRequest(/*'/team/list'*/'/test','GET',getHeader(),'{}',(data)=>{onGetTeamsSucces(data,appendPoint)},()=>onAjaxFail());
-}
+    }
 
 function onGetTeamsSucces(data,appendPoint){
-    if(data.Status === /*'Failed'*/'rest'){
-        alert(data.Message);
-    }
-    else{
-        let toList = data.List;
-        toList = getDummyData();
-        sessionStorage.setItem('allTeams',JSON.stringify(toList));
-        sessionStorage.setItem('allTeamsRTM',new Date(Date.now()).getMinutes());
-        sessionStorage.setItem('allTeamsRTH',new Date(Date.now()).getHours());
-        createList(toList,appendPoint);
-    }
     
-}
+    
+}*/
 
 export function onAjaxFail(){
     alert('Server not found');
@@ -53,10 +41,11 @@ export function onUserClicked(person){
      /*router.navigate('memberprofile')*/
 }
 export function onDeleteClicked(team){
-    makeRequest('/team/remove','POST',getHeader(),JSON.stringify({"teamid":team.Id}),(data)=>{onDeleteSucces(data)},()=>{onAjaxFail()});
+    console.log(team);
+    makeRequest('/team/delete','POST',getHeader(),JSON.stringify({"TeamId":team.id}),(data)=>{onDeleteSucces(data)},()=>{onAjaxFail()});
 }
 export function onDeleteSucces(data){
-    if(data.Status === /*'Failed'*/'rest'){
+    if(data.Status === 'Failed'){
         alert(data.Message);
     }
     else{

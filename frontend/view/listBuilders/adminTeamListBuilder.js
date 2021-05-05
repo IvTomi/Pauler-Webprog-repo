@@ -8,19 +8,20 @@ import {onSuccesfulFire, onSuccesfulHire} from '../../controllers/adminNewTeamCo
 export default function createList(data,appendPoint){
     for(let team of data){
         const li = new HTMLTag('li');
-        if(team.TeamName && team.Description && team.Id){
-            new HTMLTag('p').setText(team.TeamName).append(li).onclick(()=>onTeamClicked(team));
+        team = team.Team;
+        if(team.teamname  && team.id){
+            new HTMLTag('p').setText(team.teamname).append(li).onclick(()=>onTeamClicked(team));
             const projectList = new HTMLTag('ul').append(li);
-            for(let task of team.TeamTasks){
-                if(task.TaskName && task.Id){
+            for(let task of team.teamtasks){
+                if(task.TaskName && task.id){
                 new HTMLTag('li').setText(task.TaskName).append(projectList).onclick(()=>onTaskClicked(task));
                 }
             }
             const memP = new HTMLTag('ul');
-            for(let member of team.TeamMembers){
+            for(let member of team.teammembers){
                 let person = member.User;
-                if(person.FirstName && person.LastName && person.Id){
-                    new HTMLTag('li').setText(person.LastName+' '+person.FirstName).append(memP).onclick(()=>onUserClicked(person));
+                if(person.firstname && person.lastname && person.id){
+                    new HTMLTag('li').setText(person.lastname+' '+person.firstname).append(memP).onclick(()=>onUserClicked(person));
                 }
             }
             memP.append(li);
@@ -34,13 +35,13 @@ export function addNewMemberToExisting(user,appendPoint,team,tag){
     if(!team){
         team = JSON.parse(sessionStorage.getItem('activeTeam'));
     }
-    const li = new HTMLTag('li').addAttr('id','user-info'+user.Id);
-    if(user.FirstName && user.LastName && user.Id){
-        new HTMLTag('p').setText(user.LastName+' '+user.FirstName).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
+    const li = new HTMLTag('li').addAttr('id','user-info'+user.id);
+    if(user.firstname && user.lastname && user.id){
+        new HTMLTag('p').setText(user.lastname+' '+user.firstname).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
         new HTMLTag('button').setText('Töröl').append(li).onclick(()=>{onHireClick(team,user)});
-        new HTMLTag('p').setText(tag).addAttr('id','user-info-tag'+user.Id).append(li);
-        new HTMLTag('input').addAttr('type','text').addAttr('id','user-info-newtag'+user.Id).append(li);
-        new HTMLTag('button').setText('Tag frissít').append(li).onclick(()=>ChangeTag(user.Id,team.Id));
+        new HTMLTag('p').setText(tag).addAttr('id','user-info-tag'+user.id).append(li);
+        new HTMLTag('input').addAttr('type','text').addAttr('id','user-info-newtag'+user.id).append(li);
+        new HTMLTag('button').setText('Tag frissít').append(li).onclick(()=>ChangeTag(user.id,team.id));
     }
     li.append(appendPoint);
 }
@@ -49,35 +50,37 @@ export function addNonMemberToExisting(user,appendPoint,team){
     if(!team){
         team = JSON.parse(sessionStorage.getItem('activeTeam'));
     }
-    const li = new HTMLTag('li').addAttr('id','user-info'+user.Id);
-    if(user.FirstName && user.LastName && user.Id){
-        new HTMLTag('p').setText(user.LastName+' '+user.FirstName).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
+    const li = new HTMLTag('li').addAttr('id','user-info'+user.id);
+    if(user.firstname && user.lastname && user.id){
+        new HTMLTag('p').setText(user.lastname+' '+user.firstname).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
         new HTMLTag('button').setText('Hozzáad').append(li).onclick(()=>{onFireClick(team,user)});
     }
     li.append(appendPoint);
 }
 
 export function createTeamProjectsList(team,appendpoint){
-    for(let task of team.TeamTasks){
+    for(let task of team.teamtasks){
         const li = new HTMLTag('li').setText(task.TaskName).append(appendpoint).onclick(()=>onTaskClicked(task));
         
     }
 }
 
 export function addNewMemberToNew(user,appendPoint){
-    const li = new HTMLTag('li').addAttr('id','user-info'+user.Id).addAttr('data-id',user.Id);
-    if(user.FirstName && user.LastName && user.Id){
-        new HTMLTag('p').setText(user.LastName+' '+user.FirstName).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
+    const li = new HTMLTag('li').addAttr('id','user-info'+user.id).addAttr('data-id',user.id);
+    if(user.firstname && user.lastname && user.id){
+        new HTMLTag('p').setText(user.lastname+' '+user.firstname).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
         new HTMLTag('button').setText('Töröl').append(li).onclick(()=>{onSuccesfulFire(user)});
-        new HTMLTag('input').addAttr('type','text').addAttr('id','user-info-newtag'+user.Id).addAttr('placeholder','Tag').append(li);
+        new HTMLTag('input').addAttr('type','text').addAttr('id','user-info-newtag'+user.id).addAttr('placeholder','Tag').append(li);
     }
     li.append(appendPoint);
 }
 
 export function addNonMemberToNew(user,appendPoint){
-    const li = new HTMLTag('li').addAttr('id','user-info'+user.Id);
-    if(user.FirstName && user.LastName && user.Id){
-        new HTMLTag('p').setText(user.LastName+' '+user.FirstName).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
+    console.log(user);
+    appendPoint = document.getElementById('nonmembers');
+    const li = new HTMLTag('li').addAttr('id','user-info'+user.id);
+    if(user.firstname && user.lastname && user.id){
+        new HTMLTag('p').setText(user.lastname+' '+user.firstname).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
         new HTMLTag('button').setText('Hozzáad').append(li).onclick(()=>{onSuccesfulHire(user)});
     }
     li.append(appendPoint);
@@ -85,39 +88,39 @@ export function addNonMemberToNew(user,appendPoint){
 
 export function getDummyData(){
     let data = [{
-        Id: 1,
-        TeamName: 'alfa csapat',
-        Description: 'Az első és legtutibb csapat',
-        TeamMembers:[
+        id: 1,
+        teamname: 'alfa csapat',
+        description: 'Az első és legtutibb csapat',
+        teammembers:[
             {
                 User:{
-                    Id:11,
+                    id:11,
                     Username: 'nagypeti',
-                    FirstName: 'Péter',
-                    LastName: 'Nagy'
+                    firstname: 'Péter',
+                    lastname: 'Nagy'
                 },
                 Tag:'#captain'
             },
             {
                 User:{
-                    Id:12,
+                    id:12,
                     Username: 'kisspetra',
-                    FirstName: 'Petra',
-                    LastName: 'Kiss'
+                    firstname: 'Petra',
+                    lastname: 'Kiss'
                 },
                 Tag:'#design'
             }
         ],
-        TeamTasks:[
+        teamtasks:[
             {
-                Id: 123,
+                id: 123,
                 TaskName: 'Ekső feladat',
                 TaskDescription: 'lorem ipsum dolor',
                 TaskDeadLine: '2020-01-01',
                 StatusName:'done'
             },
             {
-                Id: 223,
+                id: 223,
                 TaskName: 'Második feladat',
                 TaskDescription: 'lorem ipsum dolor',
                 TaskDeadLine: '2022-01-01',
@@ -126,41 +129,41 @@ export function getDummyData(){
         ]
     },
     {
-        Id: 2,
-        TeamName: 'béta brigád',
-        Description: 'A kisegítő gárda',
-        TeamMembers:[
+        id: 2,
+        teamname: 'béta brigád',
+        description: 'A kisegítő gárda',
+        teammembers:[
             {
                 User:{
-                    Id:13,
+                    id:13,
                     Username: 'feszes',
-                    FirstName: 'Gábor',
-                    LastName: 'Feszes'
+                    firstname: 'Gábor',
+                    lastname: 'Feszes'
                 },
                 Tag:'#muscle'
             },
             {
                 User:{
-                    Id:18,
+                    id:18,
                     Username: 'dragonqueen',
-                    FirstName: 'Anna',
-                    LastName: 'Szabó'
+                    firstname: 'Anna',
+                    lastname: 'Szabó'
                 },
                 Tag:'#weight'
             },
             {
                 User:{
-                    Id:20,
+                    id:20,
                     Username: 'boss',
-                    FirstName: 'György',
-                    LastName: 'Baila'
+                    firstname: 'György',
+                    lastname: 'Baila'
                 },
                 Tag:'#boss'
             }
         ],
-        TeamTasks:[
+        teamtasks:[
             {
-                Id: 323,
+                id: 323,
                 TaskName: 'Tartalék feladat',
                 TaskDescription: 'lorem ipsum dolor',
                 TaskDeadLine: '2020-01-01',
@@ -175,15 +178,15 @@ export function getDummyData(){
 
 /*"Team":{
 
-    "Id":0,
+    "id":0,
     
-    "TeamName":"",
+    "teamname":"",
     
-    "Description":"",
+    "description":"",
     
-    "TeamMembers":[], //TeamMember
+    "teammembers":[], //TeamMember
     
-    "TeamTasks":[] //Task
+    "teamtasks":[] //Task
     
     },
 
@@ -197,13 +200,13 @@ export function getDummyData(){
 
     "User":{
 
-    "Id":0,
+    "id":0,
 
     "Username":"",
 
-    "FirstName":"",
+    "firstname":"",
 
-    "LastName":"",
+    "lastname":"",
 
     "Contacts":[], //Contact
 
@@ -216,7 +219,7 @@ export function getDummyData(){
 
     "Task":{
 
-    "Id":0,
+    "id":0,
 
     "TaskName":"",
 
