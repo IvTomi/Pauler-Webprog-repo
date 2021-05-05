@@ -87,7 +87,7 @@ async function loginUser(userid,isadmin,hash){
 }
 
 function ViewToUser(viewobj,tasklist,contactslist,permissionlist){
-    return {"User":userdao.GetUser(viewobj["idUser"],viewobj["Username"],viewobj["FirstName"],viewobj["LastName"],contactslist,tasklist,permissionlist)};
+    return {"User":userdao.GetUser(viewobj["idUser"]?viewobj["idUser"]:viewobj["User_idUser"],viewobj["Username"],viewobj["FirstName"],viewobj["LastName"],contactslist,tasklist,permissionlist)};
 }
 
 
@@ -775,6 +775,7 @@ module.exports={
     RemoveContactFromUser:RemoveContactFromUser,
     AddContactToUser:AddContactToUser,
     ModifyUserPermission:ModifyUserPermission,
-    userTaskByHash:userTaskByHash
+    userTaskByHash:userTaskByHash,
+    ViewToUser:ViewToUser
 
 }

@@ -6,6 +6,7 @@ const { encrypt } = require("../../Utility/Encryptor");
 const jsonParser = require('../../Utility/JSONParser');
 const teamdao = require('../DaO/TeamDaO');
 const userrepo = require('./UserRepository');
+const UserDaO = require("../DaO/UserDaO");
 const pool = dbConnector.ConnectionPool;
 
 async function getCreateTeam(name, description,userid,hash){   
@@ -24,7 +25,7 @@ async function getCreateTeam(name, description,userid,hash){
 async function getTeamMembers(teamid){
     return new Promise((resolve,reject)=>{
         pool.awaitGetConnection().then((res)=>{
-            res.awaitQuery(`CALL GetTeamUsersw('${teamid}')`).then((result)=>{
+            res.awaitQuery(`CALL GetTeamUsers('${teamid}')`).then((result)=>{
                 resolve(result[result.length-2]);                     
             }).catch((e)=>{              
                 reject(e)
@@ -253,15 +254,14 @@ async function CreateNewTeam(userid,hash,name,description,teammembers){
                 }
             })
             getCreateTeam(name,description,userid,hash).then((result)=>{
-                teammembers.forEach(async member=>{
+                /*teammembers.forEach(async member=>{
                     await getAddUserToTeam(member['Id'],result['Id'],member['Tags'],userid).catch((e)=>{
                         logger.error(e);
                         resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
                         return
-                    })
+                    })*/
+                    resolve((jsonParser.combineJSON(protocol.status(true),{"Id":result['Id']})));
                     
-                })
-                resolve((jsonParser.combineJSON(protocol.status(true),{"Id":result['Id']})));
             }).catch((e)=>{
                 logger.error(e);
                 resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
@@ -442,24 +442,27 @@ async function ListTeams(hash,userid){
     })
 }
 
-async function ListUserTeams(hash,userid,callerid){
+async function ListTeamUsers(hash,userid,teamid){
     return new Promise((resolve,reject)=>{
-        if(!userid){
+        if(!teamid){
             resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(3))));
             return
         }
-        userrepo.userByHash(userid,hash).then(res1=>{
+        teamByHash(teamid,hash).then(res1=>{
             if(!res1){
                 resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
             return
             }
-            userrepo.getUserPermission('IsAdmin').then(res=>{
-                if(!res && callerid != userid){
+            
+            userrepo.getUserPermission('IsAdmin',userid).then(async res=>{
+                //console.log("uid"+userid)
+                let ismember = await teamMemberByHash(teamid,userid,hash);
+                if(!res && !ismember){
                     resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
                     return
                 }
-                getTeams(hash).then(async result=>{                            
-                    resolve((jsonParser.combineJSON(protocol.status(true),teamdao.GetTeamListJson(result.map(element=>viewToTeam(element))))));
+                getTeamMembers(teamid).then(async result=>{                            
+                    resolve((jsonParser.combineJSON(protocol.status(true),UserDaO.GetUserListJson(result.map(element=>userrepo.ViewToUser(element))))));
                 }).catch((e)=>{
                     logger.error(e);
                     resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
@@ -607,5 +610,6 @@ module.exports={
     RemoveMemberFromTeam:RemoveMemberFromTeam,
     teamByHash:teamByHash,
     teamTaskByHash:teamTaskByHash,
-    teamMemberByHash:teamMemberByHash
+    teamMemberByHash:teamMemberByHash,
+    ListTeamUsers:ListTeamUsers
 }
