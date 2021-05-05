@@ -12,20 +12,25 @@ export function onTaskClicked(task){
 }
 
 export function createTeamMembersList(team,appendPoint){
-    for(let member of team.TeamMembers){
-        let user = member.User;
-        let tag = member.Tag;
-        addNewMemberToExisting(user,appendPoint,team,tag);
-    }
+    console.log(team);
+    makeRequest('/team/get/users','POST',getHeader(),JSON.stringify({"Teamid":team.id}),(data)=>{
+        for(let member of data.Users){
+            let user = member.User;
+            let tag = member.Tag;
+            addNewMemberToExisting(user,appendPoint,team,tag);
+        }
+    },()=>{alert('Hiba')});
+    
 }
 
 export function ChangeTag(id,teamid){
     const tag = document.getElementById('user-info-newtag'+id).value; 
-    makeRequest('/team/modify/tag','POST',getHeader(),JSON.stringify({"teamid":teamid,"user":id,"tag":tag}),(data)=>{onChangeTagSucces(data,id,tag)},()=>alert("Server not found"));
+    console.log(teamid,id,tag);
+    makeRequest('/team/modify/tag','POST',getHeader(),JSON.stringify({"TeamId":teamid,"Memberid":id,"Tag":tag}),(data)=>{onChangeTagSucces(data,id,tag)},()=>alert("Server not found"));
 }
 
 function onChangeTagSucces(data,id,tag){
-    if(data.Status === /*'Failed'*/'rest'){
+    if(data.Status === 'Failed'){
         alert(data.Message);
     }
     else{
@@ -36,55 +41,63 @@ function onChangeTagSucces(data,id,tag){
 
 
 export function createNonTeamMemberList(users,team,appendpoint){
-    const teamids = [];
-    for(let member of team.TeamMembers){
-        let user = member.User;
-        teamids.push(user.Id);
-    }
-    for(let member of users){
-        let user = member.User;
-        if(!teamids.includes(user.Id)){
-            addNonMemberToExisting(user,appendpoint,team);
+    let teamids = [];
+    makeRequest('/team/get/users','POST',getHeader(),JSON.stringify({"Teamid":team.id}),(data)=>{
+        for(let member of data.Users){
+            console.log(member);
+            let user = member.User;
+            teamids.push(user.id);
         }
-    }
+        for(let member of users){
+            console.log(users);
+            console.log(teamids);
+            let user = member;
+            if(!teamids.includes(user.id)){
+                addNonMemberToExisting(user,appendpoint,team);
+            }
+        }
+    },()=>{alert('Hiba')});
+    console.log(team);
+    
 }
 
 export function onFireClick(team, user){
-    makeRequest('/team/add/user','GET',getHeader(),JSON.stringify({"teamid":team.Id,"userid":user.Id}),(data)=>{onSuccesfulHire(data,user)},()=>(alert('Server not found')))
+    makeRequest('/team/add/user','POST',getHeader(),JSON.stringify({"Teamid":team.id,"Memberid":user.id}),(data)=>{onSuccesfulHire(data,user)},()=>(alert('Server not found')))
 }
 
 export function onHireClick(team, user){
-    makeRequest('/team/remove/user','GET',getHeader(),JSON.stringify({"teamid":team.Id,"userid":user.Id}),(data)=>{onSuccesfulFire(data,user)},()=>(alert('Server not found')))
+    makeRequest('/team/remove/user','POST',getHeader(),JSON.stringify({"TeamId":team.id,"MemberId":user.id}),(data)=>{onSuccesfulFire(data,user)},()=>(alert('Server not found')))
 }
 
  function onSuccesfulFire(data,user){
-    if(data.Status === /*'Failed'*/'rest'){
+    if(data.Status === 'Failed'){
         alert(data.Message);
     }
     else{
         const list = document.getElementById('members');
-        list.removeChild(document.getElementById('user-info'+user.Id));
+        list.removeChild(document.getElementById('user-info'+user.id));
         const otherList = document.getElementById('nonmembers');
         addNonMemberToExisting(user,otherList);
     }
 }
 function onSuccesfulHire(data,user){
-    if(data.Status === /*'Failed'*/'rest'){
+    if(data.Status === 'Failed'){
         alert(data.Message);
     }
     else{
         const list = document.getElementById('nonmembers');
-        list.removeChild(document.getElementById('user-info'+user.Id));
+        list.removeChild(document.getElementById('user-info'+user.id));
         const otherList = document.getElementById('members');
         addNewMemberToExisting(user,otherList);
     }
 }
 
-export function onDeleteClicked(){
-    makeRequest('/team/remove','POST',getHeader(),JSON.stringify({"teamid":team.Id}),(data)=>{onDeleteSucces(data)},()=>{alert('Server not found')})
+export function onDeleteClicked(team){
+    console.log(team);
+    makeRequest('/team/delete','POST',getHeader(),JSON.stringify({"TeamId":team.id}),(data)=>{onDeleteSucces(data)},()=>{alert('Server not found')})
 }
 function onDeleteSucces(data){
-    if(data.Status === /*'Failed'*/'rest'){
+    if(data.Status === 'Failed'){
         alert(data.Message);
     }
     else{

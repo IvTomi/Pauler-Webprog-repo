@@ -23,7 +23,8 @@ function setUpAdminTeamsView(appendPoint,n){
     }  
     else if(n===2){
 
-        const team = JSON.parse(sessionStorage.getItem('activeTeam'));
+        let team = JSON.parse(sessionStorage.getItem('activeTeam'));
+        console.log(team);
         createTeamInfoView(team);
     }  
 }
