@@ -12,12 +12,12 @@ export function getTeamAttributes(id,name,desc){
 
 
 
-function onGetTasksSucces(data,name,desc){
+function onGetTasksSucces(data,name,desc,id){
 
-    makeRequest('/team/get/users','POST',getHeader(),JSON.stringify({"Teamid":id}),(data2)=>{onGetUsersSucces(data,data2,name,desc)},()=>onAjaxFail());
+    makeRequest('/team/get/users','POST',getHeader(),JSON.stringify({"Teamid":id}),(data2)=>{onGetUsersSucces(data,data2,name,desc,id)},()=>onAjaxFail());
 }
 
-function onGetTasksSucces(data,data2,name,desc){
+function onGetUsersSucces(data,data2,name,desc){
 
     createUsersTeamInfoView(name,desc,data,data2);
     
