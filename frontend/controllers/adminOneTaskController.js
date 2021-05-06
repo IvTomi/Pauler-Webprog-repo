@@ -75,9 +75,16 @@ export function makeRecords(taskid){
         else{
             let list = data.Records;
             let appendPoint = document.getElementById('records');
+            let users = SessionJanitor.getAllUsers(null);
             for(let record of list){
                 record = record.Record;
+                
                 let li = new HTMLTag('li').append(appendPoint);
+                for(let user of users){
+                   if(user.id==record.userid){
+                    new HTMLTag('p').setText(user.lastname+' '+user.firstname).append(li);
+                   }
+                }
                 new HTMLTag('p').setText(record.comment).append(li);
                 new HTMLTag('p').setText(record.recorddate).append(li);
             }
