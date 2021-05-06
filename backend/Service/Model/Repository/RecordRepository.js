@@ -165,8 +165,15 @@ async function CreateRecord(date,comment,minute,hour,userid,taskid,modifierid,ha
             return
         }     
         //check user has task
-        userrepo.userTaskByHash(userid,taskid,hash).then(res1=>{
-            if(!res1){
+        taskrepo.getUserTasks(userid).then(res1=>{
+            console.log(taskid)
+            let x = false;
+            res1.forEach(element => {
+                if(element['Task_idTask'] == taskid){
+                    x = true;
+                }
+            });
+            if(!x){
                 resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
                 return
             }
@@ -174,7 +181,7 @@ async function CreateRecord(date,comment,minute,hour,userid,taskid,modifierid,ha
             console.log(date)
             //check can edit record
             userrepo.getUserPermission('CanEditRecord',modifierid).then(res=>{
-                getCreateRecord(res?date:`${currdate}`,comment?comment:"",minute?minute:0,hour?hour:0,modifierid,taskid,modifierid,hash).then((result)=>
+                getCreateRecord(res?date?date:`${currdate}`:`${currdate}`,comment?comment:"",minute?minute:0,hour?hour:0,modifierid,taskid,modifierid,hash).then((result)=>
                 {
                     resolve((jsonParser.combineJSON(protocol.status(true),{"Id":result['Id']})));
                 }).catch((e)=>{

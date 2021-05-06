@@ -760,6 +760,7 @@ module.exports={
     ListTeamTasks:ListTeamTasks,
     ListTasks:ListTasks,
     DeleteTask:DeleteTask,
-    ListTaskUsers:ListTaskUsers
+    ListTaskUsers:ListTaskUsers,
+    getUserTasks:getUserTasks
 
 }
