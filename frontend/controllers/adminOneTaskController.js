@@ -1,4 +1,5 @@
 import { router } from "../index.js";
+import HTMLTag from "../utilities/HTMLTag.js";
 import { makeRequest } from "../utilities/serviceHandler.js";
 import { getHeader } from "../utilities/sessionJanitor.js";
 import {SessionJanitor} from '../utilities/sessionJanitor.js';
@@ -65,6 +66,22 @@ export function deleteTask(taskid){
     },()=>{alert('Server not found')})
 }
 
-export function makeRecords(){
+export function makeRecords(taskid){
     
+    makeRequest('/task/get/records','POST',getHeader(),JSON.stringify({"Taskid":taskid}),(data)=>{
+        if(data.Status === 'Failed'){
+            alert(data.Message);
+        }  
+        else{
+            let list = data.Records;
+            let appendPoint = document.getElementById('records');
+            for(let record of list){
+                record = record.Record;
+                let li = new HTMLTag('li').append(appendPoint);
+                new HTMLTag('p').setText(record.comment).append(li);
+                new HTMLTag('p').setText(record.recorddate).append(li);
+            }
+            
+        }
+    },()=>{alert('Server not found')})
 }
