@@ -1,23 +1,25 @@
+import { getTaskAttributes } from "../../controllers/userOneProjectController.js";
 import HTMLTag from "../../utilities/HTMLTag.js";
 
 export function createMyProjectList(data,appendPoint,option){
     const ulList = new HTMLTag('div');
     for(let project of data){
-        const one = new HTMLTag('ul');
-        new HTMLTag('li').setText(project.name).append(one);
-        new HTMLTag('li').setText(project.description).append(one);
+        const one = new HTMLTag('ul').onclick(() => {getTaskAttributes(project.Task.id,project.Task.taskname,project.Task.description)});
+        new HTMLTag('li').setText(project.Task.taskname).append(one);
+        new HTMLTag('li').setText(project.Task.description).append(one);
         one.append(ulList); 
     }
     ulList.append(appendPoint);
 }
 
 export function createProjectMembersList(data,appendPoint){
+    console.log(data);
     let div = new HTMLTag('div');
     let one = new HTMLTag('ul').append(div);
-    for(let member of data.members){
-        new HTMLTag('img').addAttr('src',member.picture).addAttr('alt','user képe').append(one);
-        new HTMLTag('li').setText(member.name).append(one);
-        new HTMLTag('li').setText(member.post).append(one);
+    for(let User of data){
+        new HTMLTag('img').addAttr('src',User.User.picture).addAttr('alt','user képe').append(one);
+        new HTMLTag('li').setText(User.Firstname + " " + User.Lastname).append(one);
+        //new HTMLTag('li').setText(member.post).append(one);
     }
     div.append(appendPoint).addClass('scroll');
 
@@ -27,10 +29,10 @@ export function createProjectRecordList(data,appendPoint)
 {
     let div = new HTMLTag('div');
     let one = new HTMLTag('ul').append(div);
-    for(let record of data.records){
-        new HTMLTag('li').setText(record.author).append(one);
-        new HTMLTag('li').setText(record.dateTime).append(one);
-        new HTMLTag('li').setText(record.message).append(one);
+    for(let record of data){
+        //new HTMLTag('li').setText(record.author).append(one); ennek mi a neve?
+        new HTMLTag('li').setText(record.Date + " " + record.Hour + ":" + record.Minute).append(one);
+        new HTMLTag('li').setText(record.Comment).append(one);
     }
     div.append(appendPoint).addClass('scroll');
 }

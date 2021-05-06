@@ -112,6 +112,27 @@ export class SessionJanitor{
         }
         return JSON.parse(sessionStorage.getItem('allTeams'));
     }
+    static setAllTasks(callback){
+        makeRequest('/task/list','POST',getHeader(),JSON.stringify({}),(data)=>{
+            if(data.Status === 'Failed'){
+                alert(data.Message);
+            }
+            else{
+                let toList = data.Tasks;
+                sessionStorage.setItem('allTasks',JSON.stringify(JSON.parse(JSON.stringify(toList))));
+                if(callback){
+                    callback.apply();
+                }
+            }
+            
+        },()=>{alert('Server not found')});
+    }
+    static getAllTasks(callback){
+        if(callback){
+            SessionJanitor.setAllTasks(callback);
+        }
+        return JSON.parse(sessionStorage.getItem('allTasks'));
+    }
     static setUserContacts(callback,userid){
         console.log('useridlel:' + userid)
         makeRequest('/user/get/contacts','POST',getHeader(),JSON.stringify({'Userid':userid}),(data)=>{

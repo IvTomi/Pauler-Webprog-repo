@@ -28,12 +28,11 @@ export function onAjaxFail(){
 }
 export function onTeamClicked(team){
     sessionStorage.setItem('activeTeam',JSON.stringify(team));
-    router.navigate('teamInfoAdmin')
+    router.navigate('teamInfoAdmin');
 }
 export function onTaskClicked(task){
     sessionStorage.setItem('activeTask',JSON.stringify(task));
-     console.log(sessionStorage.getItem('activeTask'));
-     /*router.navigate('taskview')*/
+     router.navigate('onetaskAdmin')
 }
 export function onUserClicked(person){
     sessionStorage.setItem('activeProfile',JSON.stringify(person));

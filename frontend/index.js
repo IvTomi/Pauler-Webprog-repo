@@ -1,6 +1,8 @@
 import ViewController from "./controllers/viewController.js";
 import Router from "./utilities/router.js";
 
+
+
 export const router = new Router({root:"/",mode:"history"});
 export const viewController = new ViewController();
 
@@ -25,9 +27,15 @@ router.add("oneProjectUser",()=>{viewController.loadUserProject(1)});
 router.add("myTeamsUser",()=>{viewController.loadUserTeam(0)});
 router.add("oneTeamUser",()=>{viewController.loadUserTeam(1)});
 
+<<<<<<< HEAD
 router.add("recordUser",()=>{viewController.loadRecordUser()});
+=======
+router.add('newtaskAdmin',()=>{viewController.loadAdminProjects(0)});
+router.add('alltaskAdmin',()=>{viewController.loadAdminProjects(1)});
+router.add('onetaskAdmin',()=>{viewController.loadAdminProjects(2)});
+>>>>>>> 64cc079e72c13049b49fa01a86c8ada33f8da504
 
 console.log();
 window.onload = ()=>{router.navigate(router.clearSlashes(router.replaceRoot(window.location.pathname)))};
-//router.navigate('ProfileUser');
+router.navigate('login');
 
