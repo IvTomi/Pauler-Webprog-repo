@@ -628,7 +628,7 @@ async function RemoveTaskFromTeam(userid,hash,taskid,teamid){
                         return
                     }
                     //remove contact
-                    getRemoveTaskFromTeam(teamid,taskid,userid).then(res=>{
+                    getRemoveTaskFromTeam(taskid,teamid,userid).then(res=>{
                         resolve(jsonParser.combineJSON(protocol.status(true)));
                     }).catch((e)=>{
                         logger.error(e);
