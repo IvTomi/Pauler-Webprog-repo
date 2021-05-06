@@ -6,8 +6,58 @@ import {makeRequest} from '../../utilities/serviceHandler.js';
 
 
 export function createMyRecordList(data,appendPoint,options){
-    const dateBase = options.timeframe || '1900/01/01';
     //const name = '*'+options.name+'*';//regex-é alakítás
+    let userid = SessionJanitor.getSessionUser().id;
+    makeRequest('/user/get/records','POST',getHeader(),JSON.stringify({"Userid":userid}),(data)=>{
+        if(data.Status === 'Failed'){
+            alert(data.Message);
+        }
+        else{
+            SessionJanitor.getAllTasks(()=>{CreateElements(data.Records,appendPoint,options);  })
+                  
+        }
+    },(req,err)=>{
+        console.log(err);
+    })    
+    
+}
+export function CreateElements(data,appendPoint,options){
+    if(!data || !appendPoint){
+        return false; //Hiányzó adat a fgv-hez
+    }
+    appendPoint.innerHTML = "";
+
+
+    for(let record of data){
+        let task = SessionJanitor.getAllTasks(null).find(x=>x['Task'].id == record['Record']['taskid'])
+            if(true){
+                const cont = new HTMLTag('li').append(appendPoint);
+                new HTMLTag('button').setText('Töröl').append(cont).onclick(()=>{deleteRecord(record['Record']['id'],appendPoint,options)});
+                new HTMLTag('p').setText(task['Task'].taskname).append(cont);
+                new HTMLTag('p').setText(record.desc).append(cont);
+                new HTMLTag('p').setText(record['Record']['comment']).append(cont);
+                new HTMLTag('p').setText(record['Record']['hour']+':'+record['Record']['min']).append(cont);
+                new HTMLTag('p').setText(record['Record']['recorddate']).append(cont);
+            }
+        }
+}
+
+
+function deleteRecord(id,appendpoint,datain){
+    makeRequest('/record/remove','POST',getHeader(),JSON.stringify({"Recordid":id}),(data)=>{
+        if(data.Status === 'Failed'){
+            alert(data.Message);
+        }
+        else{   
+            createMyRecordList(null,appendpoint,datain)
+            
+        }           
+    },(req,err)=>{
+        console.log(err);
+    }) 
+}
+
+export function createTeamRecordList(recordlist,appendpoint,options){
     for(let team of data){
         for(let task of team.projects){
             for(let record of task.records){
@@ -25,33 +75,6 @@ export function createMyRecordList(data,appendPoint,options){
                 }
             }
         }
-    }
-    
-}
-export function createTeamRecordList(data,appendPoint,options){
-    const dateBase = options.timeframe || '1900/01/01';
-    if(!data || !appendPoint){
-        return false; //Hiányzó adat a fgv-hez
-    }
-    for(let team of data){
-        if( (options.team && team.name===options.team) || !options.team){
-            for(let task of team.projects){
-                if((options.task && task.name===options.task) || !options.task){
-                    for(let record of task.records){
-                        if(record.creator!=='Grosics'){
-                            if(hasDatePassed(dateBase,record.date)){
-                                const cont = new HTMLTag('li').append(appendPoint);
-                                new HTMLTag('p').setText(record.creator).append(cont);
-                                new HTMLTag('p').setText(record.desc).append(cont);
-                                new HTMLTag('p').setText(record.date).append(cont);
-                                new HTMLTag('p').setText(record.length).append(cont);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
     }
 }
 export function getProjects(callback,root){

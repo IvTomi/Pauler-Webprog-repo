@@ -12,6 +12,11 @@ class HTMLTag{
         return this;
     }
 
+    clear(){
+        this.node.innerHTML = "";
+        return this
+    }
+
     /**Adds a class to the elements class list */
     addClass(value){
         this.node.classList.add(value);
