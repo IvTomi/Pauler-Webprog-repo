@@ -33,7 +33,7 @@ export function memberDistribution(taskid){
                 }
             });
         }
-    },()=>{})
+    },()=>{alert('Server not found')})
 }
 
 
@@ -42,7 +42,7 @@ export function addUserToexistTask(user,taskid){
         let nonmembers= document.getElementById('nonmembers');
         nonmembers.removeChild(document.getElementById('nontaskeduser'+user.id));
         addTaskedToExisting(user,{},taskid);
-    },()=>{})
+    },()=>{alert('Server not found')})
 }
 
 export function removeUserFromexistTask(user,taskid){
@@ -50,5 +50,21 @@ export function removeUserFromexistTask(user,taskid){
         let members= document.getElementById('members');
         members.removeChild(document.getElementById('taskeduser'+user.id));
         addNonTaskedToExisting(user,{},taskid);
-    },()=>{})
+    },()=>{alert('Server not found')})
+}
+
+
+export function deleteTask(taskid){
+    makeRequest('/task/remove','POST',getHeader(),JSON.stringify({"Taskid":taskid}),(data)=>{
+        if(data.Status === 'Failed'){
+            alert(data.Message);
+        }  
+        else{
+            setTimeout(()=>{router.navigate('newtaskAdmin')},1000);
+        }
+    },()=>{alert('Server not found')})
+}
+
+export function makeRecords(){
+    
 }
