@@ -1,7 +1,7 @@
 import HTMLTag from '../../../../utilities/HTMLTag.js';
 import viewController from '../../../../controllers/viewController.js';
 import { refreshContent } from './mainTeamA.js';
-import { createNonTeamMemberList, createTeamMembersList,  onDeleteClicked} from '../../../../controllers/adminSelectedTeamcontroller.js';
+import { createNonTeamMemberList, createTeamMembersList,  onDeleteClicked, getTeamTasks} from '../../../../controllers/adminSelectedTeamcontroller.js';
 import { createTeamProjectsList } from '../../../listBuilders/adminTeamListBuilder.js';
 import { SessionJanitor } from '../../../../utilities/sessionJanitor.js';
 
@@ -71,8 +71,9 @@ function createTeamInfoView(team){
     }];*/
     createNonTeamMemberList(users,team,nonMemList)
     new HTMLTag('p').setText('Projektek').append(content);
-    const projList = new HTMLTag('ul').addClass('projects').append(content); 
-    createTeamProjectsList(team,projList);
+    const projList = new HTMLTag('ul').addAttr('id','projectsList').append(content); 
+    getTeamTasks(team.id);
+    //createTeamProjectsList(team,projList);
     new HTMLTag('button').setText('Csapat törlése').append(content).onclick(()=>{onDeleteClicked(team)});
 }
 

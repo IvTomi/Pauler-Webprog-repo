@@ -50,12 +50,10 @@ export default class ViewController{
         setUpAdminProfile(main);
     }
 
-    loadAdminProjects(evt){
-        if(evt){
-            evt.preventDefault();
-        }
+    loadAdminProjects(n){
+        
         const main = viewController.setUpMain();
-        setUpAdminProjectsView(main);
+        setUpAdminProjectsView(main,n);
     }
 
     
@@ -105,7 +103,7 @@ export default class ViewController{
 
     loadAdminTeam(n){
        
-        /*Ideiglenesen*/viewController.loadAdmin();
+        
         const main = viewController.setUpMain();
         setUpAdminTeamsView(main,n);
     }

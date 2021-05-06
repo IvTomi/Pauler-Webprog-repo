@@ -58,9 +58,11 @@ export function addNonMemberToExisting(user,appendPoint,team){
     li.append(appendPoint);
 }
 
-export function createTeamProjectsList(team,appendpoint){
-    for(let task of team.teamtasks){
-        const li = new HTMLTag('li').setText(task.TaskName).append(appendpoint).onclick(()=>onTaskClicked(task));
+export function createTeamProjectsList(tasks,appendpoint){
+    appendpoint=document.getElementById('projectsList');
+    for(let task of tasks){
+        task = task.Task;
+        const li = new HTMLTag('li').setText(task.taskname).append(appendpoint).onclick(()=>onTaskClicked(task));
         
     }
 }

@@ -1,6 +1,6 @@
 import { router } from "../index.js";
 import { makeRequest } from "../utilities/serviceHandler.js";
-import  { addNewMemberToExisting, addNonMemberToExisting } from "../view/listBuilders/adminTeamListBuilder.js";
+import  { addNewMemberToExisting, addNonMemberToExisting, createTeamProjectsList } from "../view/listBuilders/adminTeamListBuilder.js";
 import { getHeader } from '../utilities/sessionJanitor.js';
 
 
@@ -44,20 +44,16 @@ export function createNonTeamMemberList(users,team,appendpoint){
     let teamids = [];
     makeRequest('/team/get/users','POST',getHeader(),JSON.stringify({"Teamid":team.id}),(data)=>{
         for(let member of data.Users){
-            console.log(member);
             let user = member.User;
             teamids.push(user.id);
         }
         for(let member of users){
-            console.log(users);
-            console.log(teamids);
             let user = member;
             if(!teamids.includes(user.id)){
                 addNonMemberToExisting(user,appendpoint,team);
             }
         }
     },()=>{alert('Hiba')});
-    console.log(team);
     
 }
 
@@ -104,4 +100,16 @@ function onDeleteSucces(data){
         sessionStorage.removeItem('allTeams');
         router.navigate('teamsAdmin');
     }
+}
+
+export function getTeamTasks(teamid){
+    console.log(teamid);
+    makeRequest('/team/get/tasks','POST',getHeader(),JSON.stringify({"Teamid":teamid}),(data)=>{
+        if(data.Status==='Failed'){
+            alert(data.Message);
+        }
+        else{
+            createTeamProjectsList(data.Tasks,{});
+        }
+    },()=>("Server not found"))
 }

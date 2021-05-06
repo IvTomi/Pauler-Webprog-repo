@@ -3,23 +3,23 @@ import HTMLTag from '../../../../utilities/HTMLTag.js';
 import {refreshContent,setUpListField} from './mainProject.js';
 import viewController from '../../../../controllers/viewController.js';
 import {CreateOneProjectMemberList,CreateOneProjectNonMemberList,createProjectRecordList} from '../../../listBuilders/projectListBuilder.js';
+import { memberDistribution } from '../../../../controllers/adminOneTaskController.js';
 
-function createOneProjectView(){
+function createOneProjectView(task){
 
-    const project = new ProjectData().projectTestData[0];
-    const nonMembers = new ProjectData().nonProjectMembers;
+    let project = task;
     const content = refreshContent(-1);
     new viewController().clearTag(content);
-    new HTMLTag('h2').setText(project.name).append(content);
+    new HTMLTag('h2').setText(project.taskname).append(content);
     new HTMLTag('p').setText(project.description).append(content);
+    new HTMLTag('p').setText(project.deadline).append(content);
     new HTMLTag('p').setText('Tagok').append(content);
-    const memList = new HTMLTag('ul').addClass('members').append(content);
-    CreateOneProjectMemberList(project.members,memList);
-    const nonMemList = new HTMLTag('ul').addClass('nonmembers').append(content);
-    CreateOneProjectNonMemberList(nonMembers,nonMemList);
+    const memList = new HTMLTag('ul').addAttr('id','members').append(content);
+    new HTMLTag('p').setText('Nem Tagok').append(content);
+    const nonMemList = new HTMLTag('ul').addAttr('id','nonmembers').append(content);
+    memberDistribution(task.id);
     new HTMLTag('p').setText('Rekordok').append(content);
     const recordList = new HTMLTag('ul').addClass('records').append(content);
-    createProjectRecordList(new ProjectData().projectTestData[0],recordList)
     new HTMLTag('button').setText('Projekt törlése').append(content);
 }
 
