@@ -1,6 +1,8 @@
 import {refreshContent} from './mainRecord.js';
 import HTMLTag from '../../../../utilities/HTMLTag.js';
 import { getProjects } from '../../../listBuilders/recordListBuilder.js';
+import {mapTask} from '../../../../factory/taskfactory.js'
+import {createRecord} from '../../../../controllers/createRecordController.js'
 
 function createNewRecordView(){
     const content = refreshContent(0);
@@ -11,19 +13,24 @@ function createNewRecordView(){
     const taskSelect = new HTMLTag('select').addAttr('id',formID+'_taskSelect').addAttr('name',formID+'_taskSelect').addAttr('value',-1).append(form);
     new HTMLTag('option').addAttr('value',-1).setText('Feladat kiválasztása').append(taskSelect);
     let i=0;
-    for(let task of getProjects()){
-        new HTMLTag('option').addAttr('value',i).setText(task).append(taskSelect);
-        i++;
-    }
+    getProjects(fillTasks,taskSelect)
     new HTMLTag('textarea').addAttr('id',formID+'_desc').addAttr('name',formID+'_desc').addAttr('placeholder','Megjegyzés').append(form);
-    new HTMLTag('label').addAttr('for',formID+'_length').append(form);
-    new HTMLTag('input').addAttr('id',formID+'_length').addAttr('name',formID+'_length').addAttr('placeholder','óó:pp').addAttr('type','text').append(form);
+    new HTMLTag('label').addAttr('for',formID+'_hour').append(form);
+    new HTMLTag('input').addAttr('id',formID+'_hour').addAttr('name',formID+'_hour').addAttr('placeholder','óra').addAttr('type','text').append(form);
+    new HTMLTag('label').addAttr('for',formID+'_min').append(form);
+    new HTMLTag('input').addAttr('id',formID+'_min').addAttr('name',formID+'_min').addAttr('placeholder','perc').addAttr('type','text').append(form);
     new HTMLTag('label').addAttr('for',formID+'_date').append(form);
     new HTMLTag('input').addAttr('id',formID+'_date').addAttr('name',formID+'_date').addAttr('type','date').append(form);
-    const status = new HTMLTag('select').addAttr('id',formID+'_status').addAttr('name',formID+'_status').addAttr('value',-1).append(form);
-    new HTMLTag('option').addAttr('value',-1).setText('Státusz').append(status);
-    new HTMLTag('button').setText('Létrehozás').append(form);
+    new HTMLTag('button').setText('Létrehozás').append(form).onclick(()=>{createRecord()});
     
+}
+
+function fillTasks(tasks,root){
+    console.log(root)
+    for(let task of tasks){
+        let t = mapTask(task['Task'])
+        new HTMLTag('option').addAttr('value',t.id).setText(t.taskname).append(root);
+    }
 }
 
 export default createNewRecordView;

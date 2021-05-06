@@ -25,6 +25,8 @@ router.add("oneProjectUser",()=>{viewController.loadUserProject(1)});
 router.add("myTeamsUser",()=>{viewController.loadUserTeam(0)});
 router.add("oneTeamUser",()=>{viewController.loadUserTeam(1)});
 
+router.add("recordUser",()=>{viewController.loadRecordUser()});
+
 console.log();
 window.onload = ()=>{router.navigate(router.clearSlashes(router.replaceRoot(window.location.pathname)))};
 //router.navigate('ProfileUser');

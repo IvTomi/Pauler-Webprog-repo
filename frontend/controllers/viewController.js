@@ -109,6 +109,20 @@ export default class ViewController{
         const main = viewController.setUpMain();
         setUpAdminTeamsView(main,n);
     }
+
+    loadRecordAdmin(){
+
+    }
+
+    loadRecordUser(){
+        this.setupRecordView();
+    }
+
+    setupRecordView(){
+        viewController.loadUser();
+        const main = viewController.setUpMain();
+        setUpUserRecordViews(main);
+    }
     
     setUpMain(){
         let main = document.getElementsByTagName('main')[0];

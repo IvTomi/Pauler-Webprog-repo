@@ -1,6 +1,8 @@
 import RecordData from "../../datasets/recordData.js";
 import HTMLTag from "../../utilities/HTMLTag.js";
 import {hasDatePassed} from '../../utilities/dateHandling.js';
+import {SessionJanitor,getHeader} from '../../utilities/sessionJanitor.js';
+import {makeRequest} from '../../utilities/serviceHandler.js';
 
 
 export function createMyRecordList(data,appendPoint,options){
@@ -52,16 +54,22 @@ export function createTeamRecordList(data,appendPoint,options){
         
     }
 }
-export function getProjects(selectedTeam){
-    const result = [];
-    for(let team of new RecordData().recordTestData){
-        if((selectedTeam && selectedTeam===team.name) || !selectedTeam){
-            for(let project of team.projects){
-                result.push(project.name);
-            }
+export function getProjects(callback,root){
+    let userid = SessionJanitor.getSessionUser().id
+    makeRequest('/user/get/tasks','POST',getHeader(),JSON.stringify({"Userid":userid}),(data)=>{
+        if(data.Status === 'Failed'){
+            alert(data.Message);
         }
-    }
-    return result;
+        else{   
+            console.log(data.Tasks)
+            if(callback){
+                callback(data.Tasks,root)
+            }
+            
+        }           
+    },(req,err)=>{
+        console.log(err);
+    })  
 }
 
 export function getTeams(){
