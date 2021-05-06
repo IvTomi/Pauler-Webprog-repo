@@ -46,7 +46,7 @@ export function addUserToexistTask(user,taskid){
 }
 
 export function removeUserFromexistTask(user,taskid){
-    makeRequest('/user/add/task','POST',getHeader(),JSON.stringify({"Userid":user.id,"Taskid":taskid}),()=>{
+    makeRequest('/user/remove/task','POST',getHeader(),JSON.stringify({"Userid":user.id,"Taskid":taskid}),()=>{
         let members= document.getElementById('members');
         members.removeChild(document.getElementById('taskeduser'+user.id));
         addNonTaskedToExisting(user,{},taskid);
