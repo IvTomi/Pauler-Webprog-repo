@@ -17,7 +17,7 @@ function setUpAdminProjectsView(appendPoint,n ){
 
     new HTMLTag('li').setText('Meglévő projektek').append(selecter).onclick(()=>{router.navigate('alltaskAdmin')});
     new HTMLTag('li').setText('projekt létrehozása').append(selecter).onclick(()=>{router.navigate('newtaskAdmin')});
-    new HTMLTag('li').setText('egy projekt').append(selecter).onclick(()=>{router.navigate('onetaskAdmin')});
+   // new HTMLTag('li').setText('egy projekt').append(selecter).onclick(()=>{router.navigate('onetaskAdmin')});
 
     if(n===0){
         makeNewProjectView();

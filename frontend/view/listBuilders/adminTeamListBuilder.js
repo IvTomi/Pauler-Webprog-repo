@@ -1,7 +1,8 @@
 import HTMLTag from '../../utilities/HTMLTag.js';
 import {onTeamClicked,onTaskClicked,onUserClicked,onDeleteClicked} from '../../controllers/adminAllTeamscontroller.js';
-import {ChangeTag, onFireClick,onHireClick} from '../../controllers/adminSelectedTeamcontroller.js';
+import {ChangeTag, onFireClick,onHireClick, onRemoveTaskClicked} from '../../controllers/adminSelectedTeamcontroller.js';
 import {onSuccesfulFire, onSuccesfulHire} from '../../controllers/adminNewTeamController.js';
+import { removeTeamFromTask } from '../../controllers/adminNewTaskController.js';
 
 
 /**data=teams */
@@ -58,11 +59,13 @@ export function addNonMemberToExisting(user,appendPoint,team){
     li.append(appendPoint);
 }
 
-export function createTeamProjectsList(tasks,appendpoint){
+export function createTeamProjectsList(tasks,appendpoint,teamid){
     appendpoint=document.getElementById('projectsList');
     for(let task of tasks){
         task = task.Task;
-        const li = new HTMLTag('li').setText(task.taskname).append(appendpoint).onclick(()=>onTaskClicked(task));
+        const li = new HTMLTag('li').addAttr('id','teamtask'+task.id).append(appendpoint);
+        new HTMLTag('p').setText(task.taskname).append(li).onclick(()=>onTaskClicked(task));
+        new HTMLTag('button').setText('X').append(li).onclick(()=>onRemoveTaskClicked(task.id,teamid));
         
     }
 }

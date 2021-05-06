@@ -87,6 +87,20 @@ function onSuccesfulHire(data,user){
         addNewMemberToExisting(user,otherList);
     }
 }
+export function onRemoveTaskClicked(taskid,teamid){
+    makeRequest('/team/remove/task','POST',getHeader(),JSON.stringify({"Taskid":taskid,"Teamid":teamid}),(data)=>{
+        if(data.Status==='Failed'){
+            alert(data.Message);
+        }
+        else{
+            const list = document.getElementById('projectsList');
+            list.removeChild(document.getElementById('teamtask'+taskid));
+        }
+    },()=>{alert('Server not found')})
+
+
+
+} 
 
 export function onDeleteClicked(team){
     console.log(team);
@@ -109,7 +123,7 @@ export function getTeamTasks(teamid){
             alert(data.Message);
         }
         else{
-            createTeamProjectsList(data.Tasks,{});
+            createTeamProjectsList(data.Tasks,{},teamid);
         }
     },()=>("Server not found"))
 }
