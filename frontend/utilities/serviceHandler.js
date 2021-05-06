@@ -8,6 +8,7 @@ export function makeRequest(endpoint,requestType,requestHeaders,requestData,succ
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         data:requestData,
+        timeout:15000,
         headers:JSON.parse(requestHeaders),
         success:successCallback,
         error:errorCallback

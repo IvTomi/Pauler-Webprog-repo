@@ -4,6 +4,7 @@ import HTMLTag from '../../../../utilities/HTMLTag.js';
 import createMyProjectsView from './myProjects.js';
 import createOneProjectView from './oneProject.js'
 import {router} from '../../../../index.js';
+import { AllTaskList } from '../../../../controllers/userMyProjectsController.js';
 
 function setUpUserProjectsViews(appendPoint,n){
     const navList = document.querySelector('nav ul');
@@ -12,10 +13,11 @@ function setUpUserProjectsViews(appendPoint,n){
     const selecter = new HTMLTag('ul').addAttr('id','selecter').append(appendPoint);
     new HTMLTag('div').addAttr('id','content').append(appendPoint);
     
-    new HTMLTag('li').setText('Feladataim').append(selecter).onclick(()=>{router.navigate('myProjectsUser')});
+    new HTMLTag('li').setText('Feladataim').append(selecter).onclick(()=>{router.navigate('myProjectsUser')}).preventDefaultEvent('click');
 
     if(n === 0){
-        createMyProjectsView();
+        AllTaskList();
+        //createMyProjectsView();
     }
 }
 

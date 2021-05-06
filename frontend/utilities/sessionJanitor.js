@@ -16,6 +16,14 @@ export default function clearSession(){
 
 export class SessionJanitor{
 
+    static setActiveProfile(activeProfile){
+        sessionStorage.setItem('activeProfile',JSON.stringify(activeProfile))
+    }
+
+    static getActiveProfile(){
+        return JSON.parse(sessionStorage.getItem('activeProfile'))
+    }
+
     static getSessionstate(){
         return sessionStorage.getItem('sessionstate')
 

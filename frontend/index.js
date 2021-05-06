@@ -1,7 +1,9 @@
 import ViewController from "./controllers/viewController.js";
 import Router from "./utilities/router.js";
 
-export const router = new Router({root:"/pauler-webprog-repo/frontend/",mode:"history"});
+
+
+export const router = new Router({root:"/",mode:"history"});
 export const viewController = new ViewController();
 
 

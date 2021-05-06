@@ -4,17 +4,20 @@ import {createProjectMembersList,createProjectRecordList} from '../../../listBui
 import ProjectData from '../../../../datasets/projectData.js'
 
 
-function createOneProjectView(projectid){
+export function createOneProjectView(name,desc,data2,data){
 
 
-    new HTMLTag('h1').setText('Feladatnév').append(content);
-    new HTMLTag('p').setText('Ezt a leírást is amúgy majd adatbázisból kell beolvasni').append(content);
+    new HTMLTag('h1').setText(name).append(content);
+    new HTMLTag('p').setText(desc).append(content);
     new HTMLTag('h3').setText('Tagok').append(content);
     new HTMLTag('h3').setText('Rekordok').append(content);
 
+    console.log(data2); //records
+    console.log(data); //users
+    
     const listDiv = setUpListField(content);
-    createProjectMembersList(new ProjectData().projectTestData[0],listDiv);
-    createProjectRecordList(new ProjectData().projectTestData[0],listDiv);
+    createProjectMembersList(data,listDiv);
+    createProjectRecordList(data2,listDiv);
 
 }
 

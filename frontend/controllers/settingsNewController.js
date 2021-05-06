@@ -5,7 +5,6 @@ import { getHeader } from '../utilities/sessionJanitor.js';
 import {createAside} from '../view/listBuilders/asideBuilder.js'
 
 
-
 export function addUserToDb(userid){
     let permissions = document.getElementsByClassName('createForm_chb');
     let username = document.getElementById('createForm_username').value;
@@ -22,7 +21,7 @@ export function addUserToDb(userid){
 
 function OutputOnSuccess(data){
     if(data.Status === "Failed"){
-        
+        alert(data.Message)
     }
     else if(data.Status === "Success"){
         setPermissions(data.Id)
