@@ -14,7 +14,6 @@ function setUpUserRecordViews(appendPoint){
     
     new HTMLTag('li').setText('Rekord hozzáadása').append(selecter).onclick(createNewRecordView);
     new HTMLTag('li').setText('Rekordjaim').append(selecter).onclick(createMyRecordsView);
-    new HTMLTag('li').setText('Csapattagok rekordjai').append(selecter).onclick(createTeamRecordsView);
 }
 
 

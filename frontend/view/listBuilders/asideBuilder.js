@@ -9,7 +9,9 @@ const title = 'Alkalmazottak'
 export function createAside(t){
     let aside
     if(!document.getElementById('aside')){
-        aside = new HTMLTag('aside').addAttr('id','aside').append(document.body);
+        new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/aside.css').append(document.body);
+
+        aside = new HTMLTag('aside').addAttr("class","asidebox").addAttr('id','aside').append(document.body);
     }else{
         aside = document.getElementById('aside');
     }
@@ -33,7 +35,9 @@ function makeOneUser(object,appendPoint){
     let user = object || {};
     console.log(object.username)
     if(user.username){
+
         const li = new HTMLTag('li').append(appendPoint);
+        
         if(user.img){
             new HTMLTag('img').addAttr('src',user.img).addAttr('alt','user képe').append(li).onclick(()=>{
                 //viewController.loadUserProfile(0,user.id);

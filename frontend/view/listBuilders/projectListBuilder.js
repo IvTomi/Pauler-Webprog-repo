@@ -4,7 +4,7 @@ import HTMLTag from "../../utilities/HTMLTag.js";
 export function createMyProjectList(data,appendPoint,option){
     const ulList = new HTMLTag('div');
     for(let project of data){
-        const one = new HTMLTag('ul').onclick(() => {getTaskAttributes(project.Task.id,project.Task.taskname,project.Task.description)});
+        const one = new HTMLTag('ul')
         new HTMLTag('li').setText(project.Task.taskname).append(one);
         new HTMLTag('li').setText(project.Task.description).append(one);
         one.append(ulList); 

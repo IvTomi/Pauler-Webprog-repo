@@ -46,16 +46,19 @@ function getContacts(appendPoint,contacts,canedit,userid){
     console.log('cigg: ',contacts)
     for(let contanct of contacts){
         console.log('a' + contacts.typename)
+        let box = new HTMLTag('div').addAttr("class","contactbox").append(appendPoint);
+
         //if(van jogosultsága)
         if(canedit){
-            new HTMLTag('button').setText("X").append(appendPoint).onclick(()=>{removeContact(userid,contanct.id)}).preventDefaultEvent('click');
+            new HTMLTag('button').setText("X").append(box).onclick(()=>{removeContact(userid,contanct.id)}).preventDefaultEvent('click');
 
         }
 
-        
-        new HTMLTag('p').setText(contanct.typename).append(appendPoint);
-        new HTMLTag('p').setText(contanct.value).append(appendPoint);
-        new HTMLTag('p').setText(contanct.description).append(appendPoint);
+        new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/contact.css').append(document.body);
+
+        new HTMLTag('p').setText(contanct.typename).append(box);
+        new HTMLTag('p').setText(contanct.value).append(box);
+        new HTMLTag('p').setText(contanct.description).append(box);
     }
 }
 

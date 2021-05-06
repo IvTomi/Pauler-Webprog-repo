@@ -1,0 +1,30 @@
+.contactbox{
+    background-color: rgba(196, 196, 196, 0.16);
+
+    align-self: center;
+    border-radius: 20px;
+    max-width: 200px;
+    max-height: 300px;
+    padding: 5px;
+    align-content: center;
+    margin: 10px;
+}
+
+.contactbox p{
+    display: block;
+    margin: 20;
+    align-self: center;
+}
+
+.contactbox button{
+    display: block;
+    margin: 20;
+    align-self: center;
+}
+
+.contactbox button:hover{
+    display: block;
+    margin: 20;
+    align-self: center;
+    background: red;
+}

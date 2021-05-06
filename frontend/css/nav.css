@@ -1,0 +1,91 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
+body{
+    background: linear-gradient(180deg, #0E131F 40%, #131B30 90%);
+    color: white;
+    font-family: 'Roboto', sans-serif; 
+}
+
+
+.adminNav{
+    background-color: rgba(196, 196, 196, 0.16);
+
+    align-self: center;
+    border-radius: 20px;
+}
+
+.adminNav ul{
+    color: lightgray;
+    display: inline-block;
+    align-content: center;
+    align-items: center;
+    font-family: 'Roboto', sans-serif; 
+}
+
+.adminNav ul li{
+    display: inline;
+    align-items: center;
+    text-align: center;
+    margin-left: 50%;
+}
+
+.adminNav ul li:hover{
+    display: inline;
+    text-align: center;
+    margin-left: 50%;
+    color: white;
+    cursor:pointer;
+}
+
+.adminNav ul li:focus{
+    display: inline;
+    text-align: center;
+    margin-left: 50%;
+    color: white;
+    cursor:pointer;
+}
+
+input{
+    border-radius: 20px;
+    background-color: rgba(196, 196, 196, 0.16);
+    display: block;
+    margin: 10;
+    color: white;
+    min-width: 400px;
+    min-height: 50px;
+    padding-left: 20px;
+    font-size: 15;
+}
+
+button{
+    background: white;
+    border-radius: 20px;
+    background-color: rgba(235, 224, 224, 0.877);
+}
+
+button:hover{
+    background: red;
+}
+
+ul{
+    border-radius: 20px;
+    border: 1px solid white;
+    margin: 2px;
+}
+
+ul:hover{
+    border-radius: 20px;
+    background-color: rgba(235, 224, 224, 0.103);
+    margin: 2px;
+}
+
+li:hover{
+    background-color: rgba(235, 224, 224, 0.103);
+}
+
+input:focus{
+    color: white;
+}
+
+
+

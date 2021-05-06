@@ -1,0 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
+.asidebox{
+    background-color: rgba(196, 196, 196, 0.16);
+    max-width: 200px;
+    align-self: center;
+    border-radius: 20px;
+    max-height: 300px;
+    overflow: scroll;
+    overflow-x: hidden;
+    flex-direction: row;
+    vertical-align: middle;
+    display: inline-block;
+    color: white;
+    margin-top: 20px;
+}
+
+.h1{
+    text-align: center;
+}
+
+.h3{
+    text-align: center;
+    margin-left: 20px;
+}
+
+.asidebox li{
+    font-family: 'Roboto', sans-serif; 
+    margin-left: 20px;
+}
