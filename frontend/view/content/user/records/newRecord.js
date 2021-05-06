@@ -21,16 +21,21 @@ function createNewRecordView(){
     new HTMLTag('input').addAttr('id',formID+'_min').addAttr('name',formID+'_min').addAttr('placeholder','perc').addAttr('type','text').append(form);
     new HTMLTag('label').addAttr('for',formID+'_date').append(form);
     new HTMLTag('input').addAttr('id',formID+'_date').addAttr('name',formID+'_date').addAttr('type','date').append(form);
-    new HTMLTag('button').setText('Létrehozás').append(form).onclick(()=>{createRecord()});
+    new HTMLTag('button').setText('Létrehozás').append(form).onclick(()=>{createRecord()}).preventDefaultEvent('click');
     
 }
 
 function fillTasks(tasks,root){
     console.log(root)
+    tasks=tasks.filter(onlyUnique)
     for(let task of tasks){
         let t = mapTask(task['Task'])
         new HTMLTag('option').addAttr('value',t.id).setText(t.taskname).append(root);
     }
 }
+
+function onlyUnique(value, index, self) {
+    return self.indexOf(value)=== index;
+  }
 
 export default createNewRecordView;

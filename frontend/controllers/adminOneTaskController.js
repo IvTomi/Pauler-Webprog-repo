@@ -1,6 +1,7 @@
 import { router } from "../index.js";
 import { makeRequest } from "../utilities/serviceHandler.js";
 import { getHeader } from "../utilities/sessionJanitor.js";
+import {SessionJanitor} from '../utilities/sessionJanitor.js';
 import { addNonTaskedToExisting, addTaskedToExisting } from "../view/listBuilders/adminTaskListBuilder.js";
 
 export function onTeamSelectedClicked(taask){
@@ -21,24 +22,16 @@ export function memberDistribution(taskid){
                 user = user.User;
                 taskmemids.push(user.id);
                 console.log(taskmemids);
-                makeRequest('/user/list','POST',getHeader(),JSON.stringify({}),(data)=>{
-                    if(data.Status === 'Failed'){
-                        alert(data.Message);
-                    }
-                    else{
-                        let users = data.Users;
-                        for(let user of users){
-                            user = user.User;
-                            if(taskmemids.includes(user.id)){
-                                addTaskedToExisting(user,{},taskid);
-                            }
-                            else{
-                                addNonTaskedToExisting(user,{},taskid);
-                            }
-                        }
-                    }
-                },()=>{})   
+                
             }
+            SessionJanitor.getAllUsers().forEach(element => {
+                if(taskmemids.includes(element.id)){
+                    addTaskedToExisting(element,{},taskid);
+                }
+                else{
+                    addNonTaskedToExisting(element,{},taskid);
+                }
+            });
         }
     },()=>{})
 }

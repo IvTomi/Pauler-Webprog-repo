@@ -15,7 +15,7 @@ function makeNewTeamView(){
     selectedMembers.node.style.background = 'red';
     const employees = new HTMLTag('ul').addAttr('id','nonmembers').append(content);
     //get list of all users
-    SessionJanitor.getAllUsers(()=>{afterGotUsers()});
+    SessionJanitor.getAllUsers(()=>{afterGotUsers( SessionJanitor.getAllUsers(null))});
     /*let users = [ {
         User:{
             Id:11,
@@ -66,8 +66,7 @@ function makeNewTeamView(){
 }
 
 
-function afterGotUsers(){
-    let users = JSON.parse(sessionStorage.getItem('allUsers'));
+function afterGotUsers(users){
     let employees = document.getElementById('nonmembers');
     createNonTeamMemberList(users,employees);
     new HTMLTag('button').setText('Létrehozás').append(content).onclick(onCreate);

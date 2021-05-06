@@ -9,7 +9,7 @@ function listAllTeams(){
     new HTMLTag('h2').setText('Csapatok').append(content);
     
     const list= setUpListField(content);
-    createList(SessionJanitor.getAllTeams(()=>{SessionJanitor.getAllTeams(null)}),list);
+    (SessionJanitor.getAllTeams(()=>{createList(SessionJanitor.getAllTeams(null),list)}),list);
 }
 
 

@@ -8,13 +8,13 @@ export function onCreate(){
     
     const name = document.getElementById('teamname').value;
     const desc = document.getElementById('desc').value;
-    makeRequest('/team/create','POST',getHeader(),JSON.stringify({"Name":name,"Description":desc,"TeamMembers":[]}),(data)=>{onCreateSucces(data),alert('Serve not found')})
+    makeRequest('/team/create','POST',getHeader(),JSON.stringify({"Name":name,"Description":desc,"TeamMembers":[]}),(data)=>{onCreateSucces(data)},()=>{alert('Serve not found')})
     
 }
 
  function onCreateSucces(data){
     if(data.Status === 'Failed'){
-        alert(data.Message);
+        console.log(data.Message);
     }
     else{
         sessionStorage.removeItem('allTeams');
@@ -29,8 +29,8 @@ export function onCreate(){
         }
         for(let member of teamMembers){
 
-
-            console.log(member);
+            
+            console.log(teamMembers);
             console.log(member.Tags);
             makeRequest('/team/add/user','POST',getHeader(),JSON.stringify({"Teamid":teamId,"Memberid":member.Id,"Tag":member.Tags}),(data)=>{onCreateSucces(data)},()=>{alert('Serve not found')})
     

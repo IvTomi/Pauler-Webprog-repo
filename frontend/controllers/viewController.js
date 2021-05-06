@@ -51,7 +51,7 @@ export default class ViewController{
     }
 
     loadAdminProjects(n){
-        
+        viewController.loadAdmin()
         const main = viewController.setUpMain();
         setUpAdminProjectsView(main,n);
     }
@@ -103,7 +103,7 @@ export default class ViewController{
 
     loadAdminTeam(n){
        
-        
+        viewController.loadAdmin();
         const main = viewController.setUpMain();
         setUpAdminTeamsView(main,n);
     }
