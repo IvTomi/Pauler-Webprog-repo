@@ -2,6 +2,7 @@ import viewController from '../../../../controllers/viewController.js';
 import {createMyTeamsList} from '../../../listBuilders/teamListBuilder.js';
 import teamData from '../../../../datasets/teamData.js';
 import HTMLTag from '../../../../utilities/HTMLTag.js';
+import { router } from '../../../../index.js';
 
 function createmyTeamsView(data){
     
