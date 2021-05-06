@@ -278,36 +278,42 @@ async function CreateNewTeam(userid,hash,name,description,teammembers){
 
 async function AddMemberToTeam(userid,hash,teamid,memberid,tags){
     return new Promise((resolve,reject)=>{
-        if(!teamid && !memberid){
-            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+        if(!teamid || !memberid){
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(3))));
             return
         }
         //check permission
+        console.log(memberid)
         userrepo.getUserPermission("CanEditTeam",userid).then(result=>{
             if(!result){
                 resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
                 return
-            }
+            }      
+                                                                                                                                             
             //check team exist
             teamByHash(teamid,hash).then(res2=>{
+              
                 if(!res2){
                     resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
                     return
                 }
                 //check user exist
+                console.log(memberid)
                 userrepo.userByHash(memberid,hash).then(res3=>{
+
                     if(!res3){
                         resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1)))); 
                         return
                     }
                     //check member added
+
                     teamMemberByHash(teamid,memberid,hash).then(res4=>{
                         logger.debug(res4)
                         if(res4){
                             resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(5)))); 
                             return
                         }
-                        logger.debug("wait")
+
                         //add member
                         getAddUserToTeam(memberid,teamid,tags?tags:"",userid).then(res5=>{
                             resolve((protocol.status(true)));
