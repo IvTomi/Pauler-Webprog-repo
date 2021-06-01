@@ -372,6 +372,14 @@ router.post("/task/get/users",(req,res)=>
     })
 })
 
+router.post("/task/get/teams",(req,res)=>
+{
+    taskrepo.ListTaskTeams(req.headers['hash'],req.userid,req.body['Taskid']).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
 router.post("/task/modify",(req,res)=>
 {
     taskrepo.ModifyTask(req.userid,req.headers['hash'],req.body['Taskname'],req.body['Description'],req.body['Deadline'],req.body['Taskid']).then((result)=>

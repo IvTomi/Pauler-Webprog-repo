@@ -8,6 +8,7 @@ const teamrepo = require('./TeamRepository');
 const taskdao = require('../DaO/TaskDaO');
 const { userTaskByHash } = require("./UserRepository");
 const UserDaO = require("../DaO/UserDaO");
+const TeamDaO = require("../DaO/TeamDaO");
 
 const pool = dbConnector.ConnectionPool;
 
@@ -135,6 +136,20 @@ async function getTaskUsers(taskid){
     return new Promise((resolve,reject)=>{
         pool.awaitGetConnection().then((res)=>{
             res.awaitQuery(`CALL GetTaskUsers('${taskid}')`).then((result)=>{
+                resolve(result[result.length-2]);                     
+            }).catch((e)=>{
+                
+                reject(e)
+            })
+            res.release();   
+        })
+    })
+}
+
+async function getTaskTeams(taskid){
+    return new Promise((resolve,reject)=>{
+        pool.awaitGetConnection().then((res)=>{
+            res.awaitQuery(`CALL GetTaskTeams('${taskid}')`).then((result)=>{
                 resolve(result[result.length-2]);                     
             }).catch((e)=>{
                 
@@ -402,6 +417,48 @@ async function ListTaskUsers(hash,userid,taskid)
                 }
                 getTaskUsers(taskid).then(res2=>{
                     resolve((jsonParser.combineJSON(protocol.status(true),UserDaO.GetUserListJson(res2.map(element=>userrepo.ViewToUser(element))))));
+                }).catch((e)=>{
+                    logger.error(e)
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                    return
+                })
+            }).catch((e)=>{
+                logger.error(e)
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                return
+            })
+            
+        }).catch((e)=>{
+            logger.error(e)
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            return
+        })
+    })
+}
+
+async function ListTaskTeams(hash,userid,taskid)
+{
+    return new Promise((resolve, reject)=>
+    {
+        if(!userid){
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(3))));
+            return
+        }
+        //get by permission
+        userrepo.getUserPermission("IsAdmin",userid).then(async res=>{
+            let hastask = await userTaskByHash(userid,taskid,hash);
+            if(!res && !hastask){
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                return
+            }
+            //check user exists
+            taskByHash(taskid,hash).then(res=>{
+                if(!res){
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                    return
+                }
+                getTaskTeams(taskid).then(res2=>{
+                    resolve((jsonParser.combineJSON(protocol.status(true),TeamDaO.GetTeamListJson(res2.map(element=>teamrepo.viewToTeam(element))))));
                 }).catch((e)=>{
                     logger.error(e)
                     resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
@@ -761,6 +818,7 @@ module.exports={
     ListTasks:ListTasks,
     DeleteTask:DeleteTask,
     ListTaskUsers:ListTaskUsers,
-    getUserTasks:getUserTasks
+    getUserTasks:getUserTasks,
+    ListTaskTeams:ListTaskTeams
 
 }

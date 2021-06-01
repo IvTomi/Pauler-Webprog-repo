@@ -618,5 +618,6 @@ module.exports={
     teamByHash:teamByHash,
     teamTaskByHash:teamTaskByHash,
     teamMemberByHash:teamMemberByHash,
-    ListTeamUsers:ListTeamUsers
+    ListTeamUsers:ListTeamUsers,
+    viewToTeam:viewToTeam
 }

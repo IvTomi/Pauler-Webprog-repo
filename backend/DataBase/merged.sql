@@ -240,7 +240,7 @@ DROP VIEW IF EXISTS recordview;
 CREATE VIEW `recordview` AS
     SELECT 
         `record`.`idRecord` AS `idRecord`,
-        `record`.`Date` AS `Date`,
+         DATE_FORMAT(`record`.`Date`, '%Y.%m.%d') AS `Date`,
         `record`.`Comment` AS `Comment`,
         `record`.`Minute` AS `Minute`,
         `record`.`Hour` AS `Hour`,
@@ -448,6 +448,17 @@ $$
 DELIMITER ;;
 
 DELIMITER $$
+SELECT 'Executing CreatingTaskStatus' $$
+	INSERT INTO Status (StatusName, LastModifiedAt, LastModifiedBy)
+	SELECT * FROM (SELECT 'Default', CURRENT_TIMESTAMP(), -1) AS tmp
+	WHERE NOT EXISTS (
+		SELECT StatusName FROM Status WHERE StatusName = 'Default'
+	) LIMIT 1;
+	$$
+    
+DELIMITER ;;
+
+DELIMITER $$
 SELECT "Creating procedure GetUserTasksByHash" $$
 DROP PROCEDURE IF EXISTS GetUserTasksByHash $$
 CREATE PROCEDURE `GetUserTasksByHash`(IN userid INT ,IN taskid INT, IN hash VARCHAR(60))
@@ -468,6 +479,17 @@ END;
 $$;
 
 DELIMITER $$
+SELECT "Creating procedure GetTaskUsers" $$
+DROP PROCEDURE IF EXISTS GetTaskUsers $$
+CREATE PROCEDURE `GetTaskUsers`(IN taskid INT)
+BEGIN
+SELECT * FROM usertasksview INNER JOIN userview ON usertasksview.User_idUser = userview.idUser WHERE usertasksview.Task_idTask=taskid;
+END;
+$$
+
+DELIMITER ;;
+
+DELIMITER $$
 SELECT "Creating procedure GetSuperUserByHash" $$
 DROP PROCEDURE IF EXISTS GetSuperUserByHash $$
 CREATE PROCEDURE `GetSuperUserByHash`(IN id INT, IN hash VARCHAR(60))
@@ -479,6 +501,17 @@ ELSE SELECT * FROM superuserview WHERE id=superuserview.idSuperUser AND hash=sup
 END IF;
 END;
 $$;
+
+DELIMITER $$
+SELECT "Creating procedure GetTaskTeams" $$
+DROP PROCEDURE IF EXISTS GetTaskTeams $$
+CREATE PROCEDURE `GetTaskTeams`(IN taskid INT)
+BEGIN
+SELECT * FROM teamtasksview tt INNER JOIN teamview t ON tt.Team_idTeam = t.idTeam WHERE tt.Task_idTask = taskid;
+END;
+$$
+
+DELIMITER ;;
 
 DELIMITER $$
 SELECT "Creating procedure GetPermissionGroupPermissionsByHash" $$
@@ -710,9 +743,9 @@ DELIMITER ;;
 DELIMITER $$
 SELECT "Creating procedure GetTaskRecords" $$
 DROP PROCEDURE IF EXISTS GetTaskRecords $$
-CREATE PROCEDURE `GetTaskRecords`(IN taskid INT, in recordid INT)
+CREATE PROCEDURE `GetTaskRecords`(IN taskid INT)
 BEGIN
-SELECT * FROM recordview r WHERE r.idRecord = recordid AND Task_idTask=taskid;
+SELECT * FROM recordview r WHERE Task_idTask=taskid;
 END;
 $$
 
@@ -1170,8 +1203,10 @@ DROP PROCEDURE IF EXISTS CreateTask $$
 CREATE PROCEDURE `CreateTask`(IN taskName VARCHAR(45),IN description TEXT, IN deadline DATE, IN userid INT, IN hash VARCHAR(60))
 BEGIN
 	DECLARE taskId INT;
+    DECLARE defaultStatusid INT;
 	START TRANSACTION;
-		INSERT INTO task (TaskName,Description,Deadline,LastModifiedBy,SuperUser_Hash,Status_idStatus) VALUES (taskName,description,deadline,userid,hash,1);
+		SELECT idStatus INTO defaultStatusid FROM Status where StatusName = 'Default' LIMIT 1;
+		INSERT INTO task (TaskName,Description,Deadline,LastModifiedBy,SuperUser_Hash,Status_idStatus) VALUES (taskName,description,deadline,userid,hash,defaultStatusid);
         SET taskId = LAST_INSERT_ID();
 	COMMIT;
 	SELECT taskId as Id;
@@ -1307,8 +1342,10 @@ SELECT "Creating procedure GetUserTasks" $$
 DROP PROCEDURE IF EXISTS GetUserTasks $$
 CREATE PROCEDURE `GetUserTasks`(IN userid INT)
 BEGIN
-SELECT * FROM usertasksview t WHERE t.User_idUser = userid;
-END;
+SELECT DISTINCT t.Task_idTask,t.TaskName,t.Description,t.StatusName, t.User_idUser FROM usertasksview u CROSS JOIN
+(SELECT tuw.User_idUser, ttw.Task_idTask ,ttw.TaskName,ttw.Description,ttw.StatusName FROM teamtasksview ttw INNER JOIN teamusersview tuw 
+ON ttw.Team_idTeam = tuw.Team_idTeam) AS t WHERE t.User_idUser=userid;
+END
 $$
 
 DELIMITER ;;
