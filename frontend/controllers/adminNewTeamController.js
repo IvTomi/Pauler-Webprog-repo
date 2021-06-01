@@ -32,7 +32,7 @@ export function onCreate(){
             
             console.log(teamMembers);
             console.log(member.Tags);
-            makeRequest('/team/add/user','POST',getHeader(),JSON.stringify({"Teamid":teamId,"Memberid":member.Id,"Tag":member.Tags}),(data)=>{onCreateSucces(data)},()=>{alert('Serve not found')})
+            makeRequest('/team/add/user','POST',getHeader(),JSON.stringify({"Teamid":teamId,"Memberid":member.Id,"Tag":member.Tags}),(data)=>{},()=>{alert('Serve not found')})
     
         }
         setTimeout(()=>{router.navigate('teamsAdmin');},1000);

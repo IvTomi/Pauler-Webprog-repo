@@ -65,3 +65,20 @@ export function addTaskedToExisting(user,appendPoint,taskid){
     new HTMLTag('button').setText('Töröl').append(li).onclick(()=>{removeUserFromexistTask(user,taskid)});
     li.append(appendPoint);
 }
+
+export function makeRecordsListForTask(list,appendPoint,users){
+    for(let record of list){
+        record = record.Record;
+        
+        let li = new HTMLTag('li').append(appendPoint);
+        for(let user of users){
+           if(user.id==record.userid){
+            new HTMLTag('p').setText(user.lastname+' '+user.firstname).append(li);
+           }
+        }
+
+        new HTMLTag('p').setText(record.hour+':'+record.min).append(li);
+        new HTMLTag('p').setText(record.comment).append(li);
+        new HTMLTag('p').setText(record.recorddate).append(li);
+    }
+}

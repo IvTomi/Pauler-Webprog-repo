@@ -2,7 +2,6 @@ import HTMLTag from '../../utilities/HTMLTag.js';
 import {onTeamClicked,onTaskClicked,onUserClicked,onDeleteClicked} from '../../controllers/adminAllTeamscontroller.js';
 import {ChangeTag, onFireClick,onHireClick, onRemoveTaskClicked} from '../../controllers/adminSelectedTeamcontroller.js';
 import {onSuccesfulFire, onSuccesfulHire} from '../../controllers/adminNewTeamController.js';
-import { removeTeamFromTask } from '../../controllers/adminNewTaskController.js';
 
 
 /**data=teams */
@@ -12,20 +11,6 @@ export default function createList(data,appendPoint){
         team = team.Team;
         if(team.teamname  && team.id){
             new HTMLTag('p').setText(team.teamname).append(li).onclick(()=>onTeamClicked(team));
-            const projectList = new HTMLTag('ul').append(li);
-            for(let task of team.teamtasks){
-                if(task.TaskName && task.id){
-                new HTMLTag('li').setText(task.TaskName).append(projectList).onclick(()=>onTaskClicked(task));
-                }
-            }
-            const memP = new HTMLTag('ul');
-            for(let member of team.teammembers){
-                let person = member.User;
-                if(person.firstname && person.lastname && person.id){
-                    new HTMLTag('li').setText(person.lastname+' '+person.firstname).append(memP).onclick(()=>onUserClicked(person));
-                }
-            }
-            memP.append(li);
             new HTMLTag('button').setText('X').append(li).onclick(()=>onDeleteClicked(team));
         }
         li.append(appendPoint);
@@ -91,150 +76,3 @@ export function addNonMemberToNew(user,appendPoint){
     li.append(appendPoint);
 }
 
-export function getDummyData(){
-    let data = [{
-        id: 1,
-        teamname: 'alfa csapat',
-        description: 'Az első és legtutibb csapat',
-        teammembers:[
-            {
-                User:{
-                    id:11,
-                    Username: 'nagypeti',
-                    firstname: 'Péter',
-                    lastname: 'Nagy'
-                },
-                Tag:'#captain'
-            },
-            {
-                User:{
-                    id:12,
-                    Username: 'kisspetra',
-                    firstname: 'Petra',
-                    lastname: 'Kiss'
-                },
-                Tag:'#design'
-            }
-        ],
-        teamtasks:[
-            {
-                id: 123,
-                TaskName: 'Ekső feladat',
-                TaskDescription: 'lorem ipsum dolor',
-                TaskDeadLine: '2020-01-01',
-                StatusName:'done'
-            },
-            {
-                id: 223,
-                TaskName: 'Második feladat',
-                TaskDescription: 'lorem ipsum dolor',
-                TaskDeadLine: '2022-01-01',
-                StatusName:'pending'
-            }
-        ]
-    },
-    {
-        id: 2,
-        teamname: 'béta brigád',
-        description: 'A kisegítő gárda',
-        teammembers:[
-            {
-                User:{
-                    id:13,
-                    Username: 'feszes',
-                    firstname: 'Gábor',
-                    lastname: 'Feszes'
-                },
-                Tag:'#muscle'
-            },
-            {
-                User:{
-                    id:18,
-                    Username: 'dragonqueen',
-                    firstname: 'Anna',
-                    lastname: 'Szabó'
-                },
-                Tag:'#weight'
-            },
-            {
-                User:{
-                    id:20,
-                    Username: 'boss',
-                    firstname: 'György',
-                    lastname: 'Baila'
-                },
-                Tag:'#boss'
-            }
-        ],
-        teamtasks:[
-            {
-                id: 323,
-                TaskName: 'Tartalék feladat',
-                TaskDescription: 'lorem ipsum dolor',
-                TaskDeadLine: '2020-01-01',
-                StatusName:'done'
-            },
-        ]
-    }]
-    return data;
-}
-
-
-
-/*"Team":{
-
-    "id":0,
-    
-    "teamname":"",
-    
-    "description":"",
-    
-    "teammembers":[], //TeamMember
-    
-    "teamtasks":[] //Task
-    
-    },
-
-    "TeamMember":{
-
-    "User":{}, //User
-
-    "Tag":""
-
-    }
-
-    "User":{
-
-    "id":0,
-
-    "Username":"",
-
-    "firstname":"",
-
-    "lastname":"",
-
-    "Contacts":[], //Contact
-
-    "Tasks":[], //Task
-
-    "Permissions":[] //Permission
-
-    },
-
-
-    "Task":{
-
-    "id":0,
-
-    "TaskName":"",
-
-    "TaskDescription":"",
-
-    "TaskDeadLine":"",
-
-    "StatusName":""
-
-},
-
-
-*/ 

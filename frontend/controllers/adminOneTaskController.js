@@ -1,12 +1,11 @@
 import { router } from "../index.js";
-import HTMLTag from "../utilities/HTMLTag.js";
 import { makeRequest } from "../utilities/serviceHandler.js";
 import { getHeader } from "../utilities/sessionJanitor.js";
 import {SessionJanitor} from '../utilities/sessionJanitor.js';
-import { addNonTaskedToExisting, addTaskedToExisting } from "../view/listBuilders/adminTaskListBuilder.js";
+import { addNonTaskedToExisting, addTaskedToExisting, makeRecordsListForTask } from "../view/listBuilders/adminTaskListBuilder.js";
 
-export function onTeamSelectedClicked(taask){
-    sessionStorage.setItem('activeTask',taask);
+export function onTeamSelectedClicked(task){
+    sessionStorage.setItem('activeTask',task);
     router.navigate('onetaskAdmin');
 }
 
@@ -76,19 +75,12 @@ export function makeRecords(taskid){
             let list = data.Records;
             let appendPoint = document.getElementById('records');
             let users = SessionJanitor.getAllUsers(null);
-            for(let record of list){
-                record = record.Record;
-                
-                let li = new HTMLTag('li').append(appendPoint);
-                for(let user of users){
-                   if(user.id==record.userid){
-                    new HTMLTag('p').setText(user.lastname+' '+user.firstname).append(li);
-                   }
-                }
-                new HTMLTag('p').setText(record.comment).append(li);
-                new HTMLTag('p').setText(record.recorddate).append(li);
-            }
+            makeRecordsListForTask(list,appendPoint,users);
             
         }
     },()=>{alert('Server not found')})
+}
+
+export function teamDistribution(taskid){
+
 }

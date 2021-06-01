@@ -35,6 +35,7 @@ function onChangeTagSucces(data,id,tag){
     }
     else{
         document.getElementById('user-info-tag'+id).textContent = tag;
+        document.getElementById('user-info-newtag'+id).value = '';
     }
 }
 

@@ -11,8 +11,8 @@ function createAdminNav(){
         const ul = new HTMLTag('ul').append(nav);
         new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/nav.css').append(document.body);
         new HTMLTag('li').setText('Riportok').append(ul) //.onclick(this.load);
-        new HTMLTag('li').setText('Projectek').append(ul).onclick(()=>{router.navigate('newSettingsAdmin')});
-        new HTMLTag('li').setText('Csapatok').append(ul).onclick(()=>{router.navigate('newSettingsAdmin')});
+        new HTMLTag('li').setText('Projectek').append(ul).onclick(()=>{router.navigate('alltaskAdmin')});
+        new HTMLTag('li').setText('Csapatok').append(ul).onclick(()=>{router.navigate('teamsAdmin')});
         new HTMLTag('li').setText('Beállítások').append(ul).onclick(()=>{router.navigate('newSettingsAdmin')});
         new HTMLTag('li').setText('Kijelentkezés').append(ul).onclick(()=>{logout()});
         createAside('Alkalmazottak');
