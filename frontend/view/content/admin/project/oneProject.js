@@ -3,7 +3,7 @@ import HTMLTag from '../../../../utilities/HTMLTag.js';
 import {refreshContent,setUpListField} from './mainProject.js';
 import viewController from '../../../../controllers/viewController.js';
 import {CreateOneProjectMemberList,CreateOneProjectNonMemberList,createProjectRecordList} from '../../../listBuilders/projectListBuilder.js';
-import { deleteTask, makeRecords, memberDistribution } from '../../../../controllers/adminOneTaskController.js';
+import { deleteTask, makeRecords, memberDistribution, teamDistribution } from '../../../../controllers/adminOneTaskController.js';
 
 function createOneProjectView(task){
 
@@ -22,6 +22,7 @@ function createOneProjectView(task){
     new HTMLTag('p').setText('Többi csapat').append(content);
     const nonTeamList = new HTMLTag('ul').addAttr('id','other-teams').append(content);
     memberDistribution(task.id);
+    teamDistribution(task.id);
     new HTMLTag('p').setText('Rekordok').append(content);
     const recordList = new HTMLTag('ul').addAttr('id','records').append(content);
     makeRecords(task.id);

@@ -27,7 +27,6 @@ function setUpAdminProjectsView(appendPoint,n ){
     }
     if(n===2){
         let tojson = sessionStorage.getItem('activeTask');
-        console.log(tojson);
         let task = JSON.parse(tojson);//JSON.parse(JSON.stringify(JSON.parse()));
         createOneProjectView(task);
     }
