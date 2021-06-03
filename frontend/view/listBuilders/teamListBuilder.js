@@ -1,30 +1,27 @@
-import { getTeamAttributes } from '../../controllers/userOneTeamController.js';
+
+import { router } from '../../index.js';
 import HTMLTag from '../../utilities/HTMLTag.js';
+import { SessionJanitor } from '../../utilities/sessionJanitor.js';
 import createUsersTeamInfoView from '../content/user/teams/oneTeamU.js';
 
-/**data =teams */
-export function createMyTeamsList(data,appendPoint,options){
-    
+
+export function createMyTeamsList(appendPoint,options){
+    let data = SessionJanitor.getAllTeams(null);
+    console.log(data);
     for(let Team of data){
         const li = new HTMLTag('li');
         if(Team.Team.teamname && Team.Team.description && Team.Team.id){
-            li.onclick(() => getTeamAttributes(Team.Team.id,Team.Team.teamname,Team.Team.description));
+            li.onclick(() => {sessionStorage.setItem('activeTeam',Team);router.navigate('oneTeamUser') });
             new HTMLTag('p').setText(Team.Team.teamname).append(li);
             new HTMLTag('p').setText(Team.Team.description).append(li);
-            const memP = new HTMLTag('p');
-            for(let member of Team.Team.teammembers){
-                if(member.name){
-                    memP.pushText(member.name +', ')
-                }
-            }
-            memP.append(li);
+            
         }
         li.append(appendPoint);
     }
    
 }
 
-/** data =team.members */
+
 export function createTeamMembersList(data,appendPoint,options){
     
     for(let user of data){
@@ -52,7 +49,7 @@ export function createTeamMembersList(data,appendPoint,options){
     }
 }
 
-/**data = team.projects */
+
 export function createTeamProjectsList(data,appendPoint){
     for(let project of data){
         if(project.name){

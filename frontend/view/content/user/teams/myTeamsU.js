@@ -1,10 +1,8 @@
 import viewController from '../../../../controllers/viewController.js';
-import {createMyTeamsList} from '../../../listBuilders/teamListBuilder.js';
-import teamData from '../../../../datasets/teamData.js';
 import HTMLTag from '../../../../utilities/HTMLTag.js';
-import { router } from '../../../../index.js';
+import { getUserTeams } from '../../../../controllers/userMyTeamsController.js';
 
-function createmyTeamsView(data){
+function createmyTeamsView(){
     
     const content = document.getElementById('content');
     new viewController().clearTag(content);
@@ -18,9 +16,7 @@ function createmyTeamsView(data){
         list.setAttribute('id','list');
         content.appendChild(list);
     }
-    //if(data.iterable){
-        createMyTeamsList(data,list,{});
-    //};
+    getUserTeams();
     
 }
 
