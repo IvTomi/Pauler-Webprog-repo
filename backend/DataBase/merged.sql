@@ -1325,6 +1325,17 @@ END
 $$;
 
 DELIMITER $$
+SELECT "Creating procedure GetUserTeams" $$
+DROP PROCEDURE IF EXISTS GetUserTeams $$
+CREATE PROCEDURE `GetUserTeams`(IN userid INT)
+BEGIN
+SELECT DISTINCT tu.Team_idTeam, t.TeamName, t.Description FROM teamusersview tu INNER JOIN teamview t ON t.idTeam = tu.Team_idTeam WHERE tu.User_idUser = userid;
+END
+$$
+
+DELIMITER ;;
+
+DELIMITER $$
 SELECT "Creating procedure GetContactTypeByHash" $$
 DROP PROCEDURE IF EXISTS GetContactTypeByHash $$
 CREATE PROCEDURE `GetContactTypeByHash`(IN id INT, IN hash VARCHAR(60))

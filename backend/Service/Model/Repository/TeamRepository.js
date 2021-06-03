@@ -7,6 +7,7 @@ const jsonParser = require('../../Utility/JSONParser');
 const teamdao = require('../DaO/TeamDaO');
 const userrepo = require('./UserRepository');
 const UserDaO = require("../DaO/UserDaO");
+const TeamDaO = require("../DaO/TeamDaO");
 const pool = dbConnector.ConnectionPool;
 
 async function getCreateTeam(name, description,userid,hash){   
@@ -487,6 +488,48 @@ async function ListTeamUsers(hash,userid,teamid){
 }
 
 
+async function getUserTeams(userid){
+    return new Promise((resolve,reject)=>{
+        pool.awaitGetConnection().then((res)=>{
+            res.awaitQuery(`CALL GetUserTeams('${userid}')`).then((result)=>{
+                resolve(result[result.length-2]);                     
+            }).catch((e)=>{              
+                reject(e)
+            })
+            res.release();   
+        })
+    })
+}
+
+async function ListUserTeams(hash,userid){
+    return new Promise((resolve,reject)=>{
+        if(!userid){
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(3))));
+            return
+        }
+        userrepo.userByHash(userid,hash).then(res1=>{
+            if(!res1){
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+            return
+            }
+            getUserTeams(userid).then(async result=>{   
+                console.log(result)                         
+                resolve((jsonParser.combineJSON(protocol.status(true),TeamDaO.GetTeamListJson(result.map(element=>viewToTeam(element))))));
+            }).catch((e)=>{
+                logger.error(e);
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            })
+            
+            
+        }).catch((e)=>{
+            logger.error(e);
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+        })       
+        
+    })
+}
+
+
 
 async function MoidifyTeam(userid,hash,teamid,teamname,teamdescription){
     return new Promise((resolve,reject)=>{
@@ -619,5 +662,6 @@ module.exports={
     teamTaskByHash:teamTaskByHash,
     teamMemberByHash:teamMemberByHash,
     ListTeamUsers:ListTeamUsers,
+    ListUserTeams:ListUserTeams,
     viewToTeam:viewToTeam
 }
