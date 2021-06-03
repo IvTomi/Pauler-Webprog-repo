@@ -19,7 +19,7 @@ export function HTMLview(users,userid){
     let contacts = [];
 
     console.log('user'+ users)  
-    
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/contentbox.css').append(document.body);
     new HTMLTag('h1').setText(firstName + ' ' + lastName).append(appendPoint);
     let canedit = false
     if((SessionJanitor.getSessionUser().permissions.find(x=>x.isenabled && x.permissionname === 'CanEditUser')) || userid == SessionJanitor.getSessionUser().id){

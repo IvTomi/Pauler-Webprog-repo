@@ -42,6 +42,16 @@ class HTMLTag{
         }
         return this;
     }
+
+    insertBefore(tag){
+        if(tag instanceof HTMLTag){
+            tag.node.insertBefore(this.node,tag.node.childNodes[0]);
+        }
+        else{
+            tag.insertBefore(this.node,tag.childNodes[0]);
+        }
+        return this;
+    }
     /**Adds the given function to the click event */
     onclick(func){
         this.node.onclick = func;

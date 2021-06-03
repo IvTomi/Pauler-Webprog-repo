@@ -86,6 +86,7 @@ export function makeRecords(taskid){
                    }
                 }
                 new HTMLTag('p').setText(record.comment).append(li);
+                new HTMLTag('p').setText(record.hour+':'+record.min).append(li);
                 new HTMLTag('p').setText(record.recorddate).append(li);
             }
             

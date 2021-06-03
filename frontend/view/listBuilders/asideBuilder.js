@@ -8,15 +8,17 @@ const title = 'Alkalmazottak'
 
 export function createAside(t){
     let aside
+    let mainContent = document.getElementById("MainContent");
+    console.log(mainContent);
     if(!document.getElementById('aside')){
-        new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/aside.css').append(document.body);
+        new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/aside.css').append(mainContent);
 
-        aside = new HTMLTag('aside').addAttr("class","asidebox").addAttr('id','aside').append(document.body);
+        aside = new HTMLTag('aside').addAttr("class","asidebox").addAttr('id','aside').append(mainContent);
     }else{
         aside = document.getElementById('aside');
     }
     
-    new HTMLTag('h3').setText(t?t:title).append(aside);
+    new HTMLTag('h3').addAttr('class',"title").setText(t?t:title).append(aside);
     const ul = new HTMLTag('ul').addClass('scroll').append(aside);
     SessionJanitor.getAllUsers(()=>{makeUserList(SessionJanitor.getAllUsers(null),ul)})
 }

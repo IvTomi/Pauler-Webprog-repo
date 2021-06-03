@@ -27,6 +27,7 @@ input[type=checkbox] {
   -moz-transform: scale(0.5);
   -webkit-transform: scale(0.5);
   transform: scale(0.5);
+  cursor:pointer;
   border: white; }
 
 h2 {
@@ -64,6 +65,11 @@ button {
   font-weight: bold;
   margin-top: 30px; }
 
+button:hover{
+  cursor: pointer;
+  background-color: #9fa0a3;
+}
+
 label {
   color: #FFFFFF;
   font-size: 40;
@@ -75,5 +81,9 @@ a {
   color: #696A6D;
   font-family: 'Roboto', sans-serif;
   font-size: 40; }
+
+a:hover{
+  color: white;
+}
 
 /*# sourceMappingURL=loginpanel.css.map */

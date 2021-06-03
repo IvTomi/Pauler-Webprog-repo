@@ -7,7 +7,8 @@ import {SessionJanitor} from '../../../../utilities/sessionJanitor.js'
 function setUpUserProfile(appendPoint,id){
     const navList = document.querySelector('nav ul');
     changeHighlithed(-1,navList);
-    const content = new HTMLTag('div').addAttr('id','content').append(appendPoint);
+    let mainContent = document.getElementById("MainContent");
+    const content = new HTMLTag('div').addAttr('id','content').append(mainContent);
     const thisUserId = id?id:SessionJanitor.getSessionUser().id;
 
     createProfileDataList(thisUserId);

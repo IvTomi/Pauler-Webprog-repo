@@ -12,6 +12,7 @@ import setUpAdminTeamsView from '../view/content/admin/team/mainTeamA.js';
 import setUpAdminProjectsView from '../view/content/admin/project/mainProject.js';
 import setUpAdminSettingsView from '../view/content/admin/settings/mainSettings.js';
 import {viewController} from '../index.js'
+import HTMLTag from '../utilities/HTMLTag.js';
 
 export default class ViewController{
     clearTag(tag){
@@ -20,6 +21,7 @@ export default class ViewController{
 
     clearBody(){
         viewController.clearTag(document.body);
+        new HTMLTag("div").addAttr("id","MainContent").append(document.body);
     }
 
     loadLogin(){
