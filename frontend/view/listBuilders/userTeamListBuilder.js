@@ -1,4 +1,5 @@
 import { onTeamClicked } from "../../controllers/userMyTeamsController.js";
+import { onTaskClicked } from "../../controllers/userOneTeamController.js";
 import HTMLTag from "../../utilities/HTMLTag.js";
 
 export function createMyTeamsList(data,appendPoint){
@@ -39,6 +40,6 @@ export function createTeamProjectList(projects,appendPoint){
         const li = new HTMLTag('li');
         project = project.Task;
         new HTMLTag('p').setText(project.taskname).append(li);
-        li.append(appendPoint);
+        li.onclick(()=>onTaskClicked(project)).append(appendPoint);
     }
 }

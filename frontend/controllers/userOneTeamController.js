@@ -1,4 +1,4 @@
-import HTMLTag from '../utilities/HTMLTag.js';
+
 import {makeRequest} from '../utilities/serviceHandler.js';
 import {router} from '../index.js';
 import { getHeader } from '../utilities/sessionJanitor.js';
@@ -10,6 +10,17 @@ export function getTeamTasks(teamid){
 
 export function getTeamUsers(teamid){
     makeRequest('/team/get/users','POST',getHeader(),JSON.stringify({"Teamid":teamid}),(data)=>{onGetUsersSucces(data)},()=>onAjaxFail());
+}
+
+export function onTaskClicked(task){
+    //
+    //
+    //Ide lehet, hogy mi történjen, ha az egyik taskra rá kattintanak
+    console.log(task);
+    //
+    //
+    //
+    //
 }
 
 function onGetUsersSucces(data){

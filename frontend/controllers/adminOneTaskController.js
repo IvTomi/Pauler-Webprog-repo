@@ -9,6 +9,11 @@ export function onTeamSelectedClicked(task){
     router.navigate('onetaskAdmin');
 }
 
+export function onTeamClicked(team){
+    sessionStorage.setItem('activeTeam',JSON.stringify(team));
+    router.navigate('teamInfoAdmin');
+}
+
 
 export function memberDistribution(taskid){
     

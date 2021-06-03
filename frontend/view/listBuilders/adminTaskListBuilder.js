@@ -1,5 +1,5 @@
 import { addUserToTask, removeUserFromTask, addTeamToTask, removeTeamFromTask } from "../../controllers/adminNewTaskController.js";
-import { addTeamToexistTask, addUserToexistTask, onTeamSelectedClicked, removeTeamFromexistTask, removeUserFromexistTask } from "../../controllers/adminOneTaskController.js";
+import { addTeamToexistTask, addUserToexistTask, onTeamClicked, onTeamSelectedClicked, removeTeamFromexistTask, removeUserFromexistTask } from "../../controllers/adminOneTaskController.js";
 
 import HTMLTag from "../../utilities/HTMLTag.js";
 
@@ -70,7 +70,7 @@ export function addTaskedToExisting(user,appendPoint,taskid){
 export function addNonTaskedTeamToExisting(team,appendPoint,taskid){
     appendPoint = document.getElementById('other-teams');
     const li = new HTMLTag('li').addAttr('id','nontaskedteam'+team.id).addAttr('data-id',team.id);
-    new HTMLTag('p').setText(team.teamname).append(li);
+    new HTMLTag('p').setText(team.teamname).append(li).onclick(()=>onTeamClicked(team));
     new HTMLTag('button').setText('Hozzáad').append(li).onclick(()=>{addTeamToexistTask(team,taskid)});
     li.append(appendPoint);
 }
@@ -78,7 +78,7 @@ export function addNonTaskedTeamToExisting(team,appendPoint,taskid){
 export function addTaskedTeamToExisting(team,appendPoint,taskid){
     appendPoint = document.getElementById('assigned-teams');
     const li = new HTMLTag('li').addAttr('id','taskedteam'+team.id);
-    new HTMLTag('p').setText(team.teamname).append(li);
+    new HTMLTag('p').setText(team.teamname).append(li).onclick(()=>onTeamClicked(team));
     new HTMLTag('button').setText('Töröl').append(li).onclick(()=>{removeTeamFromexistTask(team,taskid)});
     li.append(appendPoint);
 }
