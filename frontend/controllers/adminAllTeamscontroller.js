@@ -1,5 +1,5 @@
 import { router } from "../index.js";
-import { makeRequest } from "../utilities/serviceHandler.js";
+import { makeRequest, onRequestFailed } from "../utilities/serviceHandler.js";
 import { getHeader } from '../utilities/sessionJanitor.js';
 
 
@@ -26,7 +26,7 @@ export function onDeleteClicked(team){
 }
 export function onDeleteSucces(data){
     if(data.Status === 'Failed'){
-        alert(data.Message);
+        onRequestFailed(data.Message);
     }
     else{
         sessionStorage.removeItem('allTeams');

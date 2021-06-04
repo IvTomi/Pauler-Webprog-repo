@@ -42,6 +42,16 @@ class HTMLTag{
         }
         return this;
     }
+    /**Appends this element to the given one */
+    prepend(tag){
+        if(tag instanceof HTMLTag){
+            tag.node.prepend(this.node);
+        }
+        else{
+            tag.prepend(this.node);
+        }
+        return this;
+    }
     /**Adds the given function to the click event */
     onclick(func){
         this.node.onclick = func;

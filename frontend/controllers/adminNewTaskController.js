@@ -1,5 +1,5 @@
 import { router } from "../index.js";
-import { makeRequest } from "../utilities/serviceHandler.js";
+import { makeRequest, onRequestFailed } from "../utilities/serviceHandler.js";
 import { getHeader } from "../utilities/sessionJanitor.js";
 import {addTaskedUserOnNew,addNonTaskedUserOnNew, addTaskedTeamOnNew, addNonTaskedTeamsOnNew} from '../view/listBuilders/adminTaskListBuilder.js';
 
@@ -35,7 +35,7 @@ export function OnCreateTask(){
     let deadline = document.getElementById('deadline').value;
     makeRequest('/task/create','POST',getHeader(),JSON.stringify({"Taskname":name,"Description":desc,"Deadline":deadline}),(data)=>{
         if(data.Status === 'Failed'){
-            alert(data.Message);
+            onRequestFailed(data.Message);
         }
         else{
             let taskId = data.Id;
@@ -47,7 +47,7 @@ export function OnCreateTask(){
                
                 makeRequest('/team/add/task','POST',getHeader(),JSON.stringify({"Taskid":taskId,"Teamid":id}),(data)=>{
                     if(data.Status === 'Failed'){
-                        alert(data.Message);
+                        onRequestFailed(data.Message);
                     }
                     else{
                         console.log('csapat sikeresen hozzáadva')};
@@ -58,7 +58,7 @@ export function OnCreateTask(){
                 let id = element.dataset.id;
                 console.log('a felhasználó id-je:',id);
                 makeRequest('/user/add/task','POST',getHeader(),JSON.stringify({"Taskid":taskId,"Userid":id}),()=>{if(data.Status === 'Failed'){
-                    alert(data.Message);
+                    onRequestFailed(data.Message);
                 }
                 else{
                     console.log('felhasználó sikeresen hozzáadva')};

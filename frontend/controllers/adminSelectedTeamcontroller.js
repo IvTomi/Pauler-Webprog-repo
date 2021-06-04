@@ -1,5 +1,5 @@
 import { router } from "../index.js";
-import { makeRequest } from "../utilities/serviceHandler.js";
+import { makeRequest, onRequestFailed } from "../utilities/serviceHandler.js";
 import  { addNewMemberToExisting, addNonMemberToExisting, createTeamProjectsList } from "../view/listBuilders/adminTeamListBuilder.js";
 import { getHeader } from '../utilities/sessionJanitor.js';
 
@@ -14,11 +14,17 @@ export function onTaskClicked(task){
 export function createTeamMembersList(team,appendPoint){
     console.log(team);
     makeRequest('/team/get/users','POST',getHeader(),JSON.stringify({"Teamid":team.id}),(data)=>{
-        for(let member of data.Users){
-            let user = member.User;
-            let tag = member.Tag;
-            addNewMemberToExisting(user,appendPoint,team,tag);
+        if(data.Status==='Failed'){
+            onRequestFailed(data.Message);
         }
+        else{
+            for(let member of data.Users){
+                let user = member.User;
+                let tag = member.Tag;
+                addNewMemberToExisting(user,appendPoint,team,tag);
+            }
+        }
+        
     },()=>{alert('Hiba')});
     
 }
@@ -31,7 +37,7 @@ export function ChangeTag(id,teamid){
 
 function onChangeTagSucces(data,id,tag){
     if(data.Status === 'Failed'){
-        alert(data.Message);
+        onRequestFailed(data.Message);
     }
     else{
         document.getElementById('user-info-tag'+id).textContent = tag;
@@ -44,14 +50,19 @@ function onChangeTagSucces(data,id,tag){
 export function createNonTeamMemberList(users,team,appendpoint){
     let teamids = [];
     makeRequest('/team/get/users','POST',getHeader(),JSON.stringify({"Teamid":team.id}),(data)=>{
-        for(let member of data.Users){
-            let user = member.User;
-            teamids.push(user.id);
+        if(data.Status==='Failed'){
+            onRequestFailed(data.Message);
         }
-        for(let member of users){
-            let user = member;
-            if(!teamids.includes(user.id)){
-                addNonMemberToExisting(user,appendpoint,team);
+        else{
+            for(let member of data.Users){
+                let user = member.User;
+                teamids.push(user.id);
+            }
+            for(let member of users){
+                let user = member;
+                if(!teamids.includes(user.id)){
+                    addNonMemberToExisting(user,appendpoint,team);
+                }
             }
         }
     },()=>{alert('Hiba')});
@@ -68,7 +79,7 @@ export function onHireClick(team, user){
 
  function onSuccesfulFire(data,user){
     if(data.Status === 'Failed'){
-        alert(data.Message);
+        onRequestFailed(data.Message);
     }
     else{
         const list = document.getElementById('members');
@@ -79,7 +90,7 @@ export function onHireClick(team, user){
 }
 function onSuccesfulHire(data,user){
     if(data.Status === 'Failed'){
-        alert(data.Message);
+        onRequestFailed(data.Message);
     }
     else{
         const list = document.getElementById('nonmembers');
@@ -91,7 +102,7 @@ function onSuccesfulHire(data,user){
 export function onRemoveTaskClicked(taskid,teamid){
     makeRequest('/team/remove/task','POST',getHeader(),JSON.stringify({"Taskid":taskid,"Teamid":teamid}),(data)=>{
         if(data.Status==='Failed'){
-            alert(data.Message);
+            onRequestFailed(data.Message);
         }
         else{
             const list = document.getElementById('projectsList');
@@ -109,7 +120,7 @@ export function onDeleteClicked(team){
 }
 function onDeleteSucces(data){
     if(data.Status === 'Failed'){
-        alert(data.Message);
+        onRequestFailed(data.Message);
     }
     else{
         sessionStorage.removeItem('allTeams');
@@ -121,7 +132,7 @@ export function getTeamTasks(teamid){
     console.log(teamid);
     makeRequest('/team/get/tasks','POST',getHeader(),JSON.stringify({"Teamid":teamid}),(data)=>{
         if(data.Status==='Failed'){
-            alert(data.Message);
+            onRequestFailed(data.Message);
         }
         else{
             createTeamProjectsList(data.Tasks,{},teamid);

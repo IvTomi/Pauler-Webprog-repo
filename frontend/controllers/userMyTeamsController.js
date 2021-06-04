@@ -1,5 +1,5 @@
 
-import {makeRequest} from '../utilities/serviceHandler.js';
+import {makeRequest, onRequestFailed} from '../utilities/serviceHandler.js';
 import {router} from '../index.js';
 import { getHeader } from '../utilities/sessionJanitor.js';
 import createmyTeamsView from '../view/content/user/teams/myTeamsU.js';
@@ -17,7 +17,7 @@ export function onTeamClicked(team){
 }
 function onGetTeamsSucces(data){
     if(data.Status === 'Failed'){
-        alert(data.Message);
+        onRequestFailed(data.Message);
     }
     else{
         createMyTeamsList(data.Teams);

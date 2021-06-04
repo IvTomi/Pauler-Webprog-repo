@@ -1,5 +1,5 @@
 import { router } from "../index.js";
-import { makeRequest } from "../utilities/serviceHandler.js";
+import { makeRequest, onRequestFailed } from "../utilities/serviceHandler.js";
 import { getHeader } from "../utilities/sessionJanitor.js";
 import {SessionJanitor} from '../utilities/sessionJanitor.js';
 import { addNonTaskedToExisting, addTaskedToExisting, makeRecordsListForTask, addTaskedTeamToExisting, addNonTaskedTeamToExisting } from "../view/listBuilders/adminTaskListBuilder.js";
@@ -19,7 +19,7 @@ export function memberDistribution(taskid){
     
     makeRequest('/task/get/users','POST',getHeader(),JSON.stringify({"Taskid":taskid}),(data)=>{
         if(data.Status === 'Failed'){
-            alert(data.Message);
+            onRequestFailed(data.Message);
         }
         else{
             let taskmembers = data.Users;
@@ -45,7 +45,7 @@ export function memberDistribution(taskid){
 export function teamDistribution(taskid){
     makeRequest('/task/get/teams','POST',getHeader(),JSON.stringify({"Taskid":taskid}),(data)=>{
         if(data.Status === 'Failed'){
-            alert(data.Message);
+            onRequestFailed(data.Message);
         }
         else{
             let taskteams = data.Teams;
@@ -71,33 +71,54 @@ export function teamDistribution(taskid){
 
 export function addUserToexistTask(user,taskid){
     makeRequest('/user/add/task','POST',getHeader(),JSON.stringify({"Userid":user.id,"Taskid":taskid}),()=>{
-        let nonmembers= document.getElementById('nonmembers');
-        nonmembers.removeChild(document.getElementById('nontaskeduser'+user.id));
-        addTaskedToExisting(user,{},taskid);
+        if(data.Status === 'Failed'){
+            onRequestFailed(data.Message);
+        }
+        else{
+            let nonmembers= document.getElementById('nonmembers');
+            nonmembers.removeChild(document.getElementById('nontaskeduser'+user.id));
+            addTaskedToExisting(user,{},taskid);
+        }
+        
     },()=>{alert('Server not found')})
 }
 
 export function removeUserFromexistTask(user,taskid){
     makeRequest('/user/remove/task','POST',getHeader(),JSON.stringify({"Userid":user.id,"Taskid":taskid}),()=>{
-        let members= document.getElementById('members');
-        members.removeChild(document.getElementById('taskeduser'+user.id));
-        addNonTaskedToExisting(user,{},taskid);
+        if(data.Status === 'Failed'){
+            onRequestFailed(data.Message);
+        }
+        else{
+            let members= document.getElementById('members');
+            members.removeChild(document.getElementById('taskeduser'+user.id));
+            addNonTaskedToExisting(user,{},taskid);
+        }
     },()=>{alert('Server not found')})
 }
 
 export function addTeamToexistTask(team,taskid){
     makeRequest('/team/add/task','POST',getHeader(),JSON.stringify({"Teamid":team.id,"Taskid":taskid}),()=>{
-        let nonmembers= document.getElementById('other-teams');
-        nonmembers.removeChild(document.getElementById('nontaskedteam'+team.id));
-        addTaskedTeamToExisting(team,{},taskid);
+        if(data.Status === 'Failed'){
+            onRequestFailed(data.Message);
+        }
+        else{
+            let nonmembers= document.getElementById('other-teams');
+            nonmembers.removeChild(document.getElementById('nontaskedteam'+team.id));
+            addTaskedTeamToExisting(team,{},taskid);
+        }
     },()=>{alert('Server not found')})
 }
 
 export function removeTeamFromexistTask(team,taskid){
     makeRequest('/team/remove/task','POST',getHeader(),JSON.stringify({"Teamid":team.id,"Taskid":taskid}),()=>{
-        let members= document.getElementById('assigned-teams');
-        members.removeChild(document.getElementById('taskedteam'+team.id));
-        addNonTaskedTeamToExisting(team,{},taskid);
+        if(data.Status === 'Failed'){
+            onRequestFailed(data.Message);
+        }
+        else{
+            let members= document.getElementById('assigned-teams');
+            members.removeChild(document.getElementById('taskedteam'+team.id));
+            addNonTaskedTeamToExisting(team,{},taskid);
+        }
     },()=>{alert('Server not found')})
 }
 
@@ -105,7 +126,7 @@ export function removeTeamFromexistTask(team,taskid){
 export function deleteTask(taskid){
     makeRequest('/task/remove','POST',getHeader(),JSON.stringify({"Taskid":taskid}),(data)=>{
         if(data.Status === 'Failed'){
-            alert(data.Message);
+            onRequestFailed(data.Message);
         }  
         else{
             setTimeout(()=>{router.navigate('newtaskAdmin')},1000);
@@ -117,7 +138,7 @@ export function makeRecords(taskid){
     
     makeRequest('/task/get/records','POST',getHeader(),JSON.stringify({"Taskid":taskid}),(data)=>{
         if(data.Status === 'Failed'){
-            alert(data.Message);
+            onRequestFailed(data.Message);
         }  
         else{
             let list = data.Records;
