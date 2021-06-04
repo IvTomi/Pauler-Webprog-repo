@@ -3,7 +3,7 @@ import Router from "./utilities/router.js";
 
 
 
-export const router = new Router({root:"/pauler-webprog-repo/frontend/",mode:"history"});
+export const router = new Router({root:"/",mode:"history"});
 export const viewController = new ViewController();
 
 
@@ -37,5 +37,5 @@ router.add('onetaskAdmin',()=>{viewController.loadAdminProjects(2)});
 
 console.log();
 window.onload = ()=>{router.navigate(router.clearSlashes(router.replaceRoot(window.location.pathname)))};
-router.navigate('login');
+//router.navigate('login');
 
