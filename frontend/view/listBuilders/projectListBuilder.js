@@ -1,13 +1,15 @@
 import { getTaskAttributes } from "../../controllers/userOneProjectController.js";
 import HTMLTag from "../../utilities/HTMLTag.js";
+import createOneProjectView from "../../view/content/user/projects/oneProject.js";
 
 export function createMyProjectList(data,appendPoint,option){
     const ulList = new HTMLTag('div').addAttr('id','list');
     for(let project of data){
-        const one = new HTMLTag('li').addAttr('class','listItem')
-        
+
+        const one = new HTMLTag('li').addAttr('class','listItem').onclick(()=>createOneProjectView(project.Task.id,project.Task.taskname,project.Task.description));
         new HTMLTag('p').setText(project.Task.taskname).append(one);
         new HTMLTag('p').setText(project.Task.description).append(one);
+
         one.append(ulList); 
     }
     ulList.append(appendPoint);
@@ -17,10 +19,9 @@ export function createProjectMembersList(data,appendPoint){
     console.log(data);
     let div = new HTMLTag('div');
     let one = new HTMLTag('ul').append(div);
-    for(let User of data){
-        new HTMLTag('img').addAttr('src',User.User.picture).addAttr('alt','user képe').append(one);
-        new HTMLTag('li').setText(User.Firstname + " " + User.Lastname).append(one);
-        //new HTMLTag('li').setText(member.post).append(one);
+    for(let User of data.Users){
+        new HTMLTag('img').addAttr('src',User.User.picture).addAttr('alt','').append(one);
+        new HTMLTag('li').setText(User.User.firstname + " " + User.User.lastname).append(one);
     }
     div.append(appendPoint).addClass('scroll');
 
@@ -28,12 +29,14 @@ export function createProjectMembersList(data,appendPoint){
 
 export function createProjectRecordList(data,appendPoint)
 {
+    console.log('data: '+JSON.stringify(data));
     let div = new HTMLTag('div');
     let one = new HTMLTag('ul').append(div);
-    for(let record of data){
-        //new HTMLTag('li').setText(record.author).append(one); ennek mi a neve?
-        new HTMLTag('li').setText(record.Date + " " + record.Hour + ":" + record.Minute).append(one);
-        new HTMLTag('li').setText(record.Comment).append(one);
+    for(let record of data.Records){
+        record = record.Record;
+        //new HTMLTag('li').setText(record.author).append(one); ennek nem tudom, hogy mi a neve
+        new HTMLTag('li').setText(record.recorddate + " " + record.hour + ":" + record.min).append(one);
+        new HTMLTag('li').setText(record.comment).append(one);
     }
     div.append(appendPoint).addClass('scroll');
 }

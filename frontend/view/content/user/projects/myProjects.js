@@ -11,7 +11,6 @@ function createMyProjectsView(data){
     const listDiv = setUpListField(content);
     createMyProjectList(data,listDiv);
     
-    
 }
 
 export default createMyProjectsView;
