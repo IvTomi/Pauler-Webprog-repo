@@ -1,0 +1,23 @@
+#selecter{
+    height: 100vh;
+    margin-top: 40px;
+    background-color: #A3ACB7;
+    list-style-type: none;
+    border: 0px solid transparent;
+}
+
+#selecter li{
+    color: #443E3E;
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+#selecter li:hover{
+    color: white;
+    background-color: transparent;
+    font-size: 20px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+

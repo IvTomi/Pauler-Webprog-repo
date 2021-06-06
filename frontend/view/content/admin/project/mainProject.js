@@ -11,9 +11,13 @@ function setUpAdminProjectsView(appendPoint,n ){
 
     const navList = document.querySelector('nav ul');
     changeHighlithed(1,navList);
+    let mainContent = document.getElementById("MainContent");
 
-    const selecter = new HTMLTag('ul').addAttr('id','selecter').append(appendPoint);
-    new HTMLTag('div').addAttr('id','content').append(appendPoint);
+    new HTMLTag('div').addAttr('id','content').append(mainContent);
+    const selecter = new HTMLTag('ul').addAttr('id','selecter').append(mainContent);
+
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/contentbox.css').append(document.body);
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/navigationbox.css').append(document.body);
 
     new HTMLTag('li').setText('Meglévő projektek').append(selecter).onclick(()=>{router.navigate('alltaskAdmin')});
     new HTMLTag('li').setText('projekt létrehozása').append(selecter).onclick(()=>{router.navigate('newtaskAdmin')});
@@ -27,7 +31,6 @@ function setUpAdminProjectsView(appendPoint,n ){
     }
     if(n===2){
         let tojson = sessionStorage.getItem('activeTask');
-        console.log(tojson);
         let task = JSON.parse(tojson);//JSON.parse(JSON.stringify(JSON.parse()));
         createOneProjectView(task);
     }

@@ -14,9 +14,22 @@ export function createProfileDataList(userid){
 export function HTMLview(users,userid){
     const appendPoint = document.getElementById('content');   
     appendPoint.innerHTML = ""
-    let firstName = "";
+    let firstName = ""
     let lastName = "";
     let contacts = [];
+    let selectedUser;
+
+    users.forEach(element => {
+        if(element.id == userid){
+            selectedUser = element;           
+        }
+    });
+
+    firstName=selectedUser.firstname
+    lastName = selectedUser.lastname
+            
+
+    console.log('Profile'+ SessionJanitor.getActiveProfile())
 
     console.log('user'+ users)  
     new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/contentbox.css').append(document.body);
@@ -26,24 +39,25 @@ export function HTMLview(users,userid){
         canedit = true;
     }
     if(canedit){
-        new HTMLTag('p').setText('Adat hozzáadása').append(appendPoint);
-    const add = new HTMLTag('div').addAttr('id','contactadd').append(appendPoint);
+        let appendbox = new HTMLTag('div').addAttr('class','appendBox').append(appendPoint)
+        new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/userprofile.css').append(document.body);
+        new HTMLTag('p').setText('Adat hozzáadása').append(appendbox);
+    const add = new HTMLTag('div').addAttr('id','contactadd').append(appendbox);
     let type = new HTMLTag('input').addAttr('id','contacttype').addAttr('name','type').addAttr('placeholder','Tipus').append(add);
     let value = new HTMLTag('input').addAttr('id','contactvalue').addAttr('name','value').addAttr('placeholder','Érték').append(add);
     let comment = new HTMLTag('input').addAttr('id','contactcomment').addAttr('name','value').addAttr('placeholder','Megjegyzés').append(add);
-    const button = new HTMLTag('contactaddbutton').setText('Hozzáadás').append(add).onclick(()=>{CreateContact(userid)}).preventDefaultEvent('click');
+    const button = new HTMLTag('button').addAttr('class','contactaddbutton').setText('Hozzáadás').append(add).onclick(()=>{CreateContact(userid)}).preventDefaultEvent('click');
     }
-    
-    users.forEach(element => {
-        if(element.id == userid){
-            console.log('useridLOL:' + userid)
-            SessionJanitor.getUserContacts(()=>{getContacts(appendPoint,SessionJanitor.getUserContacts(null,userid),canedit,userid)},userid)
-        }
-    });
+
+    new HTMLTag('label').setText('Adatok').append(appendPoint);
+    let userdata = new HTMLTag('div').addAttr('class','userData').append(appendPoint)
+   
+
+    SessionJanitor.getUserContacts(()=>{getContacts(userdata,SessionJanitor.getUserContacts(null,userid),canedit,userid)},userid)
+       
 }
 
 function getContacts(appendPoint,contacts,canedit,userid){
-    console.log('cigg: ',contacts)
     for(let contanct of contacts){
         console.log('a' + contacts.typename)
         let box = new HTMLTag('div').addAttr("class","contactbox").append(appendPoint);
@@ -56,8 +70,11 @@ function getContacts(appendPoint,contacts,canedit,userid){
 
         new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/contact.css').append(document.body);
 
+        new HTMLTag('p2').setText('Típus').append(box);
         new HTMLTag('p').setText(contanct.typename).append(box);
+        new HTMLTag('p2').setText('Érték').append(box);
         new HTMLTag('p').setText(contanct.value).append(box);
+        new HTMLTag('p2').setText('Megjegyzés').append(box);
         new HTMLTag('p').setText(contanct.description).append(box);
     }
 }

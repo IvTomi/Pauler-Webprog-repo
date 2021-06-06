@@ -1,0 +1,49 @@
+.listItem{
+
+    list-style-type: none;
+    width: 90%;
+    margin: 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border: 0px transparent solid;
+}
+
+.listItem:hover{
+
+    cursor: pointer;
+}
+
+.deleteButton{
+    display: block;    
+    border:0px solid transparent;
+    background-color: red;
+    width: 25px;
+    height: 25px;
+    margin-right: 25px;
+    margin-top: 12.5px;
+}
+
+.deleteButton:hover{
+    border:0px solid transparent;
+    background-color: rgb(255, 80, 80);
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+#list{
+    background-color: #393939;
+    display: flex;
+    flex-direction: column;  
+    align-items: center;
+    align-content: center; 
+    width: 90%;
+    height: 90%;
+    overflow-y: scroll;
+}
+
+#list::-webkit-scrollbar{
+    display: none;
+}

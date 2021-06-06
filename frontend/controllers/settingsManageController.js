@@ -28,7 +28,6 @@ export function modifyUser(/*userid*/){
         
         let user = SessionJanitor.getActiveProfile()
         makeRequest('/user/modify','POST',getHeader(),JSON.stringify({"Userid":user.id,"Password":ispass?pass:null,"Firstname":firstname,"Lastname":lastname}),(data)=>{modifyUserOnSuccess(data,user)},(data)=>{OutPutOnFail(data)});
-
         //itt még feltételek és felh módosítása
     }else{
         alert('Nincs felhasználó kiválasztva')
@@ -60,6 +59,7 @@ export function resetInputData(){
         document.getElementById('modifyForm_lastname').value = ""
         getUserPermissions(null)
     }
+    document.getElementById('modifyTitle').textContent = profile?profile.username:"Nincs felhasználó kiválasztva"
     document.getElementById('modifyForm_pass').value = ""
     document.getElementById('modifyForm_passAgain').value = ""
     

@@ -9,72 +9,34 @@ import { SessionJanitor } from '../../../../utilities/sessionJanitor.js';
 
 function createTeamInfoView(team){
     
-    if(!(team.teamname && team.description && team.teammembers && team.teamtasks)){//A szükséges információk meglétének ellenőrzése
+    console.log(JSON.stringify(team))
+    if(team.teamname === null ||team.description ===null || team.teammembers ===null || team.teamtasks ===null){//A szükséges információk meglétének ellenőrzése
+        console.log('rossz')
         return false;
     }
     const content = refreshContent(-1);
-    new viewController().clearTag(content);
     new HTMLTag('h2').setText(team.teamname).append(content);
     new HTMLTag('p').setText(team.description).append(content);
-    new HTMLTag('p').setText('Tagok').append(content);
-    const memList = new HTMLTag('ul').addAttr('id','members').append(content);
-    memList.node.style.background='red';
+    let memberDiv = new HTMLTag('div').addAttr('class','memberDiv').append(content);   
+    let memberCont = new HTMLTag('div').addAttr('class','memberCont').append(memberDiv);
+    let nonmemberCont = new HTMLTag('div').addAttr('class','nonmemberCont').append(memberDiv);
+    new HTMLTag('h2').setText('Csapattagok').insertBefore(memberCont)
+    new HTMLTag('h2').setText('Alkalmazott hozzáadása').insertBefore(nonmemberCont)
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/teamcreate.css').append(document.body);
+    //new viewController().clearTag(content);
+   
+    const memList = new HTMLTag('ul').addAttr('id','members').append(memberCont);
     createTeamMembersList(team,memList);
-    const nonMemList = new HTMLTag('ul').addAttr('id','nonmembers').append(content);
+    const nonMemList = new HTMLTag('ul').addAttr('id','nonmembers').append(nonmemberCont);
     //get list of all users
     let users = SessionJanitor.getAllUsers(()=>{SessionJanitor.getAllUsers(null)});
    
-    /*let users = [{
-        User:{
-            Id:11,
-            Username: 'nagypeti',
-            FirstName: 'Péter',
-            LastName: 'Nagy'
-        },
-        Tag:'#captain'
-    },
-    {
-        User:{
-            Id:12,
-            Username: 'kisspetra',
-            FirstName: 'Petra',
-            LastName: 'Kiss'
-        },
-        Tag:'#design'
-    },
-    {
-        User:{
-            Id:13,
-            Username: 'feszes',
-            FirstName: 'Gábor',
-            LastName: 'Feszes'
-        },
-        Tag:'#muscle'
-    },
-    {
-        User:{
-            Id:18,
-            Username: 'dragonqueen',
-            FirstName: 'Anna',
-            LastName: 'Szabó'
-        },
-        Tag:'#weight'
-    },
-    {
-        User:{
-            Id:20,
-            Username: 'boss',
-            FirstName: 'György',
-            LastName: 'Baila'
-        },
-        Tag:'#boss'
-    }];*/
     createNonTeamMemberList(users,team,nonMemList)
-    new HTMLTag('p').setText('Projektek').append(content);
+    new HTMLTag('h2').setText('Projektek').append(content);
     const projList = new HTMLTag('ul').addAttr('id','projectsList').append(content); 
     getTeamTasks(team.id);
     //createTeamProjectsList(team,projList);
-    new HTMLTag('button').setText('Csapat törlése').append(content).onclick(()=>{onDeleteClicked(team)});
+    new HTMLTag('button').setText('Csapat törlése').addAttr('class','deleteTeamBtn').append(content).onclick(()=>{onDeleteClicked(team)});
 }
 
 

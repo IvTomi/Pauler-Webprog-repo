@@ -22,26 +22,25 @@ export function onCreate(){
         const teamMembers = [];
         const members = document.getElementById('members');
         for(let element of members.children){
+
+          
             let member = {};
             member.Id = element.dataset.id;
-            member.Tags = document.getElementById('user-info-newtag'+member.Id).value;
+            console.log('member: '+member.Id)
+            member.Tags = document.getElementById('user-info-newtag'+member.Id).value?document.getElementById('user-info-newtag'+member.Id).value:"";
             teamMembers.push(member);
+            
         }
         for(let member of teamMembers){
-
             
-            console.log(teamMembers);
-            console.log(member.Tags);
-            makeRequest('/team/add/user','POST',getHeader(),JSON.stringify({"Teamid":teamId,"Memberid":member.Id,"Tag":member.Tags}),(data)=>{onCreateSucces(data)},()=>{alert('Serve not found')})
+            console.log('adding member')
+            makeRequest('/team/add/user','POST',getHeader(),JSON.stringify({"Teamid":teamId,"Memberid":member.Id,"Tag":member.Tags}),(data)=>{},()=>{alert('Serve not found')})
     
         }
         setTimeout(()=>{router.navigate('teamsAdmin');},1000);
         
     }
 }
-
-
-
 
 export function createNonTeamMemberList(users,appendpoint){
     

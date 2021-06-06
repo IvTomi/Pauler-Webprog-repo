@@ -3,25 +3,6 @@ import { makeRequest } from "../utilities/serviceHandler.js";
 import { getHeader } from '../utilities/sessionJanitor.js';
 
 
-/*export function createAllTeamsList(appendPoint){
-    if(sessionStorage.getItem('allTeams')){
-        let min = new Date(Date.now()).getMinutes();
-        let h = new Date(Date.now()).getHours();
-        let savedMin = sessionStorage.getItem('allTeamsRTM') || null;
-        let savedH = sessionStorage.getItem('allTeamsRTH') || null;
-        if(savedMin && savedH){
-            if(min===savedMin && h===savedH){
-                data = sessionStorage.getItem('allTeams');
-                createList(data,appendPoint);
-            }
-        }
-    }
-    }
-
-function onGetTeamsSucces(data,appendPoint){
-    
-    
-}*/
 
 export function onAjaxFail(){
     alert('Server not found');
@@ -36,11 +17,11 @@ export function onTaskClicked(task){
 }
 export function onUserClicked(person){
     sessionStorage.setItem('activeProfile',JSON.stringify(person));
-     console.log(sessionStorage.getItem('activeProfile'));
+     //console.log(sessionStorage.getItem('activeProfile'));
      /*router.navigate('memberprofile')*/
 }
 export function onDeleteClicked(team){
-    console.log(team);
+    //console.log(team);
     makeRequest('/team/delete','POST',getHeader(),JSON.stringify({"TeamId":team.id}),(data)=>{onDeleteSucces(data)},()=>{onAjaxFail()});
 }
 export function onDeleteSucces(data){

@@ -1,0 +1,79 @@
+.usersFrame{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.usersList{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    align-content: center;
+    width: 90%;
+    height: 120px;
+    background-color: #8D8D8D;
+    border-radius: 25px;
+    overflow: scroll;
+}
+
+.usersList::-webkit-scrollbar{
+    display: none;
+}
+
+.usersList li{
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   align-content: center;
+   justify-content: center;
+   padding: 5px;
+}
+
+.usersList li:hover{
+    cursor: pointer;
+    background-color: #443E3E;
+    border-radius: 15px;
+ }
+
+.profilePic{
+    margin: 0px;
+}
+
+h2{
+    text-align: center;
+}
+
+.modifyButton{
+    width: 200px;
+    height: 80px;
+    margin:25px;
+    cursor: pointer;
+    border: 0px transparent solid;
+    background-color: #3CFF2C;
+    font-weight: bold;
+}
+
+.modifyButton:hover{
+    background-color: #ccf7c8;
+}
+
+.permissionField{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+.permissionField input{
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+}
+
+.permissionField p{
+    margin-top: 25px;
+}

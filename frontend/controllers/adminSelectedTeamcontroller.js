@@ -35,6 +35,7 @@ function onChangeTagSucces(data,id,tag){
     }
     else{
         document.getElementById('user-info-tag'+id).textContent = tag;
+        document.getElementById('user-info-newtag'+id).value = '';
     }
 }
 
@@ -43,6 +44,7 @@ function onChangeTagSucces(data,id,tag){
 export function createNonTeamMemberList(users,team,appendpoint){
     let teamids = [];
     makeRequest('/team/get/users','POST',getHeader(),JSON.stringify({"Teamid":team.id}),(data)=>{
+        console.log('data: '+JSON.stringify(data))
         for(let member of data.Users){
             let user = member.User;
             teamids.push(user.id);

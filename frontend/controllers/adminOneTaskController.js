@@ -1,14 +1,14 @@
 import { router } from "../index.js";
-import HTMLTag from "../utilities/HTMLTag.js";
 import { makeRequest } from "../utilities/serviceHandler.js";
 import { getHeader } from "../utilities/sessionJanitor.js";
 import {SessionJanitor} from '../utilities/sessionJanitor.js';
-import { addNonTaskedToExisting, addTaskedToExisting } from "../view/listBuilders/adminTaskListBuilder.js";
+import { addNonTaskedToExisting, addTaskedToExisting, makeRecordsListForTask, addTaskedTeamToExisting, addNonTaskedTeamToExisting } from "../view/listBuilders/adminTaskListBuilder.js";
 
-export function onTeamSelectedClicked(taask){
-    sessionStorage.setItem('activeTask',taask);
+export function onTeamSelectedClicked(task){
+    sessionStorage.setItem('activeTask',task);
     router.navigate('onetaskAdmin');
 }
+
 
 export function memberDistribution(taskid){
     
@@ -22,7 +22,6 @@ export function memberDistribution(taskid){
             for(let user of taskmembers){
                 user = user.User;
                 taskmemids.push(user.id);
-                console.log(taskmemids);
                 
             }
             SessionJanitor.getAllUsers().forEach(element => {
@@ -38,6 +37,33 @@ export function memberDistribution(taskid){
 }
 
 
+export function teamDistribution(taskid){
+    makeRequest('/task/get/teams','POST',getHeader(),JSON.stringify({"Taskid":taskid}),(data)=>{
+        if(data.Status === 'Failed'){
+            alert(data.Message);
+        }
+        else{
+            let taskteams = data.Teams;
+            let taskteamids = [];
+            for(let team of taskteams){
+                team = team.Team;
+
+                taskteamids.push(team.id);
+                
+            }
+            SessionJanitor.getAllTeams().forEach(element => {
+                let team = element.Team;
+                if(taskteamids.includes(team.id)){
+                    addTaskedTeamToExisting(team,{},taskid);
+                }
+                else{
+                    addNonTaskedTeamToExisting(team,{},taskid);
+                }
+            });
+        }
+    },()=>{alert('Server not found')})
+}
+
 export function addUserToexistTask(user,taskid){
     makeRequest('/user/add/task','POST',getHeader(),JSON.stringify({"Userid":user.id,"Taskid":taskid}),()=>{
         let nonmembers= document.getElementById('nonmembers');
@@ -51,6 +77,22 @@ export function removeUserFromexistTask(user,taskid){
         let members= document.getElementById('members');
         members.removeChild(document.getElementById('taskeduser'+user.id));
         addNonTaskedToExisting(user,{},taskid);
+    },()=>{alert('Server not found')})
+}
+
+export function addTeamToexistTask(team,taskid){
+    makeRequest('/team/add/task','POST',getHeader(),JSON.stringify({"Teamid":team.id,"Taskid":taskid}),()=>{
+        let nonmembers= document.getElementById('other-teams');
+        nonmembers.removeChild(document.getElementById('nontaskedteam'+team.id));
+        addTaskedTeamToExisting(team,{},taskid);
+    },()=>{alert('Server not found')})
+}
+
+export function removeTeamFromexistTask(team,taskid){
+    makeRequest('/team/remove/task','POST',getHeader(),JSON.stringify({"Teamid":team.id,"Taskid":taskid}),()=>{
+        let members= document.getElementById('assigned-teams');
+        members.removeChild(document.getElementById('taskedteam'+team.id));
+        addNonTaskedTeamToExisting(team,{},taskid);
     },()=>{alert('Server not found')})
 }
 
@@ -76,6 +118,7 @@ export function makeRecords(taskid){
             let list = data.Records;
             let appendPoint = document.getElementById('records');
             let users = SessionJanitor.getAllUsers(null);
+
             for(let record of list){
                 record = record.Record;
                 
@@ -89,6 +132,9 @@ export function makeRecords(taskid){
                 new HTMLTag('p').setText(record.hour+':'+record.min).append(li);
                 new HTMLTag('p').setText(record.recorddate).append(li);
             }
+
+            makeRecordsListForTask(list,appendPoint,users);
+
             
         }
     },()=>{alert('Server not found')})

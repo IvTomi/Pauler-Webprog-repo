@@ -1,0 +1,206 @@
+
+
+#nonmembers{
+    width: 100%;
+    height: 100%;
+    background-color: #2C2C2C;
+}
+
+#members{
+    width: 100%;
+    height: 100%;
+    background-color:  #929292;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;    
+}
+
+#members:hover{
+    background-color:  #929292;;
+}
+
+#members input:-webkit-autofill{
+    background-color: rgb(39, 39, 39);
+    outline: none;
+}
+
+#nonteams, #other-teams
+{
+    width: 100%;
+    height: 100%;
+    background-color: #2C2C2C;
+}
+
+#teams, #assigned-teams
+{
+    width: 100%;
+    height: 100%;
+    background-color:  #929292;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;    
+}
+
+#teams:hover,#assigned-teams:hover{
+    background-color:  #929292;;
+}
+
+#teams input:-webkit-autofill,
+#assigned-teams input:-webkit-autofill
+{
+    background-color: rgb(39, 39, 39);
+    outline: none;
+}
+
+.memberDiv{
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 100%;
+
+}
+
+.memberCont{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    width: 40%;
+    height: 100%;
+}
+
+.nonmemberCont{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    width: 40%;
+    height: 100%;
+}
+
+.memberDiv ul{
+    list-style-type: none;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    overflow: scroll;
+    
+}
+
+.memberDiv ul::-webkit-scrollbar{
+    display: none;
+    
+}
+
+.memberDiv li{
+    border-radius: 15px;
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.memberDiv li:hover{
+    background-color: #929292;
+    color: #343434;
+}
+
+.addBtn2{
+    background-color: #3CFF2C;
+    border: 0px solid transparent;
+    height: 25px;
+    margin-top: 12.5px;
+    margin-right: 15px;
+    font-weight: bold;
+}
+
+.addBtn2:hover{
+    background-color: #ccf7c8;
+    border: 0px solid transparent;
+    cursor: pointer;
+}
+
+.addBtn{
+    background-color: #3CFF2C;
+    border: 0px solid transparent;
+    margin: 40px;
+    height: 100px;
+    width: 200px;
+    font-weight: bold;
+}
+
+.addBtn:hover{
+    background-color: #ccf7c8;
+    border: 0px solid transparent;
+    cursor: pointer;
+}
+
+.deleteBtn{
+    background-color: red;
+    border: 0px solid transparent;
+    height: 25px;
+    margin-top: 12.5px;
+    margin-right: 15px;
+    font-weight: bold;
+}
+
+.deleteBtn:hover{
+    background-color: rgb(255, 108, 108);
+    border: 0px solid transparent;
+    cursor: pointer;
+}
+
+#taskdesc{
+    width: 400px;
+    min-height: 120px;
+    background-color: rgb(39, 39, 39);
+    text-overflow: initial;
+    resize: none;
+    border-radius: 15px;
+    border:0px transparent solid;
+    color: white;
+    font-size: 15px;
+    text-align: center;
+    padding: 10px;
+}
+
+input:focus{
+    outline: none;
+}
+
+#taskdesc::-webkit-scrollbar{
+    display: none;
+}
+
+#taskdesc:focus{
+    outline: none;
+}
+
+#taskdesc::placeholder{
+    text-align: center;
+}
+
+.deleteProjectBtn{
+    background-color: red;
+    border: 0px solid transparent;
+    margin: 40px;
+    height: 60px;
+    width: 200px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.deleteProjectBtn:hover{
+    background-color: rgb(255, 108, 108);
+    border: 0px solid transparent;
+    margin: 40px;
+    height: 60px;
+    width: 200px;
+    cursor: pointer;
+}

@@ -20,13 +20,14 @@ export function createProfileDataList(data,appendPoint){
 
 export function createProfile(user,appendPoint){
     SessionJanitor.setActiveProfile(null); 
+    let li = new HTMLTag('li').append(appendPoint).onclick(()=>{
+        //viewController.loadUserProfile(0,user.id);
+        SessionJanitor.setActiveProfile(user);     
+        resetInputData();     
+    });;   
+    new HTMLTag('p').setText(user.username).append(li)
     if(user.img){
-        new HTMLTag('img').addAttr('src',user.img).addAttr('alt','user képe').append(appendPoint).onclick(()=>{
-            //viewController.loadUserProfile(0,user.id);
-            SessionJanitor.setActiveProfile(user);     
-            resetInputData();     
-        });
+        new HTMLTag('img').addAttr('src',user.img).addAttr('class','profilePic').addAttr('alt','user képe').append(li)
     }
-    new HTMLTag('li').setText(user.username).append(appendPoint);   
     
 }

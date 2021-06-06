@@ -7,11 +7,15 @@ import {router} from '../../../../index.js';
 import createTeamInfoView from './oneTeamA.js';
 
 function setUpAdminTeamsView(appendPoint,n){
+    let mainContent = document.getElementById("MainContent");
     const navList = document.querySelector('nav ul');
     changeHighlithed(2,navList);//Selects the first element [which is the records] on user nav bar
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/contentbox.css').append(document.body);
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/navigationbox.css').append(document.body);
 
-    const selecter=new HTMLTag('ul').addAttr('id','selecter').append(appendPoint);
-    new HTMLTag('div').addAttr('id','content').append(appendPoint);
+   
+    new HTMLTag('div').addAttr('id','content').append(mainContent);
+    const selecter=new HTMLTag('ul').addAttr('id','selecter').append(mainContent);
     
     new HTMLTag('li').setText('Csapatok').append(selecter).onclick(()=>{router.navigate('teamsAdmin')});
     new HTMLTag('li').setText('Csapat létrehozása').append(selecter).onclick(()=>{router.navigate('newTeamAdmin')});

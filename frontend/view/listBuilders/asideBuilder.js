@@ -17,8 +17,12 @@ export function createAside(t){
     }else{
         aside = document.getElementById('aside');
     }
+
     
     new HTMLTag('h3').addAttr('class',"title").setText(t?t:title).append(aside);
+
+    aside.innerHTML = '';
+
     const ul = new HTMLTag('ul').addClass('scroll').append(aside);
     SessionJanitor.getAllUsers(()=>{makeUserList(SessionJanitor.getAllUsers(null),ul)})
 }
