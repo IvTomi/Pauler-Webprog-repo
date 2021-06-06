@@ -1,5 +1,5 @@
 import { router } from "../index.js";
-import { makeRequest } from "../utilities/serviceHandler.js";
+import { makeRequest, onRequestFailed } from "../utilities/serviceHandler.js";
 import { addNewMemberToNew, addNonMemberToNew } from "../view/listBuilders/adminTeamListBuilder.js";
 import { getHeader } from '../utilities/sessionJanitor.js';
 import {SessionJanitor} from '../utilities/sessionJanitor.js';
@@ -14,7 +14,7 @@ export function onCreate(){
 
  function onCreateSucces(data){
     if(data.Status === 'Failed'){
-        console.log(data.Message);
+        onRequestFailed(data.Message);
     }
     else{
         sessionStorage.removeItem('allTeams');
@@ -33,8 +33,14 @@ export function onCreate(){
         }
         for(let member of teamMembers){
             
-            console.log('adding member')
-            makeRequest('/team/add/user','POST',getHeader(),JSON.stringify({"Teamid":teamId,"Memberid":member.Id,"Tag":member.Tags}),(data)=>{},()=>{alert('Serve not found')})
+            console.log(teamMembers);
+            console.log(member.Tags);
+            makeRequest('/team/add/user','POST',getHeader(),JSON.stringify({"Teamid":teamId,"Memberid":member.Id,"Tag":member.Tags}),(data)=>{
+                if(data.Status === 'Failed'){
+                    onRequestFailed(data.Message);
+                }
+            },()=>{alert('Serve not found')})
+
     
         }
         setTimeout(()=>{router.navigate('teamsAdmin');},1000);

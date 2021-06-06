@@ -1,5 +1,5 @@
 import {router} from '../index.js';
-import {makeRequest} from '../utilities/serviceHandler.js';
+import {makeRequest, onRequestFailed} from '../utilities/serviceHandler.js';
 import {mapUser} from '../factory/userfactory.js'
 import {SessionJanitor,getHeader} from '../utilities/sessionJanitor.js'
 
@@ -26,7 +26,7 @@ export function sendLogIn(){
         let admin = document.getElementById('loginForm_admin').checked;
         makeRequest('/login','POST',getHeader(),JSON.stringify({"Username":uname,"Password":pass,"Isadmin":admin}),(data)=>{
             if(data.Status === 'Failed'){
-                alert(data.Message);
+                onRequestFailed(data.Message);
             }
             else{
                 console.log(data.User)

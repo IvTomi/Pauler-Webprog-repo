@@ -15,7 +15,7 @@ function createUserNav(){
 
         new HTMLTag('li').setText('Rekordok').append(ul).onclick(()=>{router.navigate('recordUser')});
         new HTMLTag('li').setText('Projectek').append(ul).onclick(new viewController().loadUserProject);
-        new HTMLTag('li').setText('Csapatok').append(ul).onclick(new viewController().loadUserTeam);
+        new HTMLTag('li').setText('Csapatok').append(ul).onclick(()=>{router.navigate('myTeamsUser')});
         new HTMLTag('li').setText('Kijelentkezés').append(ul).onclick(()=>{logout()});
 
         createAside('Munkatársak');

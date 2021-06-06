@@ -1,5 +1,5 @@
 import {router} from '../index.js';
-import {makeRequest} from '../utilities/serviceHandler.js';
+import {makeRequest, onRequestFailed} from '../utilities/serviceHandler.js';
 import {setSessionHash} from './logincontroller.js'
 import {getHeader} from '../utilities/sessionJanitor.js'
 
@@ -16,10 +16,10 @@ export function sendRegister(){
     makeRequest('/register','POST',getHeader(),JSON.stringify({"Username":username,"Password":password,"Company":companyName,"Email":email}),(data)=>{
         if(data.Status === 'Failed'){
             if(data.ErrorCode == 2){
-                alert('Az email cím már foglalt')
+                onRequestFailed('Az email cím már foglalt')
             }else{
                 
-                alert(data.ErrorCode + '\n' + data.Message)
+                onRequestFailed(data.ErrorCode + '\n' + data.Message)
             }
         }
         else{

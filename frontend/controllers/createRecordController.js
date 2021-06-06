@@ -1,5 +1,5 @@
 import {SessionJanitor,getHeader} from '../utilities/sessionJanitor.js'
-import {makeRequest} from '../utilities/serviceHandler.js'
+import {makeRequest, onRequestFailed} from '../utilities/serviceHandler.js'
 
 export function createRecord(){
     let taskid = document.getElementById('newRecordForm_taskSelect').value
@@ -24,7 +24,7 @@ export function createRecord(){
 
     makeRequest('/record/create','POST',getHeader(),JSON.stringify({"Date":date,"Comment":desc,"Minute":min,"Hour":hour,"Userid":userid,"Taskid":taskid}),(data)=>{
         if(data.Status === 'Failed'){
-            alert(data.Message);
+            onRequestFailed(data.Message);
         }
         else{
             clearFields();          

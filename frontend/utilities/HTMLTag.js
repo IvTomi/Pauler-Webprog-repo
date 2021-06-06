@@ -43,12 +43,23 @@ class HTMLTag{
         return this;
     }
 
+
     insertBefore(tag){
         if(tag instanceof HTMLTag){
             tag.node.insertBefore(this.node,tag.node.childNodes[0]);
         }
         else{
             tag.insertBefore(this.node,tag.childNodes[0]);
+        }
+    }
+    /**Appends this element to the given one */
+    prepend(tag){
+        if(tag instanceof HTMLTag){
+            tag.node.prepend(this.node);
+        }
+        else{
+            tag.prepend(this.node);
+
         }
         return this;
     }
