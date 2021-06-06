@@ -33,7 +33,7 @@ function createTeamInfoView(team){
    
     createNonTeamMemberList(users,team,nonMemList)
     new HTMLTag('h2').setText('Projektek').append(content);
-    const projList = new HTMLTag('ul').addAttr('id','projectsList').append(content); 
+    const projList = new HTMLTag('ul').addAttr('id','projectsList').addAttr('class','projectsList').append(content); 
     getTeamTasks(team.id);
     //createTeamProjectsList(team,projList);
     new HTMLTag('button').setText('Csapat törlése').addAttr('class','deleteTeamBtn').append(content).onclick(()=>{onDeleteClicked(team)});

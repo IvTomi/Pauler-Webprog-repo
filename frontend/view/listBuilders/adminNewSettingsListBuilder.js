@@ -21,22 +21,12 @@ export function CreateUser(appendPoint){
     new HTMLTag('input').addAttr('id',createID+'_passAgain').addAttr('name',createID+'_passAgain').addAttr('type','password').append(createForm);
     
     new HTMLTag('h2').setText('Jogosultságok').append(createForm);
-    new HTMLTag('input').addAttr('type','checkbox').addClass(createID + '_chb').addAttr('name',createID + '_chb0').addAttr('value','DeleleteOwnRecords').append(createForm);
-    new HTMLTag('p').setText('Saját rekordok törlése').addClass(createID + '_permName').addAttr('name',createID + '_name0').append(createForm);
-    new HTMLTag('input').addAttr('type','checkbox').addClass(createID + '_chb').addAttr('name',createID + '_chb1').addAttr('value','ModifyOwnRecords').append(createForm);
-    new HTMLTag('p').setText('Saját rekordok módosítása').addClass(createID + '_permName').addAttr('name',createID + '_name1').append(createForm);
-    new HTMLTag('input').addAttr('type','checkbox').addClass(createID + '_chb').addAttr('name',createID + '_chb2').addAttr('value','isAdmin').append(createForm);
-    new HTMLTag('p').setText('Adminként való bejelentkezés').addClass(createID + '_permName').addAttr('name',createID + '_name2').append(createForm);
-    new HTMLTag('input').addAttr('type','checkbox').addClass(createID + '_chb').addAttr('name',createID + '_chb3').addAttr('value','ModifyUserData').append(createForm);
-    new HTMLTag('p').setText('Felhasználók kezelése').addClass(createID + '_permName').addAttr('name',createID + '_name3').append(createForm);
-    new HTMLTag('input').addAttr('type','checkbox').addClass(createID + '_chb').addAttr('name',createID + '_chb4').addAttr('value','ModifyUserContact').append(createForm);
-    new HTMLTag('p').setText('Felhasználói profilok módosítása').addClass(createID + '_permName').addAttr('name',createID + '_name4').append(createForm);
-    new HTMLTag('input').addAttr('type','checkbox').addClass(createID + '_chb').addAttr('name',createID + '_chb5').addAttr('value','ModifyProjects').append(createForm);
-    new HTMLTag('p').setText('Projektek kezelése').addClass(createID + '_permName').addAttr('name',createID + '_name5').append(createForm);
-    new HTMLTag('input').addAttr('type','checkbox').addClass(createID + '_chb').addAttr('name',createID + '_chb6').addAttr('value','ModifyTeams').append(createForm);
-    new HTMLTag('p').setText('Csapatok kezelése').addClass(createID + '_permName').addAttr('name',createID + '_name6').append(createForm);
+    let perm = new HTMLTag('div').addAttr('class','permissionField').append(createForm)
+    new HTMLTag('input').addAttr('type','checkbox').addClass(createID + '_chb').addAttr('name',createID + '_chb2').addAttr('value','isAdmin').append(perm);
+    new HTMLTag('p').setText('Admin').addClass(createID + '_permName').addAttr('name',createID + '_name2').append(perm);
 
-    new HTMLTag('button').setText('Létrehozás').append(createForm).onclick(()=>{addUserToDb()}).preventDefaultEvent('click');
-   
     createForm.append(appendPoint);
+    new HTMLTag('button').setText('Létrehozás').addAttr('class','modifyButton').append(appendPoint).onclick(()=>{addUserToDb()}).preventDefaultEvent('click');
+   
+   
 }

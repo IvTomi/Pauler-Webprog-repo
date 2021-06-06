@@ -7,9 +7,9 @@ import {SessionJanitor} from '../../../utilities/sessionJanitor.js'
 
         
 function createUserNav(){
-        new HTMLTag('img').addAttr('src','./res/defaultUser.png').addAttr('alt','user képe').append(document.body);
-        new HTMLTag('h1').setText(getName()).append(document.body).onclick(new viewController().loadUserProfile);
-        const nav = new HTMLTag('nav').addClass('adminNav').append(document.body);
+        const nav = new HTMLTag('nav').addClass('adminNav').insertBefore(document.body);
+        new HTMLTag('img').addAttr('src','./res/defaultUser.png').addAttr('alt','user képe').insertBefore(document.body);
+        new HTMLTag('h1').setText(getName()).insertBefore(document.body).onclick(new viewController().loadUserProfile);
         const ul = new HTMLTag('ul').append(nav);
         new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/nav.css').append(document.body);
 

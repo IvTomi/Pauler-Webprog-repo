@@ -2,12 +2,12 @@ import { getTaskAttributes } from "../../controllers/userOneProjectController.js
 import HTMLTag from "../../utilities/HTMLTag.js";
 
 export function createMyProjectList(data,appendPoint,option){
-    const ulList = new HTMLTag('div');
+    const ulList = new HTMLTag('div').addAttr('id','list');
     for(let project of data){
-        const one = new HTMLTag('ul')
+        const one = new HTMLTag('li').addAttr('class','listItem')
         
-        new HTMLTag('li').setText(project.Task.taskname).append(one);
-        new HTMLTag('li').setText(project.Task.description).append(one);
+        new HTMLTag('p').setText(project.Task.taskname).append(one);
+        new HTMLTag('p').setText(project.Task.description).append(one);
         one.append(ulList); 
     }
     ulList.append(appendPoint);

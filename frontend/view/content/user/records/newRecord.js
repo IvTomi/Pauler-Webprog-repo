@@ -8,6 +8,7 @@ function createNewRecordView(){
     const content = refreshContent(0);
 
     new HTMLTag('h2').setText('Rekord hozzáadása').append(content);
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/recordcreate.css').append(document.body);
     const formID = 'newRecordForm';
     const form = new HTMLTag('form').addAttr('id',formID).append(content);
     const taskSelect = new HTMLTag('select').addAttr('id',formID+'_taskSelect').addAttr('name',formID+'_taskSelect').addAttr('value',-1).append(form);
@@ -21,7 +22,7 @@ function createNewRecordView(){
     new HTMLTag('input').addAttr('id',formID+'_min').addAttr('name',formID+'_min').addAttr('placeholder','perc').addAttr('type','text').append(form);
     new HTMLTag('label').addAttr('for',formID+'_date').append(form);
     new HTMLTag('input').addAttr('id',formID+'_date').addAttr('name',formID+'_date').addAttr('type','date').append(form);
-    new HTMLTag('button').setText('Létrehozás').append(form).onclick(()=>{createRecord()}).preventDefaultEvent('click');
+    new HTMLTag('button').addAttr('class','addBtn').setText('Létrehozás').append(form).onclick(()=>{createRecord()}).preventDefaultEvent('click');
     
 }
 

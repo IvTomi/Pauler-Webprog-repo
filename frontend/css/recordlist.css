@@ -1,0 +1,83 @@
+.listItem{
+
+    list-style-type: none;
+    width: 90%;
+    margin: 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    border: 0px transparent solid;
+}
+
+.listItem:hover{
+
+    cursor: pointer;
+}
+
+.deleteButton{
+    display: block;    
+    border:0px solid transparent;
+    background-color: red;
+    width: 60px;
+    height: 25px;
+    margin-left: 25px;
+    margin-top: 12.5px;
+}
+
+.deleteButton:hover{
+    border:0px solid transparent;
+    background-color: rgb(255, 80, 80);
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+#list{
+    background-color: #393939;
+    display: flex;
+    flex-direction: column;  
+    align-items: center;
+    align-content: center; 
+    width: 90%;
+    height: 90%;
+    overflow-y: scroll;
+}
+
+#list p{
+    display: flex;
+    flex-direction: row;
+    overflow: scroll;
+    width: 25%;
+}
+
+#list p::-webkit-scrollbar{
+    display: none;
+}
+
+#list::-webkit-scrollbar{
+    display: none;
+}
+
+select{
+    background-color: #2C2C2C;;
+    width: 240px;
+    height: 50px;
+    border: 0px solid transparent;
+    margin-top: 20px;
+    border-radius: 15px;
+    color: white;
+    font-weight: bolder;
+    text-align: center;
+    padding-left: 40px;
+}
+
+select:active{
+    border-radius: 15px 15px 0px 0px;
+}
+
+select:hover{
+    outline: none;
+}
+
+select:focus{
+    outline: none;
+}

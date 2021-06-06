@@ -31,8 +31,8 @@ export function CreateElements(data,appendPoint,options){
     for(let record of data){
         let task = SessionJanitor.getAllTasks(null).find(x=>x['Task'].id == record['Record']['taskid'])
             if(true){
-                const cont = new HTMLTag('li').append(appendPoint);
-                new HTMLTag('button').setText('Töröl').append(cont).onclick(()=>{deleteRecord(record['Record']['id'],appendPoint,options)});
+                const cont = new HTMLTag('li').addAttr('class','listItem').append(appendPoint);
+                new HTMLTag('button').setText('Töröl').addAttr('class','deleteButton').append(cont).onclick(()=>{deleteRecord(record['Record']['id'],appendPoint,options)});
                 new HTMLTag('p').setText(task['Task'].taskname).append(cont);
                 new HTMLTag('p').setText(record.desc).append(cont);
                 new HTMLTag('p').setText(record['Record']['comment']).append(cont);

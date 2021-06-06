@@ -1,0 +1,69 @@
+#newRecordForm_desc{
+    width: 400px;
+    min-height: 120px;
+    background-color: rgb(39, 39, 39);
+    text-overflow: initial;
+    resize: none;
+    border-radius: 15px;
+    border:0px transparent solid;
+    color: white;
+    font-size: 15px;
+    text-align: center;
+    padding: 10px;
+}
+
+input:focus{
+    outline: none;
+}
+
+#newRecordForm_desc::-webkit-scrollbar{
+    display: none;
+}
+
+#newRecordForm{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+}
+
+select{
+    background-color: #2C2C2C;;
+    width: 240px;
+    height: 50px;
+    border: 0px solid transparent;
+    margin: 20px;
+    border-radius: 15px;
+    color: white;
+    font-weight: bolder;
+    text-align: center;
+    padding-left: 40px;
+}
+
+select:hover{
+    outline: none;
+}
+
+select:active{
+    border-radius: 15px 15px 0px 0px;
+}
+
+select:focus{
+    outline: none;
+}
+
+.addBtn{
+    background-color: #3CFF2C;
+    border: 0px solid transparent;
+    margin: 40px;
+    height: 60px;
+    width: 200px;
+    font-weight: bold;
+}
+
+.addBtn:hover{
+    background-color: #ccf7c8;
+    border: 0px solid transparent;
+    cursor: pointer;
+}

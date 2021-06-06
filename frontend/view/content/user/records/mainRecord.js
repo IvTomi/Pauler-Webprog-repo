@@ -7,10 +7,14 @@ import createTeamRecordsView from './teamRecords.js';
 
 function setUpUserRecordViews(appendPoint){
     const navList = document.querySelector('nav ul');
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/contentbox.css').append(document.body);
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/navigationbox.css').append(document.body);
+    let mainContent = document.getElementById("MainContent");
     changeHighlithed(0,navList);//Selects the first element [which is the records] on user nav bar
 
-    const selecter=new HTMLTag('ul').addAttr('id','selecter').append(appendPoint);
-    new HTMLTag('div').addAttr('id','content').append(appendPoint);
+    new HTMLTag('div').addAttr('id','content').append(mainContent);
+    const selecter=new HTMLTag('ul').addAttr('id','selecter').append(mainContent);
+
     
     new HTMLTag('li').setText('Rekord hozzáadása').append(selecter).onclick(createNewRecordView);
     new HTMLTag('li').setText('Rekordjaim').append(selecter).onclick(createMyRecordsView);

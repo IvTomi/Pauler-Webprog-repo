@@ -51,6 +51,7 @@ class HTMLTag{
         else{
             tag.insertBefore(this.node,tag.childNodes[0]);
         }
+        return this
     }
     /**Appends this element to the given one */
     prepend(tag){

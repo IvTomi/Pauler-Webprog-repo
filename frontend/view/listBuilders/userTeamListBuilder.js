@@ -6,7 +6,7 @@ export function createMyTeamsList(data,appendPoint){
     appendPoint = document.getElementById('list');
     
     for(let Team of data){
-        const li = new HTMLTag('li');
+        const li = new HTMLTag('li').addAttr('class','listItem');
         if(Team.Team.teamname && Team.Team.description && Team.Team.id){
             li.onclick(() => {onTeamClicked(Team.Team)});
             new HTMLTag('p').setText(Team.Team.teamname).append(li);

@@ -6,8 +6,10 @@ import createUsersTeamInfoView from './oneTeamU.js';
 function setUpUserTeamsView(appendPoint,n){
     const navList = document.querySelector('nav ul');
     changeHighlithed(2,navList);//Selects the third element [which is the teams] on user nav bar
-
-    new HTMLTag('content').addAttr('id','content').append(appendPoint);
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/contentbox.css').append(document.body);
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/navigationbox.css').append(document.body);
+    let mainContent = document.getElementById("MainContent");
+    new HTMLTag('content').addAttr('id','content').append(mainContent);
     
     if(n===0){
         createmyTeamsView();

@@ -70,7 +70,7 @@ export function teamDistribution(taskid){
 }
 
 export function addUserToexistTask(user,taskid){
-    makeRequest('/user/add/task','POST',getHeader(),JSON.stringify({"Userid":user.id,"Taskid":taskid}),()=>{
+    makeRequest('/user/add/task','POST',getHeader(),JSON.stringify({"Userid":user.id,"Taskid":taskid}),(data)=>{
         if(data.Status === 'Failed'){
             onRequestFailed(data.Message);
         }
@@ -84,7 +84,7 @@ export function addUserToexistTask(user,taskid){
 }
 
 export function removeUserFromexistTask(user,taskid){
-    makeRequest('/user/remove/task','POST',getHeader(),JSON.stringify({"Userid":user.id,"Taskid":taskid}),()=>{
+    makeRequest('/user/remove/task','POST',getHeader(),JSON.stringify({"Userid":user.id,"Taskid":taskid}),(data)=>{
         if(data.Status === 'Failed'){
             onRequestFailed(data.Message);
         }
@@ -97,7 +97,7 @@ export function removeUserFromexistTask(user,taskid){
 }
 
 export function addTeamToexistTask(team,taskid){
-    makeRequest('/team/add/task','POST',getHeader(),JSON.stringify({"Teamid":team.id,"Taskid":taskid}),()=>{
+    makeRequest('/team/add/task','POST',getHeader(),JSON.stringify({"Teamid":team.id,"Taskid":taskid}),(data)=>{
         if(data.Status === 'Failed'){
             onRequestFailed(data.Message);
         }
@@ -110,7 +110,7 @@ export function addTeamToexistTask(team,taskid){
 }
 
 export function removeTeamFromexistTask(team,taskid){
-    makeRequest('/team/remove/task','POST',getHeader(),JSON.stringify({"Teamid":team.id,"Taskid":taskid}),()=>{
+    makeRequest('/team/remove/task','POST',getHeader(),JSON.stringify({"Teamid":team.id,"Taskid":taskid}),(data)=>{
         if(data.Status === 'Failed'){
             onRequestFailed(data.Message);
         }

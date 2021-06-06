@@ -17,7 +17,7 @@ export function makeTimeframeSelect(id,appendPoint,options){
     let date = new Date(time);
     let dateInFormat = Dateformat(date);
     const timeFrame = new HTMLTag('select').addAttr('id',id).addAttr('name',id).addAttr('value',0).append(appendPoint);
-    new HTMLTag('option').addAttr('value',0).setText('Érték választása').append(timeFrame);
+    new HTMLTag('option').addAttr('value',0).setText('Időtartam választása').append(timeFrame);
     new HTMLTag('option').addAttr('value',getPreviousDay(dateInFormat)).setText('Elmúlt nap').append(timeFrame);
     new HTMLTag('option').addAttr('value',getPreviousWeek(dateInFormat)).setText('Elmúlt hét').append(timeFrame);
     new HTMLTag('option').addAttr('value',getPreviousMonth(dateInFormat)).setText('Elmúlt hónap').append(timeFrame);

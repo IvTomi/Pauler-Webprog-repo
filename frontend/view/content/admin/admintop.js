@@ -6,8 +6,9 @@ import {SessionJanitor} from '../../../utilities/sessionJanitor.js'
 
         
 function createAdminNav(){
-    let mainContent = document.getElementById("MainContent");
+        let mainContent = document.getElementById("MainContent");
         const nav = new HTMLTag('nav').addClass('adminNav').insertBefore(document.body);
+        console.log(nav)
         const ul = new HTMLTag('ul').append(nav);
 
         new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/nav.css').insertBefore(document.body);

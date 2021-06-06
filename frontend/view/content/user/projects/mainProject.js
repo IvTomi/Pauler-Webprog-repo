@@ -8,10 +8,13 @@ import { AllTaskList } from '../../../../controllers/userMyProjectsController.js
 
 function setUpUserProjectsViews(appendPoint,n){
     const navList = document.querySelector('nav ul');
+    let mainContent = document.getElementById("MainContent");
     changeHighlithed(1,navList);//Selects the first element [which is the records] on user nav bar
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/contentbox.css').append(document.body);
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/navigationbox.css').append(document.body);
+    new HTMLTag('div').addAttr('id','content').append(mainContent);
+    const selecter = new HTMLTag('ul').addAttr('id','selecter').append(mainContent);
 
-    const selecter = new HTMLTag('ul').addAttr('id','selecter').append(appendPoint);
-    new HTMLTag('div').addAttr('id','content').append(appendPoint);
     
     new HTMLTag('li').setText('Feladataim').append(selecter).onclick(()=>{router.navigate('myProjectsUser')}).preventDefaultEvent('click');
 

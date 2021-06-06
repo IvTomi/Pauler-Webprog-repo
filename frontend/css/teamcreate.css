@@ -57,7 +57,7 @@
 
 
 #members{
-    width: 100%;
+    width: 90%;
     height: 100%;
     background-color:  #929292;
     display: flex;
@@ -164,12 +164,12 @@
 
 
 #nonmembers{
-    width: 100%;
+    width: 90%;
     height: 100%;
     background-color: #2C2C2C;
 }
 
-#projectsList{
+.projectsList{
     background-color: #393939;
     display: flex;
     flex-direction: column;  
@@ -180,7 +180,7 @@
     overflow-y: scroll;
 }
 
-#projectsList li{
+.projectsList li{
     list-style-type: none;
     width: 90%;
     margin: 0px;
@@ -190,11 +190,11 @@
     border: 0px transparent solid;
 }
 
-#projectsList::-webkit-scrollbar{
+.projectsList::-webkit-scrollbar{
     display: none;
 }
 
-#projectsList li:hover{
+.projectsList li:hover{
     cursor: pointer;
 }
 

@@ -5,6 +5,7 @@ import { getUserTeams } from '../../../../controllers/userMyTeamsController.js';
 function createmyTeamsView(){
     
     const content = document.getElementById('content');
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/teamlist.css').append(document.body);
     new viewController().clearTag(content);
     new HTMLTag('h2').setText('Saját csapataim').append(content);
     let list = document.getElementById('list');

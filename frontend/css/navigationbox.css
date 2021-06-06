@@ -4,6 +4,9 @@
     background-color: #A3ACB7;
     list-style-type: none;
     border: 0px solid transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 #selecter li{
