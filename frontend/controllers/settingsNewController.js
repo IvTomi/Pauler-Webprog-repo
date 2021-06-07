@@ -24,7 +24,7 @@ function OutputOnSuccess(data){
         alert(data.Message)
     }
     else if(data.Status === "Success"){
-        setPermissions(data.Id)
+        //setPermissions(data.Id)
         createAside();
         clearInput();
     }

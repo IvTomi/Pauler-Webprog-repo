@@ -20,10 +20,7 @@ export function CreateUser(appendPoint){
     new HTMLTag('p').setText('Jelszó újra').append(createForm);
     new HTMLTag('input').addAttr('id',createID+'_passAgain').addAttr('name',createID+'_passAgain').addAttr('type','password').append(createForm);
     
-    new HTMLTag('h2').setText('Jogosultságok').append(createForm);
-    let perm = new HTMLTag('div').addAttr('class','permissionField').append(createForm)
-    new HTMLTag('input').addAttr('type','checkbox').addClass(createID + '_chb').addAttr('name',createID + '_chb2').addAttr('value','isAdmin').append(perm);
-    new HTMLTag('p').setText('Admin').addClass(createID + '_permName').addAttr('name',createID + '_name2').append(perm);
+
 
     createForm.append(appendPoint);
     new HTMLTag('button').setText('Létrehozás').addAttr('class','modifyButton').append(appendPoint).onclick(()=>{addUserToDb()}).preventDefaultEvent('click');

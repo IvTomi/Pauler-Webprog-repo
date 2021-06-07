@@ -18,9 +18,11 @@ export function createTeamMembersList(team,appendPoint){
             onRequestFailed(data.Message);
         }
         else{
+            console.log(data.Users)
             for(let member of data.Users){
                 let user = member.User;
                 let tag = member.Tag;
+                console.log('mimimi?')
                 addNewMemberToExisting(user,appendPoint,team,tag);
             }
         }
@@ -56,23 +58,30 @@ export function createNonTeamMemberList(users,team,appendpoint){
             let user = member.User;
             teamids.push(user.id);
 
-            if(data.Status==='Failed'){
-                onRequestFailed(data.Message);
 
+           
+        }
+
+        if(data.Status==='Failed'){
+            onRequestFailed(data.Message);
+
+        }
+
+        else{
+            for(let member of data.Users){
+                let user = member.User;
+                teamids.push(user.id);
             }
-            else{
-                for(let member of data.Users){
-                    let user = member.User;
-                    teamids.push(user.id);
-                }
-                for(let member of users){
-                    let user = member;
-                    if(!teamids.includes(user.id)){
-                        addNonMemberToExisting(user,appendpoint,team);
-                    }
+            console.log(users.length)
+            for(let member of users){
+                let user = member;
+                if(!teamids.includes(user.id)){
+                    console.log('tag')
+                    addNonMemberToExisting(user,appendpoint,team);
                 }
             }
         }
+       
 
     },()=>{alert('Hiba')});
     

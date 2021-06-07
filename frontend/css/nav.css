@@ -119,5 +119,9 @@ input:focus{
     color: white;
 }
 
+h1{
+    cursor: default;
+}
+
 
 

@@ -4,7 +4,7 @@ import HTMLTag from '../../../../utilities/HTMLTag.js';
 import createMyProjectsView from './myProjects.js';
 import createOneProjectView from './oneProject.js'
 import {router} from '../../../../index.js';
-import { AllTaskList } from '../../../../controllers/userMyProjectsController.js';
+import { AllTaskList, MyTasksList } from '../../../../controllers/userMyProjectsController.js';
 import { SessionJanitor } from '../../../../utilities/sessionJanitor.js';
 
 
@@ -22,7 +22,7 @@ function setUpUserProjectsViews(appendPoint,n){
     new HTMLTag('li').setText('Feladataim').append(selecter).onclick(()=>{router.navigate('myProjectsUser')}).preventDefaultEvent('click');
 
     if(n === 0){
-        AllTaskList();
+        MyTasksList(SessionJanitor.getSessionUser().id);
         //createMyProjectsView();
     }else{
         let project = SessionJanitor.getActiveProject()

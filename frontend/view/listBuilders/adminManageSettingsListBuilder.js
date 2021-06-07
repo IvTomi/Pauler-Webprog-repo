@@ -31,11 +31,6 @@ export function ManageUser(appendPoint){
     new HTMLTag('input').addAttr('id',modifyID+'_passAgain').addAttr('name',modifyID+'_passAgain').addAttr('type','password').append(modifyForm);
     
 
-    new HTMLTag('h2').setText('Jogosultságok').append(modifyForm);
-    let perm = new HTMLTag('div').addAttr('class','permissionField').append(modifyForm)
-    new HTMLTag('input').addAttr('type','checkbox').addClass(modifyID + '_chb').addAttr('name',modifyID + '_chb2').addAttr('value','IsAdmin').append(perm);
-    new HTMLTag('p').setText('Admin').addClass(modifyID + '_permName').addAttr('name',modifyID + '_name2').append(perm);
-
     new HTMLTag('button').setText('Módosítás').addAttr('class','modifyButton').append(appendPoint).onclick(()=>{modifyUser()}).preventDefaultEvent('click');
    
 }

@@ -13,7 +13,7 @@ export function createMyRecordList(data,appendPoint,options){
             alert(data.Message);
         }
         else{
-            
+            console.log('hello?')
             let records = []
             if(options['timeframe']){
                 console.log(options['timeframe'])

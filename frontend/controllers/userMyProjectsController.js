@@ -9,6 +9,11 @@ export function AllTaskList(){
     makeRequest('/task/list','POST',getHeader(),"{}",(data)=>{onGetTasksSucces(data)},()=>onAjaxFail());
 
 }
+
+export function MyTasksList(userid){
+    console.log(userid)
+    makeRequest('/user/get/tasks','POST',getHeader(),JSON.stringify({"Userid":userid}),(data)=>{onGetTasksSucces(data)},()=>onAjaxFail());
+}
 function onGetTasksSucces(data){
     console.log(data);
 

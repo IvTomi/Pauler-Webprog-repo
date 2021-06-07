@@ -24,10 +24,11 @@ export function addNewMemberToExisting(user,appendPoint,team,tag){
     const li = new HTMLTag('li').addAttr('id','user-info'+user.id);
     if(user.firstname && user.lastname && user.id){
         new HTMLTag('p').setText(user.lastname+' '+user.firstname).append(li).onclick(()=>{sessionStorage.setItem('activeProfile',JSON.stringify(user)); console.log(sessionStorage.getItem('activeProfile')) /*router.navigate('memberprofile')*/});
-        new HTMLTag('button').setText('Töröl').addAttr('class','deleteBtn').append(li).onclick(()=>{onHireClick(team,user)});
+        let buttonDiv =new HTMLTag('div').append(li).addAttr('class','buttonDiv');
+        new HTMLTag('button').setText('Töröl').addAttr('class','deleteBtn').append(buttonDiv).onclick(()=>{onHireClick(team,user)});
+        new HTMLTag('button').setText('Frissít').addAttr('class','refreshTagButton').append(buttonDiv).onclick(()=>ChangeTag(user.id,team.id));
         new HTMLTag('p').setText(tag).addAttr('id','user-info-tag'+user.id).append(li);
         new HTMLTag('input').addAttr('type','text').addAttr('id','user-info-newtag'+user.id).append(li);
-        new HTMLTag('button').setText('Frissít').addAttr('class','refreshTagButton').append(li).onclick(()=>ChangeTag(user.id,team.id));
     }
     li.append(appendPoint);
 }
