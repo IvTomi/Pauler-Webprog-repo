@@ -4,8 +4,9 @@ import HTMLTag from '../../../../utilities/HTMLTag.js';
 import createMyRecordsView from './myRecords.js';
 import createNewRecordView from './newRecord.js';
 import createTeamRecordsView from './teamRecords.js';
+import {router} from '../../../../index.js'
 
-function setUpUserRecordViews(appendPoint){
+function setUpUserRecordViews(appendPoint,state){
     const navList = document.querySelector('nav ul');
     new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/contentbox.css').append(document.body);
     new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/navigationbox.css').append(document.body);
@@ -15,9 +16,16 @@ function setUpUserRecordViews(appendPoint){
     new HTMLTag('div').addAttr('id','content').append(mainContent);
     const selecter=new HTMLTag('ul').addAttr('id','selecter').append(mainContent);
 
-    
-    new HTMLTag('li').setText('Rekord hozzáadása').append(selecter).onclick(createNewRecordView);
-    new HTMLTag('li').setText('Rekordjaim').append(selecter).onclick(createMyRecordsView);
+    new HTMLTag('li').setText('Rekord hozzáadása').append(selecter).onclick(()=>{router.navigate('createRecordUser')});
+    new HTMLTag('li').setText('Rekordjaim').append(selecter).onclick(()=>{router.navigate('myRecordsUser')});
+
+    if(state === 0){
+        createMyRecordsView()
+    }else if(state === 2){
+        createNewRecordView();
+    }else{
+        
+    }
 }
 
 

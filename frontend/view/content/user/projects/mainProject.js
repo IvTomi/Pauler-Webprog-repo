@@ -5,6 +5,9 @@ import createMyProjectsView from './myProjects.js';
 import createOneProjectView from './oneProject.js'
 import {router} from '../../../../index.js';
 import { AllTaskList } from '../../../../controllers/userMyProjectsController.js';
+import { SessionJanitor } from '../../../../utilities/sessionJanitor.js';
+
+
 
 function setUpUserProjectsViews(appendPoint,n){
     const navList = document.querySelector('nav ul');
@@ -12,7 +15,7 @@ function setUpUserProjectsViews(appendPoint,n){
     changeHighlithed(1,navList);//Selects the first element [which is the records] on user nav bar
     new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/contentbox.css').append(document.body);
     new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/navigationbox.css').append(document.body);
-    new HTMLTag('div').addAttr('id','content').append(mainContent);
+    let content = new HTMLTag('div').addAttr('id','content').append(mainContent);
     const selecter = new HTMLTag('ul').addAttr('id','selecter').append(mainContent);
 
     
@@ -21,6 +24,12 @@ function setUpUserProjectsViews(appendPoint,n){
     if(n === 0){
         AllTaskList();
         //createMyProjectsView();
+    }else{
+        let project = SessionJanitor.getActiveProject()
+        if(project){
+            createOneProjectView(project.Task.id,project.Task.taskname,project.Task.description,content);
+        }
+        
     }
 }
 

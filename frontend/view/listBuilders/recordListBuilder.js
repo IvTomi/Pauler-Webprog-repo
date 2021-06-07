@@ -13,7 +13,16 @@ export function createMyRecordList(data,appendPoint,options){
             alert(data.Message);
         }
         else{
-            SessionJanitor.getAllTasks(()=>{CreateElements(data.Records,appendPoint,options);  })
+            
+            let records = []
+            if(options['timeframe']){
+                console.log(options['timeframe'])
+                records = data.Records.filter((x)=>{return Date.parse(x.Record.recorddate) >= Date.parse(options['timeframe'])})
+            }else{
+                records = data.Records
+            }
+
+            SessionJanitor.getAllTasks(()=>{CreateElements(records,appendPoint,options);  })
                   
         }
     },(req,err)=>{
@@ -30,7 +39,11 @@ export function CreateElements(data,appendPoint,options){
 
     for(let record of data){
         let task = SessionJanitor.getAllTasks(null).find(x=>x['Task'].id == record['Record']['taskid'])
-            if(true){
+            var appear = true;
+            if(options['filter']){
+                appear = task.Task.taskname.indexOf(options['filter'])===0
+            }
+            if(appear){
                 const cont = new HTMLTag('li').addAttr('class','listItem').append(appendPoint);
                 new HTMLTag('button').setText('Töröl').addAttr('class','deleteButton').append(cont).onclick(()=>{deleteRecord(record['Record']['id'],appendPoint,options)});
                 new HTMLTag('p').setText(task['Task'].taskname).append(cont);

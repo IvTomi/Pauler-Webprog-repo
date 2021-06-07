@@ -13,8 +13,8 @@ function createUserNav(){
         const ul = new HTMLTag('ul').append(nav);
         new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/nav.css').append(document.body);
 
-        new HTMLTag('li').setText('Rekordok').append(ul).onclick(()=>{router.navigate('recordUser')});
-        new HTMLTag('li').setText('Projectek').append(ul).onclick(new viewController().loadUserProject);
+        new HTMLTag('li').setText('Rekordok').append(ul).onclick(()=>{router.navigate('myRecordsUser')});
+        new HTMLTag('li').setText('Projectek').append(ul).onclick(()=>{router.navigate('myProjectsUser')});
         new HTMLTag('li').setText('Csapatok').append(ul).onclick(()=>{router.navigate('myTeamsUser')});
         new HTMLTag('li').setText('Kijelentkezés').append(ul).onclick(()=>{logout()});
 

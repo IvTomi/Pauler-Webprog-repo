@@ -24,6 +24,14 @@ export class SessionJanitor{
         return JSON.parse(sessionStorage.getItem('activeProfile'))
     }
 
+    static setActiveProject(activeProject){
+        sessionStorage.setItem('activeProject',JSON.stringify(activeProject))
+    }
+
+    static getActiveProject(){
+        return JSON.parse(sessionStorage.getItem('activeProject'))
+    }
+
     static getSessionstate(){
         return sessionStorage.getItem('sessionstate')
 

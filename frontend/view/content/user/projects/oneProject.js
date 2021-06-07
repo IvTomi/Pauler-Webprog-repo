@@ -6,17 +6,18 @@ import { router } from '../../../../index.js';
 import { getTaskAttributes, getTaskRecords } from '../../../../controllers/userOneProjectController.js';
 
 
-export function createOneProjectView(taskid,name,desc){
+export function createOneProjectView(taskid,name,desc,appendPoint){
 
-    router.navigate("oneProjectUser");
-    new HTMLTag('h1').setText(name).append(content);
-    new HTMLTag('p').setText(desc).append(content);
-    new HTMLTag('h3').setText('Tagok').append(content);
-    const listDiv = new HTMLTag('div').append(content);
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/projectcreate.css').append(document.body);
+    new HTMLTag('link').addAttr('rel','stylesheet').addAttr('href','./css/recordlist.css').append(document.body);
+    new HTMLTag('h1').setText(name).append(appendPoint);
+    new HTMLTag('p').setText(desc).append(appendPoint);
+    new HTMLTag('h3').setText('Tagok').append(appendPoint);
+    const listDiv = new HTMLTag('div').addClass('listDiv').append(appendPoint);
     getTaskAttributes(taskid,listDiv);
-    new HTMLTag('h3').setText('Rekordok').append(content);
-    const listDiv2 = new HTMLTag('div').append(content);
-    getTaskRecords(taskid,listDiv2);
+    new HTMLTag('h3').setText('Rekordok').append(appendPoint);
+    //const listDiv2 = new HTMLTag('div').append(appendPoint);
+    getTaskRecords(taskid,appendPoint);
     
 }
 

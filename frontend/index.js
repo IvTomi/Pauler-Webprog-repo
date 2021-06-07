@@ -24,6 +24,10 @@ router.add('ProfileAdmin',(p)=>{viewController.loadUserProfile(1,p)});
 router.add("myProjectsUser",()=>{viewController.loadUserProject(0)});
 router.add("oneProjectUser",()=>{viewController.loadUserProject(1)});
 
+router.add("createRecordUser",()=>{viewController.loadUserRecord(2)});
+router.add("myRecordsUser",()=>{viewController.loadUserRecord(0)});
+router.add("oneRecordUser",()=>{viewController.loadUserRecord(1)});
+
 router.add("myTeamsUser",()=>{viewController.loadUserTeam(0)});
 router.add("oneTeamUser",()=>{viewController.loadUserTeam(1)});
 

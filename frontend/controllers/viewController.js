@@ -71,14 +71,6 @@ export default class ViewController{
         createUserNav(username?username:null);
     }
 
-    loadUserRecord(evt){
-        if(evt){
-            evt.preventDefault();
-        }
-        const main = viewController.setUpMain();
-        setUpUserRecordViews(main);
-    }
-
     loadUserProfile(n,id){
         
         if(n === 0){
@@ -95,6 +87,12 @@ export default class ViewController{
         viewController.loadUser();
         const main = viewController.setUpMain();
         setUpUserProjectsViews(main,n);
+    }
+
+    loadUserRecord(n){
+        viewController.loadUser();
+        const main = viewController.setUpMain();
+        setUpUserRecordViews(main,n);
     }
 
     loadUserTeam(n){

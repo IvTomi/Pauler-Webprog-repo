@@ -1,12 +1,19 @@
 import { getTaskAttributes } from "../../controllers/userOneProjectController.js";
 import HTMLTag from "../../utilities/HTMLTag.js";
 import createOneProjectView from "../../view/content/user/projects/oneProject.js";
+import {router} from '../../index.js'
+import {viewController} from '../../index.js';
+import { SessionJanitor } from "../../utilities/sessionJanitor.js";
 
 export function createMyProjectList(data,appendPoint,option){
     const ulList = new HTMLTag('div').addAttr('id','list');
     for(let project of data){
 
-        const one = new HTMLTag('li').addAttr('class','listItem').onclick(()=>createOneProjectView(project.Task.id,project.Task.taskname,project.Task.description));
+        const one = new HTMLTag('li').addAttr('class','listItem').onclick(()=>{
+            SessionJanitor.setActiveProject(project)
+            router.navigate('oneProjectUser')          
+            
+        });
         new HTMLTag('p').setText(project.Task.taskname).append(one);
         new HTMLTag('p').setText(project.Task.description).append(one);
 
@@ -16,27 +23,32 @@ export function createMyProjectList(data,appendPoint,option){
 }
 
 export function createProjectMembersList(data,appendPoint){
-    console.log(data);
-    let div = new HTMLTag('div');
+    let div = new HTMLTag('div').addAttr('class','memberDiv').append(appendPoint);
     let one = new HTMLTag('ul').append(div);
-    for(let User of data.Users){
-        new HTMLTag('img').addAttr('src',User.User.picture).addAttr('alt','').append(one);
-        new HTMLTag('li').setText(User.User.firstname + " " + User.User.lastname).append(one);
+    for(let member of data.Users){
+        let li = new HTMLTag('li').addClass('listItem').append(one).onclick(()=>{
+            router.navigate('ProfileUser',member.User.id)
+        })
+        new HTMLTag('img').addAttr('src','../../res/defaultUser.png').addAttr('alt','user képe').append(li);
+        console.log('member: '+JSON.stringify(member))
+        new HTMLTag('p').setText(member.User.firstname +' '+ member.User.lastname).append(li);
+        new HTMLTag('p').setText(member.User.username).append(li);
     }
-    div.append(appendPoint).addClass('scroll');
 
 }
 
 export function createProjectRecordList(data,appendPoint)
 {
     console.log('data: '+JSON.stringify(data));
-    let div = new HTMLTag('div');
-    let one = new HTMLTag('ul').append(div);
+    let div = new HTMLTag('div').addAttr('id','list');
+
     for(let record of data.Records){
         record = record.Record;
+        let li = new HTMLTag('li').addAttr('class','listItem').append(div)
         //new HTMLTag('li').setText(record.author).append(one); ennek nem tudom, hogy mi a neve
-        new HTMLTag('li').setText(record.recorddate + " " + record.hour + ":" + record.min).append(one);
-        new HTMLTag('li').setText(record.comment).append(one);
+        new HTMLTag('p').setText(record.recorddate).append(li);
+        new HTMLTag('p').setText(record.hour + ":" + record.min).append(li);
+        new HTMLTag('p').setText(record.comment).append(li);
     }
     div.append(appendPoint).addClass('scroll');
 }
