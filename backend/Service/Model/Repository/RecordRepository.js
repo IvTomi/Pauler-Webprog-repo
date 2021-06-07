@@ -302,10 +302,7 @@ async function ListAllRecords(userid,hash)
     return new Promise((resolve, reject)=>
     {
         userrepo.getUserPermission('IsAdmin',userid).then(res=>{
-            if(!res){
-                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
-                return 
-            }
+
             getAllRecords(hash).then((result)=>
             {
                 resolve((jsonParser.combineJSON(protocol.status(true),recorddao.GetRecordListJson(result.map(element=>viewToRecord(element))))));}).catch((e)=>{
@@ -332,10 +329,7 @@ async function ListUserRecords(userid,hash,callerid)
     return new Promise((resolve, reject)=>
     {
         userrepo.getUserPermission('IsAdmin',callerid).then(res=>{
-            if(!res && userid != callerid){
-                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
-                return 
-            }
+
             userrepo.userByHash(userid,hash).then(res2=>{
                 if(!res2){
                     resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
@@ -374,10 +368,7 @@ async function ListTaskRecords(taskid,hash,callerid)
     {
         userrepo.userTaskByHash(callerid,taskid,hash).then(res=>{
             userrepo.getUserPermission('IsAdmin',callerid).then(res2=>{
-                if(!res2 && !res){
-                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
-                    return 
-                }
+
                 taskrepo.taskByHash(taskid,hash).then(res3=>{
                     if(!res3){
                         resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));

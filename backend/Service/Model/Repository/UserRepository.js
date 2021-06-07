@@ -209,15 +209,7 @@ async function ListUserContacts(hash,userid,callerid)
         //get by permission
         getUserPermission("IsAdmin",callerid).then(res=>{
             console.log(res)
-            if(!res && callerid != userid){
-                getUserContacts(hash,userid).then(res2=>{
-                    resolve((jsonParser.combineJSON(protocol.status(true),contactdao.GetContactListJson(res2.map(element=>contactrepo.viewToContact(element)).filter(x=>x['Contact']['ispublic'])))));
-                }).catch((e)=>{
-                    logger.error(e)
-                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
-                    return
-                })
-            }else{
+            
                 getUserContacts(hash,userid).then(res2=>{
                     resolve((jsonParser.combineJSON(protocol.status(true),contactdao.GetContactListJson(res2.map(element=>contactrepo.viewToContact(element))))));
                 }).catch((e)=>{
@@ -225,7 +217,7 @@ async function ListUserContacts(hash,userid,callerid)
                     resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
                     return
                 })
-            }
+
         }).catch((e)=>{
             logger.error(e)
             resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
@@ -253,6 +245,27 @@ async function getUserPermissions(userid)
         })
     })
 }
+
+async function getCompanyByHash(hash)
+{
+    return new Promise((resolve, reject)=>
+    {
+        pool.awaitGetConnection().then((res)=>
+        {
+            
+            res.awaitQuery(`CALL GetCompanyByHash('${hash}')`).then((result)=>
+            {
+                resolve(result[result.length-2])             
+            }).catch((e)=>
+            {
+                resolve(null);
+            })
+            res.release();
+        })
+    })
+}
+
+
 async function ListUserPermissions(userid,hash)
 {
     return new Promise((resolve, reject)=>
@@ -571,6 +584,8 @@ async function userContactByHash(userid,contactid,hash){
     })
 }
 
+
+
 async function userTaskByHash(userid,taskid,hash){
     return new Promise((resolve, reject)=>
     {
@@ -645,6 +660,42 @@ async function CreateUser(username, password, firstname, lastname, hash, userid,
                 return
         })
         
+    })
+}
+
+async function companyByHash(userid,hash){
+    return new Promise((resolve, reject)=>
+    {
+        userByHash(userid,hash).then(res=>{
+            if(!res){
+                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
+                return
+            }
+            getUserPermission('IsAdmin',userid).then(res2=>{
+                if(res2){
+                    getCompanyByHash(hash).then(res3=>{
+                        console.log(res3[0])
+                        resolve((jsonParser.combineJSON(protocol.status(true),{"companyname":res3[0]['CompanyName']})));
+                    }).catch((e)=>{
+                        logger.error(e);
+                        resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+                        return
+                        })
+                }else{
+                    resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
+                    return
+                }
+            }).catch((e)=>{
+            logger.error(e);
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            return
+            })
+        }).catch((e)=>{
+            logger.error(e);
+            resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(99))));
+            return
+        })
+
     })
 }
 
@@ -776,6 +827,7 @@ module.exports={
     AddContactToUser:AddContactToUser,
     ModifyUserPermission:ModifyUserPermission,
     userTaskByHash:userTaskByHash,
-    ViewToUser:ViewToUser
+    ViewToUser:ViewToUser,
+    companyByHash:companyByHash
 
 }

@@ -324,6 +324,14 @@ router.post("/user/get/teams", (req, res)=>
     })
 })
 
+router.post("/company/get", (req, res)=>
+{
+    userrepo.companyByHash(req.userid,req.headers['hash']).then((result)=>
+    {
+        res.json(result);
+    })
+})
+
 router.post("/user/permission/modify",(req,res)=>
 {
     userrepo.ModifyUserPermission(req.userid,req.headers['hash'],req.body['Permissionname'],req.body['Isenabled'],req.body['Userid']).then((result)=>

@@ -369,6 +369,7 @@ async function ListUserTasks(hash,userid,callerid)
             }
             //check user exists
             userrepo.userByHash(userid,hash).then(res=>{
+                let tasks = []
                 if(!res){
                     resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(1))));
                     return
@@ -483,10 +484,7 @@ async function ListTasks(userid,hash)
     return new Promise((resolve, reject)=>
     {
         userrepo.getUserPermission("IsAdmin",userid).then(res=>{
-            if(!res){
-                resolve((jsonParser.combineJSON(protocol.status(false),protocol.error(4))));
-                return
-            }
+
             getTasks(hash).then(res2=>{
                 resolve((jsonParser.combineJSON(protocol.status(true),taskdao.GetTaskListJson(res2.map(element=>viewToTask(element))))));
             }).catch((e)=>{
